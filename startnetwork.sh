@@ -16,7 +16,7 @@ CC_SRC_LANGUAGE=`echo "$CC_SRC_LANGUAGE" | tr [:upper:] [:lower:]`
 if [ "$CC_SRC_LANGUAGE" = "go" -o "$CC_SRC_LANGUAGE" = "golang" ] ; then
 	CC_SRC_PATH="../chaincode/fabcar/go/"
 elif [ "$CC_SRC_LANGUAGE" = "javascript" ]; then
-	CC_SRC_PATH="../Anrail-net/chaincode/"
+	CC_SRC_PATH="../AnRail/chaincode/"
 elif [ "$CC_SRC_LANGUAGE" = "java" ]; then
 	CC_SRC_PATH="../chaincode/fabcar/java"
 elif [ "$CC_SRC_LANGUAGE" = "typescript" ]; then
