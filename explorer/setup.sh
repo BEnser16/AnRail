@@ -1,0 +1,1 @@
+# sudo cp -r ~/go/src/fabric-samples/test-network/organizations/ ~/go/src/fabric-samples/AnRail/explorer/

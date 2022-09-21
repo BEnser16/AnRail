@@ -12,25 +12,7 @@ class Pet extends Contract {
 
     async initLedger(ctx) {
         console.info('============= START : Initialize Ledger ===========');
-        const pets = [
-            {
-                medicalNumber: "100000",
-                name: "大黃",
-                species: "狗",
-                breed: "黃金獵犬",
-                owner: "韓蛞蝓",
-                phone: "0977008008",
-                chip: "A001001",
-                birthday: "2010-10-30",
-                gender: "公",
-                bloodType: "B",
-                ligation: false,
-                allergy: "香蕉",
-                majorDiseases: "腫瘤",
-                remark: "超肥黃金獵犬",
-                hospital: "寵物醫院A",
-            },
-        ];
+        const pets = [];
 
         for (let i = 0; i < pets.length; i++) {
             pets[i].docType = 'pet';
@@ -49,15 +31,18 @@ class Pet extends Contract {
         return petAsBytes.toString();
     }
 
-    async createCar(ctx, petNumber, name, breed, age, owner) {
+    async createPet(ctx, petNumber, medicalNumber , name , species , breed , owner , phone , chip , birthday , gender , bloodType , ligation , allergy , majorDiseases , remark , hospital) {
         console.info('============= START : Create Pet ===========');
 
         const pet = {
-            name,
             docType: 'pet',
+            medicalNumber,
+            name,
+            species ,
             breed,
-            age,
             owner,
+            phone , chip , birthday , gender , bloodType , ligation , allergy , majorDiseases , remark , hospital,
+            
         };
 
         await ctx.stub.putState(petNumber, Buffer.from(JSON.stringify(pet)));
@@ -96,6 +81,8 @@ class Pet extends Contract {
         await ctx.stub.putState(petNumber, Buffer.from(JSON.stringify(pet)));
         console.info('============= END : changeCarOwner ===========');
     }
+
+    
 
 }
 
