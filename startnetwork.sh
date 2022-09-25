@@ -16,7 +16,7 @@ CC_SRC_LANGUAGE=`echo "$CC_SRC_LANGUAGE" | tr [:upper:] [:lower:]`
 if [ "$CC_SRC_LANGUAGE" = "go" -o "$CC_SRC_LANGUAGE" = "golang" ] ; then
 	CC_SRC_PATH="../chaincode/fabcar/go/"
 elif [ "$CC_SRC_LANGUAGE" = "javascript" ]; then
-	CC_SRC_PATH="../AnRail/chaincode/"
+	CC_SRC_PATH="../chaincode/"
 elif [ "$CC_SRC_LANGUAGE" = "java" ]; then
 	CC_SRC_PATH="../chaincode/fabcar/java"
 elif [ "$CC_SRC_LANGUAGE" = "typescript" ]; then
@@ -34,7 +34,7 @@ rm -rf typescript/wallet/*
 rm -rf go/wallet/*
 
 # launch network; create channel and join peer to channel
-pushd ../test-network
+pushd ./test-network
 ./network.sh down
 ./network.sh up createChannel -ca -s couchdb
 ./network.sh deployCC -ccn pet -ccv 1 -cci initLedger -ccl ${CC_SRC_LANGUAGE} -ccp ${CC_SRC_PATH}
