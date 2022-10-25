@@ -1,0 +1,422 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+volumes:
+  orderer.anrail.com:
+  peer0.bank.anrail.com:
+  peer0.breeder.anrail.com:
+  peer0.government.anrail.com:
+  peer0.hospital.anrail.com:
+  peer0.pthospital.anrail.com:
+  peer0.insurance.anrail.com:
+
+networks:
+  anrail:
+    name: fabric_net
+
+services:
+
+  orderer.anrail.com:
+    container_name: orderer.anrail.com
+    image: hyperledger/fabric-orderer:latest
+    environment:
+      - FABRIC_LOGGING_SPEC=INFO
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_LISTENPORT=7050
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block
+      - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+      - ORDERER_OPERATIONS_LISTENADDRESS=0.0.0.0:17050
+      # enabled TLS
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_KAFKA_TOPIC_REPLICATIONFACTOR=1
+      - ORDERER_KAFKA_VERBOSE=true
+      - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: orderer
+    volumes:
+        - ../system-genesis-block/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+        - ../organizations/ordererOrganizations/anrail.com/orderers/orderer.anrail.com/msp:/var/hyperledger/orderer/msp
+        - ../organizations/ordererOrganizations/anrail.com/orderers/orderer.anrail.com/tls/:/var/hyperledger/orderer/tls
+        - orderer.anrail.com:/var/hyperledger/production/orderer
+    ports:
+      - 7050:7050
+      - 17050:17050
+    networks:
+      - anrail
+
+  peer0.bank.anrail.com:
+    container_name: peer0.bank.anrail.com
+    image: hyperledger/fabric-peer:latest
+    environment:
+      #Generic peer variables
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric_net
+      - FABRIC_LOGGING_SPEC=INFO
+      #- FABRIC_LOGGING_SPEC=DEBUG
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      # Peer specific variabes
+      - CORE_PEER_ID=peer0.bank.anrail.com
+      - CORE_PEER_ADDRESS=peer0.bank.anrail.com:7051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.bank.anrail.com:7052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.bank.anrail.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.bank.anrail.com:7051
+      - CORE_PEER_LOCALMSPID=BankMSP
+      - CORE_OPERATIONS_LISTENADDRESS=0.0.0.0:17051
+    volumes:
+        - /var/run/docker.sock:/host/var/run/docker.sock
+        - ../organizations/peerOrganizations/bank.anrail.com/peers/peer0.bank.anrail.com/msp:/etc/hyperledger/fabric/msp
+        - ../organizations/peerOrganizations/bank.anrail.com/peers/peer0.bank.anrail.com/tls:/etc/hyperledger/fabric/tls
+        - peer0.bank.anrail.com:/var/hyperledger/production
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    ports:
+      - 7051:7051
+      - 17051:17051
+    networks:
+      - anrail
+
+  peer0.breeder.anrail.com:
+    container_name: peer0.breeder.anrail.com
+    image: hyperledger/fabric-peer:latest
+    environment:
+      #Generic peer variables
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric_net
+      - FABRIC_LOGGING_SPEC=INFO
+      #- FABRIC_LOGGING_SPEC=DEBUG
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      # Peer specific variabes
+      - CORE_PEER_ID=peer0.breeder.anrail.com
+      - CORE_PEER_ADDRESS=peer0.breeder.anrail.com:9051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:9051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.breeder.anrail.com:9052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:9052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.breeder.anrail.com:9051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.breeder.anrail.com:9051
+      - CORE_PEER_LOCALMSPID=BreederMSP
+      - CORE_OPERATIONS_LISTENADDRESS=0.0.0.0:19051
+    volumes:
+        - /var/run/docker.sock:/host/var/run/docker.sock
+        - ../organizations/peerOrganizations/breeder.anrail.com/peers/peer0.breeder.anrail.com/msp:/etc/hyperledger/fabric/msp
+        - ../organizations/peerOrganizations/breeder.anrail.com/peers/peer0.breeder.anrail.com/tls:/etc/hyperledger/fabric/tls
+        - peer0.breeder.anrail.com:/var/hyperledger/production
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    ports:
+      - 9051:9051
+      - 19051:19051
+    networks:
+      - anrail
+  
+  peer0.government.anrail.com:
+    container_name: peer0.government.anrail.com
+    image: hyperledger/fabric-peer:latest
+    environment:
+      #Generic peer variables
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric_net
+      - FABRIC_LOGGING_SPEC=INFO
+      #- FABRIC_LOGGING_SPEC=DEBUG
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      # Peer specific variabes
+      - CORE_PEER_ID=peer0.government.anrail.com
+      - CORE_PEER_ADDRESS=peer0.government.anrail.com:8051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:8051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.government.anrail.com:8052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:8052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.government.anrail.com:8051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.government.anrail.com:8051
+      - CORE_PEER_LOCALMSPID=GovernmentMSP
+      - CORE_OPERATIONS_LISTENADDRESS=0.0.0.0:18051
+    volumes:
+        - /var/run/docker.sock:/host/var/run/docker.sock
+        - ../organizations/peerOrganizations/government.anrail.com/peers/peer0.government.anrail.com/msp:/etc/hyperledger/fabric/msp
+        - ../organizations/peerOrganizations/government.anrail.com/peers/peer0.government.anrail.com/tls:/etc/hyperledger/fabric/tls
+        - peer0.government.anrail.com:/var/hyperledger/production
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    ports:
+      - 8051:8051
+      - 18051:18051
+    networks:
+      - anrail
+  
+  peer0.hospital.anrail.com:
+    container_name: peer0.hospital.anrail.com
+    image: hyperledger/fabric-peer:latest
+    environment:
+      #Generic peer variables
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric_net
+      - FABRIC_LOGGING_SPEC=INFO
+      #- FABRIC_LOGGING_SPEC=DEBUG
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      # Peer specific variabes
+      - CORE_PEER_ID=peer0.hospital.anrail.com
+      - CORE_PEER_ADDRESS=peer0.hospital.anrail.com:6051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:6051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.hospital.anrail.com:6052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:6052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.hospital.anrail.com:6051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.hospital.anrail.com:6051
+      - CORE_PEER_LOCALMSPID=HospitalMSP
+      - CORE_OPERATIONS_LISTENADDRESS=0.0.0.0:16051
+    volumes:
+        - /var/run/docker.sock:/host/var/run/docker.sock
+        - ../organizations/peerOrganizations/hospital.anrail.com/peers/peer0.hospital.anrail.com/msp:/etc/hyperledger/fabric/msp
+        - ../organizations/peerOrganizations/hospital.anrail.com/peers/peer0.hospital.anrail.com/tls:/etc/hyperledger/fabric/tls
+        - peer0.hospital.anrail.com:/var/hyperledger/production
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    ports:
+      - 6051:6051
+      - 16051:16051
+    networks:
+      - anrail
+
+  peer0.pthospital.anrail.com:
+    container_name: peer0.pthospital.anrail.com
+    image: hyperledger/fabric-peer:latest
+    environment:
+      #Generic peer variables
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric_net
+      - FABRIC_LOGGING_SPEC=INFO
+      #- FABRIC_LOGGING_SPEC=DEBUG
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      # Peer specific variabes
+      - CORE_PEER_ID=peer0.pthospital.anrail.com
+      - CORE_PEER_ADDRESS=peer0.pthospital.anrail.com:6070
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:6070
+      - CORE_PEER_CHAINCODEADDRESS=peer0.pthospital.anrail.com:6062
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:6062
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.pthospital.anrail.com:6070
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.pthospital.anrail.com:6070
+      - CORE_PEER_LOCALMSPID=PTHospitalMSP
+      - CORE_OPERATIONS_LISTENADDRESS=0.0.0.0:16070
+    volumes:
+        - /var/run/docker.sock:/host/var/run/docker.sock
+        - ../organizations/peerOrganizations/pthospital.anrail.com/peers/peer0.pthospital.anrail.com/msp:/etc/hyperledger/fabric/msp
+        - ../organizations/peerOrganizations/pthospital.anrail.com/peers/peer0.pthospital.anrail.com/tls:/etc/hyperledger/fabric/tls
+        - peer0.pthospital.anrail.com:/var/hyperledger/production
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    ports:
+      - 6070:6070
+      - 16070:16070
+    networks:
+      - anrail
+  
+  peer0.insurance.anrail.com:
+    container_name: peer0.insurance.anrail.com
+    image: hyperledger/fabric-peer:latest
+    environment:
+      #Generic peer variables
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric_net
+      - FABRIC_LOGGING_SPEC=INFO
+      #- FABRIC_LOGGING_SPEC=DEBUG
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      # Peer specific variabes
+      - CORE_PEER_ID=peer0.insurance.anrail.com
+      - CORE_PEER_ADDRESS=peer0.insurance.anrail.com:5051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:5051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.insurance.anrail.com:5052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:5052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.insurance.anrail.com:5051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.insurance.anrail.com:5051
+      - CORE_PEER_LOCALMSPID=InsuranceMSP
+      - CORE_OPERATIONS_LISTENADDRESS=0.0.0.0:15051
+    volumes:
+        - /var/run/docker.sock:/host/var/run/docker.sock
+        - ../organizations/peerOrganizations/insurance.anrail.com/peers/peer0.insurance.anrail.com/msp:/etc/hyperledger/fabric/msp
+        - ../organizations/peerOrganizations/insurance.anrail.com/peers/peer0.insurance.anrail.com/tls:/etc/hyperledger/fabric/tls
+        - peer0.insurance.anrail.com:/var/hyperledger/production
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    ports:
+      - 5051:5051
+      - 15051:15051
+    networks:
+      - anrail
+
+  clibank:
+    container_name: clibank
+    image: hyperledger/fabric-tools:latest
+    tty: true
+    stdin_open: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_LOCALMSPID=BankMSP
+      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/peerOrganizations/bank.anrail.com/peers/peer0.bank.anrail.com/tls/ca.crt
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/peerOrganizations/bank.anrail.com/users/Admin@bank.anrail.com/msp
+      - CORE_PEER_ADDRESS=peer0.bank.anrail.com:7051
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: /bin/bash
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../organizations:/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations
+        - ../system-genesis-block:/opt/gopath/src/github.com/hyperledger/fabric/peer/system-genesis-block
+        - ../chaincode:/opt/gopath/src/github.com/hyperledger/fabric/fabric-cluster/chaincode/     #预留链码路径
+    networks:
+      - anrail
+  
+  clibreeder:
+    container_name: clibreeder
+    image: hyperledger/fabric-tools:latest
+    tty: true
+    stdin_open: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_LOCALMSPID=BreederMSP
+      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/peerOrganizations/breeder.anrail.com/peers/peer0.breeder.anrail.com/tls/ca.crt
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/peerOrganizations/breeder.anrail.com/users/Admin@breeder.anrail.com/msp
+      - CORE_PEER_ADDRESS=peer0.breeder.anrail.com:9051
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: /bin/bash
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../organizations:/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations
+        - ../system-genesis-block:/opt/gopath/src/github.com/hyperledger/fabric/peer/system-genesis-block
+        - ../chaincode:/opt/gopath/src/github.com/hyperledger/fabric/fabric-cluster/chaincode/     #预留链码路径
+    networks:
+      - anrail
+
+  cligovernment:
+    container_name: cligovernment
+    image: hyperledger/fabric-tools:latest
+    tty: true
+    stdin_open: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_LOCALMSPID=GovernmentMSP
+      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/peerOrganizations/government.anrail.com/peers/peer0.government.anrail.com/tls/ca.crt
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/peerOrganizations/government.anrail.com/users/Admin@government.anrail.com/msp
+      - CORE_PEER_ADDRESS=peer0.government.anrail.com:8051
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: /bin/bash
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../organizations:/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations
+        - ../system-genesis-block:/opt/gopath/src/github.com/hyperledger/fabric/peer/system-genesis-block
+        - ../chaincode:/opt/gopath/src/github.com/hyperledger/fabric/fabric-cluster/chaincode/     #预留链码路径
+    networks:
+      - anrail
+  
+  clihospital:
+    container_name: clihospital
+    image: hyperledger/fabric-tools:latest
+    tty: true
+    stdin_open: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_LOCALMSPID=HospitalMSP
+      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/peerOrganizations/hospital.anrail.com/peers/peer0.hospital.anrail.com/tls/ca.crt
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/peerOrganizations/hospital.anrail.com/users/Admin@hospital.anrail.com/msp
+      - CORE_PEER_ADDRESS=peer0.hospital.anrail.com:6051
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: /bin/bash
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../organizations:/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations
+        - ../system-genesis-block:/opt/gopath/src/github.com/hyperledger/fabric/peer/system-genesis-block
+        - ../chaincode/record:/opt/gopath/src/github.com/hyperledger/fabric/fabric-cluster/chaincode/record     #预留病歷链码路径
+    networks:
+      - anrail
+
+  clipthospital:
+    container_name: clipthospital
+    image: hyperledger/fabric-tools:latest
+    tty: true
+    stdin_open: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_LOCALMSPID=PTHospitalMSP
+      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/peerOrganizations/pthospital.anrail.com/peers/peer0.pthospital.anrail.com/tls/ca.crt
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/peerOrganizations/pthospital.anrail.com/users/Admin@pthospital.anrail.com/msp
+      - CORE_PEER_ADDRESS=peer0.pthospital.anrail.com:6070
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: /bin/bash
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../organizations:/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations
+        - ../system-genesis-block:/opt/gopath/src/github.com/hyperledger/fabric/peer/system-genesis-block
+        - ../chaincode/record:/opt/gopath/src/github.com/hyperledger/fabric/fabric-cluster/chaincode/record     #预留病歷链码路径
+    networks:
+      - anrail
+  
+  cliinsurance:
+    container_name: cliinsurance
+    image: hyperledger/fabric-tools:latest
+    tty: true
+    stdin_open: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_LOCALMSPID=InsuranceMSP
+      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/peerOrganizations/insurance.anrail.com/peers/peer0.insurance.anrail.com/tls/ca.crt
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/peerOrganizations/insurance.anrail.com/users/Admin@insurance.anrail.com/msp
+      - CORE_PEER_ADDRESS=peer0.insurance.anrail.com:5051
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: /bin/bash
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../organizations:/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations
+        - ../system-genesis-block:/opt/gopath/src/github.com/hyperledger/fabric/peer/system-genesis-block
+        - ../chaincode:/opt/gopath/src/github.com/hyperledger/fabric/fabric-cluster/chaincode/     #预留链码路径
+    networks:
+      - anrail

@@ -1,0 +1,2 @@
+Installed chaincodes on peer:
+Package ID: petinfo:485ac7a7606261ab113a610feee83b909420779218622d30773309afc895bd22, Label: petinfo

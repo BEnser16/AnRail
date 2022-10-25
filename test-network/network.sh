@@ -3,24 +3,20 @@
 # Copyright IBM Corp All Rights Reserved
 #
 # SPDX-License-Identifier: Apache-2.0
-#
 
-# This script brings up a Hyperledger Fabric network for testing smart contracts
-# and applications. The test network consists of two organizations with one
-# peer each, and a single node Raft ordering service. Users can also use this
-# script to create a channel deploy a chaincode on the channel
-#
-# prepending $PWD/../bin to PATH to ensure we are picking up the correct binaries
-# this may be commented out to resolve installed version of tools if desired
+# 設定二進制工具的路徑
 export PATH=${PWD}/../bin:$PATH
+# 設定通道配置 configtx 路徑
 export FABRIC_CFG_PATH=${PWD}/configtx
+# 詳細模式 false
 export VERBOSE=false
 
+# 載入幫助文件與終端設定
 . scripts/utils.sh
 
-# Obtain CONTAINER_IDS and remove them
-# TODO Might want to make this optional - could clear other containers
-# This function is called when you bring a network down
+
+# 用 docker ps 獲取 container ID 刪除
+# 清理 docker containers netowrk down 時被呼叫
 function clearContainers() {
   CONTAINER_IDS=$(docker ps -a | awk '($2 ~ /dev-peer.*/) {print $1}')
   if [ -z "$CONTAINER_IDS" -o "$CONTAINER_IDS" == " " ]; then
@@ -30,9 +26,8 @@ function clearContainers() {
   fi
 }
 
-# Delete any images that were generated as a part of this setup
-# specifically the following images are often left behind:
-# This function is called when you bring the network down
+# 刪除生成的 docker images network down 時被呼叫
+# 具体而言，以下images通常会被留下
 function removeUnwantedImages() {
   DOCKER_IMAGE_IDS=$(docker images | awk '($1 ~ /dev-peer.*/) {print $3}')
   if [ -z "$DOCKER_IMAGE_IDS" -o "$DOCKER_IMAGE_IDS" == " " ]; then
@@ -42,14 +37,12 @@ function removeUnwantedImages() {
   fi
 }
 
-# Versions of fabric known not to work with the test network
+# test-network 不能用的 fabric 版本
 NONWORKING_VERSIONS="^1\.0\. ^1\.1\. ^1\.2\. ^1\.3\. ^1\.4\."
 
-# Do some basic sanity checking to make sure that the appropriate versions of fabric
-# binaries/images are available. In the future, additional checking for the presence
-# of go or other items could be added.
+# 執行環境檢查 確保 fabric 版本正確
 function checkPrereqs() {
-  ## Check if your have cloned the peer binaries and configuration files.
+  ## 確保有下載 peer binaries and configuration files.
   peer version > /dev/null 2>&1
 
   if [[ $? -ne 0 || ! -d "../config" ]]; then
@@ -59,8 +52,8 @@ function checkPrereqs() {
     errorln "https://hyperledger-fabric.readthedocs.io/en/latest/install.html"
     exit 1
   fi
-  # use the fabric tools container to see if the samples and binaries match your
-  # docker images
+
+  # 測試 docker image 有沒有符合二進制工具版本
   LOCAL_VERSION=$(peer version | sed -ne 's/^ Version: //p')
   DOCKER_IMAGE_VERSION=$(docker run --rm hyperledger/fabric-tools:$IMAGETAG peer version | sed -ne 's/^ Version: //p')
 
@@ -83,7 +76,7 @@ function checkPrereqs() {
     fi
   done
 
-  ## Check for fabric-ca
+  ## 確保 fabric CA 版本正確
   if [ "$CRYPTO" == "Certificate Authorities" ]; then
 
     fabric-ca-client version > /dev/null 2>&1
@@ -105,37 +98,14 @@ function checkPrereqs() {
   fi
 }
 
-# Before you can bring up a network, each organization needs to generate the crypto
-# material that will define that organization on the network. Because Hyperledger
-# Fabric is a permissioned blockchain, each node and user on the network needs to
-# use certificates and keys to sign and verify its actions. In addition, each user
-# needs to belong to an organization that is recognized as a member of the network.
-# You can use the Cryptogen tool or Fabric CAs to generate the organization crypto
-# material.
 
-# By default, the sample network uses cryptogen. Cryptogen is a tool that is
-# meant for development and testing that can quickly create the certificates and keys
-# that can be consumed by a Fabric network. The cryptogen tool consumes a series
-# of configuration files for each organization in the "organizations/cryptogen"
-# directory. Cryptogen uses the files to generate the crypto  material for each
-# org in the "organizations" directory.
-
-# You can also Fabric CAs to generate the crypto material. CAs sign the certificates
-# and keys that they generate to create a valid root of trust for each organization.
-# The script uses Docker Compose to bring up three CAs, one for each peer organization
-# and the ordering organization. The configuration file for creating the Fabric CA
-# servers are in the "organizations/fabric-ca" directory. Within the same directory,
-# the "registerEnroll.sh" script uses the Fabric CA client to create the identities,
-# certificates, and MSP folders that are needed to create the test network in the
-# "organizations/ordererOrganizations" directory.
-
-# Create Organization crypto material using cryptogen or CAs
+# 使用 fabric CA 或 cryptogen 生成組織證書資料
 function createOrgs() {
   if [ -d "organizations/peerOrganizations" ]; then
     rm -Rf organizations/peerOrganizations && rm -Rf organizations/ordererOrganizations
   fi
 
-  # Create crypto material using cryptogen
+  # 使用 cryptogen 生成
   if [ "$CRYPTO" == "cryptogen" ]; then
     which cryptogen
     if [ "$?" -ne 0 ]; then
@@ -175,7 +145,7 @@ function createOrgs() {
 
   fi
 
-  # Create crypto material using Fabric CA
+  # 使用 Fabric CA 生成
   if [ "$CRYPTO" == "Certificate Authorities" ]; then
     infoln "Generating certificates using Fabric CA"
 
@@ -206,29 +176,11 @@ function createOrgs() {
 
   fi
 
+  # 為組織生成通道配置文件
   infoln "Generating CCP files for Org1 and Org2"
   ./organizations/ccp-generate.sh
 }
 
-# Once you create the organization crypto material, you need to create the
-# genesis block of the orderer system channel. This block is required to bring
-# up any orderer nodes and create any application channels.
-
-# The configtxgen tool is used to create the genesis block. Configtxgen consumes a
-# "configtx.yaml" file that contains the definitions for the sample network. The
-# genesis block is defined using the "TwoOrgsOrdererGenesis" profile at the bottom
-# of the file. This profile defines a sample consortium, "SampleConsortium",
-# consisting of our two Peer Orgs. This consortium defines which organizations are
-# recognized as members of the network. The peer and ordering organizations are defined
-# in the "Profiles" section at the top of the file. As part of each organization
-# profile, the file points to a the location of the MSP directory for each member.
-# This MSP is used to create the channel MSP that defines the root of trust for
-# each organization. In essence, the channel MSP allows the nodes and users to be
-# recognized as network members. The file also specifies the anchor peers for each
-# peer org. In future steps, this same file is used to create the channel creation
-# transaction and the anchor peer updates.
-#
-#
 # If you receive the following warning, it can be safely ignored:
 #
 # [bccsp] GetDefault -> WARN 001 Before using BCCSP, please call InitFactories(). Falling back to bootBCCSP.
@@ -236,7 +188,7 @@ function createOrgs() {
 # You can ignore the logs regarding intermediate certs, we are not using them in
 # this crypto implementation.
 
-# Generate orderer system channel genesis block.
+# 為排序服務 用 configtxgen 生成創世區塊
 function createConsortium() {
   which configtxgen
   if [ "$?" -ne 0 ]; then
@@ -256,16 +208,12 @@ function createConsortium() {
   fi
 }
 
-# After we create the org crypto material and the system channel genesis block,
-# we can now bring up the peers and ordering service. By default, the base
-# file for creating the network is "docker-compose-test-net.yaml" in the ``docker``
-# folder. This file defines the environment variables and file mounts that
-# point the crypto material and genesis block that were created in earlier.
+# 創建完證書及創世區塊 現在可以啟用 peer and order service 
+# 網路服務配置基於 docker/docker-compose-test-net.yaml 定義環境
 
-# Bring up the peer and orderer nodes using docker compose.
+# 使用 docker compose 啟用排序及節點服務
 function networkUp() {
-  checkPrereqs
-  # generate artifacts if they don't exist
+  # 生成 artifacts 如果不存在
   if [ ! -d "organizations/peerOrganizations" ]; then
     createOrgs
     createConsortium
@@ -285,25 +233,21 @@ function networkUp() {
   fi
 }
 
-# call the script to create the channel, join the peers of org1 and org2,
-# and then update the anchor peers for each organization
+# 使用 createChannel 腳本創建通道 並加入 org1 and org2
+# 更新每個組織的錨節點
 function createChannel() {
-  # Bring up the network if it is not already up.
+  # 啟用網路 如果未啟動的話
 
   if [ ! -d "organizations/peerOrganizations" ]; then
     infoln "Bringing up network"
     networkUp
   fi
 
-  # now run the script that creates a channel. This script uses configtxgen once
-  # more to create the channel creation transaction and the anchor peer updates.
-  # configtx.yaml is mounted in the cli container, which allows us to use it to
-  # create the channel artifacts
+  # 創建通道並更新錨節點 先前 configtx.yaml 已經安裝在cli container 讓我們可以利用它創建通道配置文件
   scripts/createChannel.sh $CHANNEL_NAME $CLI_DELAY $MAX_RETRY $VERBOSE
 }
 
-
-## Call the script to deploy a chaincode to the channel
+# 使用 deployCC 腳本 部屬 chaincode 至通道
 function deployCC() {
   scripts/deployCC.sh $CHANNEL_NAME $CC_NAME $CC_SRC_PATH $CC_SRC_LANGUAGE $CC_VERSION $CC_SEQUENCE $CC_INIT_FCN $CC_END_POLICY $CC_COLL_CONFIG $CLI_DELAY $MAX_RETRY $VERBOSE
 
@@ -313,7 +257,7 @@ function deployCC() {
 }
 
 
-# Tear down running network
+# 停止網路
 function networkDown() {
   # stop org3 containers also in addition to org1 and org2, in case we were running sample to add org3
   docker-compose -f $COMPOSE_FILE_BASE -f $COMPOSE_FILE_COUCH -f $COMPOSE_FILE_CA down --volumes --remove-orphans
@@ -337,15 +281,15 @@ function networkDown() {
   fi
 }
 
-# Obtain the OS and Architecture string that will be used to select the correct
-# native binaries for your platform, e.g., darwin-amd64 or linux-amd64
+
+# 設定上面一堆命令要用的變數
+# 獲取作業系統環境參數
 OS_ARCH=$(echo "$(uname -s | tr '[:upper:]' '[:lower:]' | sed 's/mingw64_nt.*/windows/')-$(uname -m | sed 's/x86_64/amd64/g')" | awk '{print tolower($0)}')
-# Using crpto vs CA. default is cryptogen
+# 使用 cryptogen 還是 CA 預設為 cryptogen
 CRYPTO="cryptogen"
-# timeout duration - the duration the CLI should wait for a response from
-# another container before giving up
+# 終端執行命令等待回應的時間
 MAX_RETRY=5
-# default for delay between commands
+# 設定執行命令的間隔時間
 CLI_DELAY=3
 # channel name defaults to "mychannel"
 CHANNEL_NAME="mychannel"
@@ -354,6 +298,7 @@ CC_NAME="NA"
 # chaincode path defaults to "NA"
 CC_SRC_PATH="NA"
 # endorsement policy defaults to "NA". This would allow chaincodes to use the majority default policy.
+# 背書政策預設為 NA 這會直接啟用預設的背書政策
 CC_END_POLICY="NA"
 # collection configuration defaults to "NA"
 CC_COLL_CONFIG="NA"
@@ -374,7 +319,7 @@ COMPOSE_FILE_ORG3=addOrg3/docker/docker-compose-org3.yaml
 CC_SRC_LANGUAGE="NA"
 # Chaincode version
 CC_VERSION="1.0"
-# Chaincode definition sequence
+# Chaincode 預設序列
 CC_SEQUENCE=1
 # default image tag
 IMAGETAG="latest"
@@ -403,7 +348,7 @@ if [[ $# -ge 1 ]] ; then
   fi
 fi
 
-# parse flags
+# flags 設定
 
 while [[ $# -ge 1 ]] ; do
   key="$1"
@@ -491,7 +436,7 @@ else
   CRYPTO_MODE=""
 fi
 
-# Determine mode of operation and printing out what we asked for
+# 定義 network <mode> 腳本後綴模式
 if [ "$MODE" == "up" ]; then
   infoln "Starting nodes with CLI timeout of '${MAX_RETRY}' tries and CLI delay of '${CLI_DELAY}' seconds and using database '${DATABASE}' ${CRYPTO_MODE}"
 elif [ "$MODE" == "createChannel" ]; then
@@ -507,7 +452,7 @@ else
   printHelp
   exit 1
 fi
-
+# 判斷 network <mode>
 if [ "${MODE}" == "up" ]; then
   networkUp
 elif [ "${MODE}" == "createChannel" ]; then

@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# 生成組織一
 function createOrg1() {
   infoln "Enrolling the CA admin"
   mkdir -p organizations/peerOrganizations/org1.example.com/
