@@ -14,7 +14,7 @@ const fs = require('fs');
 async function main() {
     try {
         // load the network configuration
-        const ccpPath = path.resolve(__dirname,'../../../test-network', 'organizations', 'peerOrganizations', 'org1.example.com', 'connection-org1.json');
+        const ccpPath = path.resolve(__dirname,'../../../', 'organizations', 'peerOrganizations', 'hospital.anrail.com', 'connection-hospital.json');
         const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
 
         // Create a new file system based wallet for managing identities.
@@ -35,10 +35,10 @@ async function main() {
         await gateway.connect(ccp, { wallet, identity: 'appUser', discovery: { enabled: true, asLocalhost: true } });
 
         // Get the network (channel) our contract is deployed to.
-        const network = await gateway.getNetwork('mychannel');
+        const network = await gateway.getNetwork('recordchannel');
 
         // Get the contract from the network.
-        const contract = network.getContract('pet');
+        const contract = network.getContract('petinfo');
 
         // Evaluate the specified transaction.
         // queryCar transaction - requires 1 argument, ex: ('queryCar', 'CAR4')

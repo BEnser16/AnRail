@@ -47,10 +47,10 @@ Organizations:
     - &HospitalOrg
         # DefaultOrg defines the organization which is used in the sampleconfig
         # of the fabric.git development environment
-        Name: HospitalMSP
+        Name: OrghospitalMSP
 
         # ID to load the MSP definition as
-        ID: HospitalMSP
+        ID: OrghospitalMSP
 
         MSPDir: ../organizations/peerOrganizations/hospital.anrail.com/msp
 
@@ -68,24 +68,24 @@ Organizations:
         Policies:
             Readers:
                 Type: Signature
-                Rule: "OR('HospitalMSP.admin', 'HospitalMSP.peer', 'HospitalMSP.client')"
+                Rule: "OR('OrghospitalMSP.admin', 'OrghospitalMSP.peer', 'OrghospitalMSP.client')"
             Writers:
                 Type: Signature
-                Rule: "OR('HospitalMSP.admin', 'HospitalMSP.client')"
+                Rule: "OR('OrghospitalMSP.admin', 'OrghospitalMSP.client')"
             Admins:
                 Type: Signature
-                Rule: "OR('HospitalMSP.admin')"
+                Rule: "OR('OrghospitalMSP.admin')"
             Endorsement:
                 Type: Signature
-                Rule: "OR('HospitalMSP.peer')"
+                Rule: "OR('OrghospitalMSP.peer')"
 
     - &PTHospitalOrg
         # DefaultOrg defines the organization which is used in the sampleconfig
         # of the fabric.git development environment
-        Name: PTHospitalMSP
+        Name: OrgpthospitalMSP
 
         # ID to load the MSP definition as
-        ID: PTHospitalMSP
+        ID: OrgpthospitalMSP
 
         MSPDir: ../organizations/peerOrganizations/pthospital.anrail.com/msp
 
@@ -103,24 +103,24 @@ Organizations:
         Policies:
             Readers:
                 Type: Signature
-                Rule: "OR('PTHospitalMSP.admin', 'PTHospitalMSP.peer', 'PTHospitalMSP.client')"
+                Rule: "OR('OrgpthospitalMSP.admin', 'OrgpthospitalMSP.peer', 'OrgpthospitalMSP.client')"
             Writers:
                 Type: Signature
-                Rule: "OR('PTHospitalMSP.admin', 'PTHospitalMSP.client')"
+                Rule: "OR('OrgpthospitalMSP.admin', 'OrgpthospitalMSP.client')"
             Admins:
                 Type: Signature
-                Rule: "OR('PTHospitalMSP.admin')"
+                Rule: "OR('OrgpthospitalMSP.admin')"
             Endorsement:
                 Type: Signature
-                Rule: "OR('PTHospitalMSP.peer')"
+                Rule: "OR('OrgpthospitalMSP.peer')"
 
     - &BreederOrg
         # DefaultOrg defines the organization which is used in the sampleconfig
         # of the fabric.git development environment
-        Name: BreederMSP
+        Name: OrgbreederMSP
 
         # ID to load the MSP definition as
-        ID: BreederMSP
+        ID: OrgbreederMSP
 
         MSPDir: ../organizations/peerOrganizations/breeder.anrail.com/msp
 
@@ -138,24 +138,24 @@ Organizations:
         Policies:
             Readers:
                 Type: Signature
-                Rule: "OR('BreederMSP.admin', 'BreederMSP.peer', 'BreederMSP.client')"
+                Rule: "OR('OrgbreederMSP.admin', 'OrgbreederMSP.peer', 'OrgbreederMSP.client')"
             Writers:
                 Type: Signature
-                Rule: "OR('BreederMSP.admin', 'BreederMSP.client')"
+                Rule: "OR('OrgbreederMSP.admin', 'OrgbreederMSP.client')"
             Admins:
                 Type: Signature
-                Rule: "OR('BreederMSP.admin')"
+                Rule: "OR('OrgbreederMSP.admin')"
             Endorsement:
                 Type: Signature
-                Rule: "OR('BreederMSP.peer')"
+                Rule: "OR('OrgbreederMSP.peer')"
     
     - &BankOrg
         # DefaultOrg defines the organization which is used in the sampleconfig
         # of the fabric.git development environment
-        Name: BankMSP
+        Name: OrgbankMSP
 
         # ID to load the MSP definition as
-        ID: BankMSP
+        ID: OrgbankMSP
 
         MSPDir: ../organizations/peerOrganizations/bank.anrail.com/msp
 
@@ -173,24 +173,24 @@ Organizations:
         Policies:
             Readers:
                 Type: Signature
-                Rule: "OR('BankMSP.admin', 'BankMSP.peer', 'BankMSP.client')"
+                Rule: "OR('OrgbankMSP.admin', 'OrgbankMSP.peer', 'OrgbankMSP.client')"
             Writers:
                 Type: Signature
-                Rule: "OR('BankMSP.admin', 'BankMSP.client')"
+                Rule: "OR('OrgbankMSP.admin', 'OrgbankMSP.client')"
             Admins:
                 Type: Signature
-                Rule: "OR('BankMSP.admin')"
+                Rule: "OR('OrgbankMSP.admin')"
             Endorsement:
                 Type: Signature
-                Rule: "OR('BankMSP.peer')"
+                Rule: "OR('OrgbankMSP.peer')"
     
     - &InsuranceOrg
         # DefaultOrg defines the organization which is used in the sampleconfig
         # of the fabric.git development environment
-        Name: InsuranceMSP
+        Name: OrginsuranceMSP
 
         # ID to load the MSP definition as
-        ID: InsuranceMSP
+        ID: OrginsuranceMSP
 
         MSPDir: ../organizations/peerOrganizations/insurance.anrail.com/msp
 
@@ -208,24 +208,24 @@ Organizations:
         Policies:
             Readers:
                 Type: Signature
-                Rule: "OR('InsuranceMSP.admin', 'InsuranceMSP.peer', 'InsuranceMSP.client')"
+                Rule: "OR('OrginsuranceMSP.admin', 'OrginsuranceMSP.peer', 'OrginsuranceMSP.client')"
             Writers:
                 Type: Signature
-                Rule: "OR('InsuranceMSP.admin', 'InsuranceMSP.client')"
+                Rule: "OR('OrginsuranceMSP.admin', 'OrginsuranceMSP.client')"
             Admins:
                 Type: Signature
-                Rule: "OR('InsuranceMSP.admin')"
+                Rule: "OR('OrginsuranceMSP.admin')"
             Endorsement:
                 Type: Signature
-                Rule: "OR('InsuranceMSP.peer')"
+                Rule: "OR('OrginsuranceMSP.peer')"
     
     - &GovernmentOrg
         # DefaultOrg defines the organization which is used in the sampleconfig
         # of the fabric.git development environment
-        Name: GovernmentMSP
+        Name: OrggovernmentMSP
 
         # ID to load the MSP definition as
-        ID: GovernmentMSP
+        ID: OrggovernmentMSP
 
         MSPDir: ../organizations/peerOrganizations/government.anrail.com/msp
 
@@ -243,16 +243,16 @@ Organizations:
         Policies:
             Readers:
                 Type: Signature
-                Rule: "OR('GovernmentMSP.admin', 'GovernmentMSP.peer', 'GovernmentMSP.client')"
+                Rule: "OR('OrggovernmentMSP.admin', 'OrggovernmentMSP.peer', 'OrggovernmentMSP.client')"
             Writers:
                 Type: Signature
-                Rule: "OR('GovernmentMSP.admin', 'GovernmentMSP.client')"
+                Rule: "OR('OrggovernmentMSP.admin', 'OrggovernmentMSP.client')"
             Admins:
                 Type: Signature
-                Rule: "OR('GovernmentMSP.admin')"
+                Rule: "OR('OrggovernmentMSP.admin')"
             Endorsement:
                 Type: Signature
-                Rule: "OR('GovernmentMSP.peer')"
+                Rule: "OR('OrggovernmentMSP.peer')"
 
 
 ################################################################################

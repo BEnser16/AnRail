@@ -77,7 +77,7 @@ services:
       - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.bank.anrail.com:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.bank.anrail.com:7051
-      - CORE_PEER_LOCALMSPID=BankMSP
+      - CORE_PEER_LOCALMSPID=OrgbankMSP
       - CORE_OPERATIONS_LISTENADDRESS=0.0.0.0:17051
     volumes:
         - /var/run/docker.sock:/host/var/run/docker.sock
@@ -114,7 +114,7 @@ services:
       - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:9052
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.breeder.anrail.com:9051
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.breeder.anrail.com:9051
-      - CORE_PEER_LOCALMSPID=BreederMSP
+      - CORE_PEER_LOCALMSPID=OrgbreederMSP
       - CORE_OPERATIONS_LISTENADDRESS=0.0.0.0:19051
     volumes:
         - /var/run/docker.sock:/host/var/run/docker.sock
@@ -151,7 +151,7 @@ services:
       - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:8052
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.government.anrail.com:8051
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.government.anrail.com:8051
-      - CORE_PEER_LOCALMSPID=GovernmentMSP
+      - CORE_PEER_LOCALMSPID=OrggovernmentMSP
       - CORE_OPERATIONS_LISTENADDRESS=0.0.0.0:18051
     volumes:
         - /var/run/docker.sock:/host/var/run/docker.sock
@@ -188,7 +188,7 @@ services:
       - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:6052
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.hospital.anrail.com:6051
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.hospital.anrail.com:6051
-      - CORE_PEER_LOCALMSPID=HospitalMSP
+      - CORE_PEER_LOCALMSPID=OrghospitalMSP
       - CORE_OPERATIONS_LISTENADDRESS=0.0.0.0:16051
     volumes:
         - /var/run/docker.sock:/host/var/run/docker.sock
@@ -225,7 +225,7 @@ services:
       - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:6062
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.pthospital.anrail.com:6070
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.pthospital.anrail.com:6070
-      - CORE_PEER_LOCALMSPID=PTHospitalMSP
+      - CORE_PEER_LOCALMSPID=OrgpthospitalMSP
       - CORE_OPERATIONS_LISTENADDRESS=0.0.0.0:16070
     volumes:
         - /var/run/docker.sock:/host/var/run/docker.sock
@@ -262,7 +262,7 @@ services:
       - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:5052
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.insurance.anrail.com:5051
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.insurance.anrail.com:5051
-      - CORE_PEER_LOCALMSPID=InsuranceMSP
+      - CORE_PEER_LOCALMSPID=OrginsuranceMSP
       - CORE_OPERATIONS_LISTENADDRESS=0.0.0.0:15051
     volumes:
         - /var/run/docker.sock:/host/var/run/docker.sock
@@ -287,7 +287,7 @@ services:
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - FABRIC_LOGGING_SPEC=INFO
       - CORE_PEER_TLS_ENABLED=true
-      - CORE_PEER_LOCALMSPID=BankMSP
+      - CORE_PEER_LOCALMSPID=OrgbankMSP
       - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/peerOrganizations/bank.anrail.com/peers/peer0.bank.anrail.com/tls/ca.crt
       - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/peerOrganizations/bank.anrail.com/users/Admin@bank.anrail.com/msp
       - CORE_PEER_ADDRESS=peer0.bank.anrail.com:7051
@@ -311,7 +311,7 @@ services:
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - FABRIC_LOGGING_SPEC=INFO
       - CORE_PEER_TLS_ENABLED=true
-      - CORE_PEER_LOCALMSPID=BreederMSP
+      - CORE_PEER_LOCALMSPID=OrgbreederMSP
       - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/peerOrganizations/breeder.anrail.com/peers/peer0.breeder.anrail.com/tls/ca.crt
       - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/peerOrganizations/breeder.anrail.com/users/Admin@breeder.anrail.com/msp
       - CORE_PEER_ADDRESS=peer0.breeder.anrail.com:9051
@@ -335,7 +335,7 @@ services:
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - FABRIC_LOGGING_SPEC=INFO
       - CORE_PEER_TLS_ENABLED=true
-      - CORE_PEER_LOCALMSPID=GovernmentMSP
+      - CORE_PEER_LOCALMSPID=OrggovernmentMSP
       - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/peerOrganizations/government.anrail.com/peers/peer0.government.anrail.com/tls/ca.crt
       - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/peerOrganizations/government.anrail.com/users/Admin@government.anrail.com/msp
       - CORE_PEER_ADDRESS=peer0.government.anrail.com:8051
@@ -359,7 +359,7 @@ services:
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - FABRIC_LOGGING_SPEC=INFO
       - CORE_PEER_TLS_ENABLED=true
-      - CORE_PEER_LOCALMSPID=HospitalMSP
+      - CORE_PEER_LOCALMSPID=OrghospitalMSP
       - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/peerOrganizations/hospital.anrail.com/peers/peer0.hospital.anrail.com/tls/ca.crt
       - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/peerOrganizations/hospital.anrail.com/users/Admin@hospital.anrail.com/msp
       - CORE_PEER_ADDRESS=peer0.hospital.anrail.com:6051
@@ -383,7 +383,7 @@ services:
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - FABRIC_LOGGING_SPEC=INFO
       - CORE_PEER_TLS_ENABLED=true
-      - CORE_PEER_LOCALMSPID=PTHospitalMSP
+      - CORE_PEER_LOCALMSPID=OrgpthospitalMSP
       - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/peerOrganizations/pthospital.anrail.com/peers/peer0.pthospital.anrail.com/tls/ca.crt
       - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/peerOrganizations/pthospital.anrail.com/users/Admin@pthospital.anrail.com/msp
       - CORE_PEER_ADDRESS=peer0.pthospital.anrail.com:6070
@@ -407,7 +407,7 @@ services:
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - FABRIC_LOGGING_SPEC=INFO
       - CORE_PEER_TLS_ENABLED=true
-      - CORE_PEER_LOCALMSPID=InsuranceMSP
+      - CORE_PEER_LOCALMSPID=OrginsuranceMSP
       - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/peerOrganizations/insurance.anrail.com/peers/peer0.insurance.anrail.com/tls/ca.crt
       - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/peerOrganizations/insurance.anrail.com/users/Admin@insurance.anrail.com/msp
       - CORE_PEER_ADDRESS=peer0.insurance.anrail.com:5051

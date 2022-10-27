@@ -1,5 +1,5 @@
 {
-    "name": "pet-api",
+    "name": "petinfo",
     "version": "1.0.0",
     "description": "PET application implemented in JavaScript",
     "engines": {

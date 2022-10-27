@@ -12,7 +12,7 @@ echo "清理环境"
 ./down.sh
 
 echo "清除錢包殘留資料"
-rm -rf ../chaincode/api/wallet/*
+rm -rf ./chaincode/record/lib/wallet/*
 
 #   -------------定義函式-------------
 
@@ -75,7 +75,7 @@ function networkUp() {
     createConsortium
     
     infoln "啟用 docker 服務"
-    docker-compose -f docker/docker-compose-net.yaml -f docker/docker-compose-couch.yaml up -d
+    docker-compose -f docker/docker-compose-couch.yaml -f docker/docker-compose-net.yaml up -d
 
 }
 
@@ -91,7 +91,7 @@ function createChannel() {
     echo "在cli bank 創建 allowancechannel 通道"
     docker exec clibank bash -c "peer channel create -c allowancechannel --orderer orderer.anrail.com:7050 -f ./system-genesis-block/channel.tx --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/ordererOrganizations/anrail.com/msp/tlscacerts/tlsca.anrail.com-cert.pem"
     
-    echo "将cli bank 创建的allowancechannel.block 分发给需要加入此通道的容器"
+    echo "将cli bank 创建的allowancechannel.block 分发给需要加入此通道的容器 breeder"
     docker cp clibank:/opt/gopath/src/github.com/hyperledger/fabric/peer/allowancechannel.block ./system-genesis-block
     docker cp  ./system-genesis-block/allowancechannel.block  clibreeder:/opt/gopath/src/github.com/hyperledger/fabric/peer/allowancechannel.block
     echo "将cli bank 创建的allowancechannel.block 分發給 government"
@@ -100,6 +100,9 @@ function createChannel() {
     docker cp  ./system-genesis-block/allowancechannel.block  clihospital:/opt/gopath/src/github.com/hyperledger/fabric/peer/allowancechannel.block
     echo "将cli bank 创建的allowancechannel.block 分發給 insurance"
     docker cp  ./system-genesis-block/allowancechannel.block  cliinsurance:/opt/gopath/src/github.com/hyperledger/fabric/peer/allowancechannel.block
+
+    echo "等待15秒"
+    sleep 15 
 
     #   步驟三 節點加入通道
     echo "把節點加入 allowancechannel 通道 用來完成補助流程"
@@ -111,12 +114,12 @@ function createChannel() {
 
     #   步驟四 更新錨節點
     echo "更新錨節點"
-    configtxgen -outputAnchorPeersUpdate ./system-genesis-block/bank_anchor_peer.tx -profile Channel -asOrg BankMSP -channelID allowancechannel
-    configtxgen -outputAnchorPeersUpdate ./system-genesis-block/breeder_anchor_peer.tx -profile Channel -asOrg BreederMSP -channelID allowancechannel
-    configtxgen -outputAnchorPeersUpdate ./system-genesis-block/government_anchor_peer.tx -profile Channel -asOrg GovernmentMSP -channelID allowancechannel
-    configtxgen -outputAnchorPeersUpdate ./system-genesis-block/hospital_anchor_peer.tx -profile Channel -asOrg HospitalMSP -channelID allowancechannel
-    configtxgen -outputAnchorPeersUpdate ./system-genesis-block/insurance_anchor_peer.tx -profile Channel -asOrg InsuranceMSP -channelID allowancechannel
-    configtxgen -outputAnchorPeersUpdate ./system-genesis-block/pthospital_anchor_peer.tx -profile Channel -asOrg PTHospitalMSP -channelID allowancechannel
+    configtxgen -outputAnchorPeersUpdate ./system-genesis-block/bank_anchor_peer.tx -profile Channel -asOrg OrgbankMSP -channelID allowancechannel
+    configtxgen -outputAnchorPeersUpdate ./system-genesis-block/breeder_anchor_peer.tx -profile Channel -asOrg OrgbreederMSP -channelID allowancechannel
+    configtxgen -outputAnchorPeersUpdate ./system-genesis-block/government_anchor_peer.tx -profile Channel -asOrg OrggovernmentMSP -channelID allowancechannel
+    configtxgen -outputAnchorPeersUpdate ./system-genesis-block/hospital_anchor_peer.tx -profile Channel -asOrg OrghospitalMSP -channelID allowancechannel
+    configtxgen -outputAnchorPeersUpdate ./system-genesis-block/insurance_anchor_peer.tx -profile Channel -asOrg OrginsuranceMSP -channelID allowancechannel
+    configtxgen -outputAnchorPeersUpdate ./system-genesis-block/pthospital_anchor_peer.tx -profile Channel -asOrg OrgpthospitalMSP -channelID allowancechannel
 
     echo "開始創建病歷通道....."
 
@@ -138,8 +141,8 @@ function createChannel() {
     docker exec -it clipthospital bash -c "peer channel join -b recordchannel.block"
     
     echo "更新錨節點"
-    configtxgen -outputAnchorPeersUpdate ./system-genesis-block/hospital_anchor_peer.tx -profile recordChannel -asOrg HospitalMSP -channelID recordchannel
-    configtxgen -outputAnchorPeersUpdate ./system-genesis-block/pthospital_anchor_peer.tx -profile recordChannel -asOrg PTHospitalMSP -channelID recordchannel
+    configtxgen -outputAnchorPeersUpdate ./system-genesis-block/hospital_anchor_peer.tx -profile recordChannel -asOrg OrghospitalMSP -channelID recordchannel
+    configtxgen -outputAnchorPeersUpdate ./system-genesis-block/pthospital_anchor_peer.tx -profile recordChannel -asOrg OrgpthospitalMSP -channelID recordchannel
 }
 
 

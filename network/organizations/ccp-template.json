@@ -1,8 +1,8 @@
 {
-    "name": "network-org${ORG}",
+    "name": "network-${ORG}",
     "version": "1.0.0",
     "client": {
-        "organization": "Org${ORG}",
+        "organization": "${ORG}",
         "connection": {
             "timeout": {
                 "peer": {
@@ -12,32 +12,32 @@
         }
     },
     "organizations": {
-        "Org${ORG}": {
+        "${ORG}": {
             "mspid": "Org${ORG}MSP",
             "peers": [
-                "peer0.org${ORG}.anrail.com"
+                "peer0.${ORG}.anrail.com"
             ],
             "certificateAuthorities": [
-                "ca.org${ORG}.anrail.com"
+                "ca.${ORG}.anrail.com"
             ]
         }
     },
     "peers": {
-        "peer0.org${ORG}.anrail.com": {
+        "peer0.${ORG}.anrail.com": {
             "url": "grpcs://localhost:${P0PORT}",
             "tlsCACerts": {
                 "pem": "${PEERPEM}"
             },
             "grpcOptions": {
-                "ssl-target-name-override": "peer0.org${ORG}.anrail.com",
-                "hostnameOverride": "peer0.org${ORG}.anrail.com"
+                "ssl-target-name-override": "peer0.${ORG}.anrail.com",
+                "hostnameOverride": "peer0.${ORG}.anrail.com"
             }
         }
     },
     "certificateAuthorities": {
-        "ca.org${ORG}.anrail.com": {
+        "ca.${ORG}.anrail.com": {
             "url": "https://localhost:${CAPORT}",
-            "caName": "ca-org${ORG}",
+            "caName": "ca-${ORG}",
             "tlsCACerts": {
                 "pem": ["${CAPEM}"]
             },
