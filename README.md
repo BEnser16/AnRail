@@ -19,8 +19,3 @@
 
     `./build.sh` 執行部屬腳本
 
-* 安裝鏈碼
-
-    `cd script/` 進入 script 資料夾 <br>
-
-    `./chaincode-deploy` 執行鏈碼安裝腳本

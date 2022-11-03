@@ -11,36 +11,58 @@
 . scripts/utils.sh
 
 export CORE_PEER_TLS_ENABLED=true
-export ORDERER_CA=${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
-export PEER0_ORG1_CA=${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
-export PEER0_ORG2_CA=${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
-export PEER0_ORG3_CA=${PWD}/organizations/peerOrganizations/org3.example.com/peers/peer0.org3.example.com/tls/ca.crt
+export ORDERER_CA=${PWD}/organizations/ordererOrganizations/anrail.com/orderers/orderer.anrail.com/msp/tlscacerts/tlsca.anrail.com-cert.pem
+export PEER0_bank_CA=${PWD}/organizations/peerOrganizations/bank.anrail.com/peers/peer0.bank.anrail.com/tls/ca.crt
+export PEER0_breeder_CA=${PWD}/organizations/peerOrganizations/breeder.anrail.com/peers/peer0.breeder.anrail.com/tls/ca.crt
+export PEER0_government_CA=${PWD}/organizations/peerOrganizations/government.anrail.com/peers/peer0.government.anrail.com/tls/ca.crt
+export PEER0_hospital_CA=${PWD}/organizations/peerOrganizations/hospital.anrail.com/peers/peer0.hospital.anrail.com/tls/ca.crt
+export PEER0_insurance_CA=${PWD}/organizations/peerOrganizations/insurance.anrail.com/peers/peer0.insurance.anrail.com/tls/ca.crt
+export PEER0_pthospital_CA=${PWD}/organizations/peerOrganizations/pthospital.anrail.com/peers/peer0.pthospital.anrail.com/tls/ca.crt
 
 # Set environment variables for the peer org
 setGlobals() {
   local USING_ORG=""
   if [ -z "$OVERRIDE_ORG" ]; then
-    USING_ORG=$1
+    USING_ORG="$1"
   else
     USING_ORG="${OVERRIDE_ORG}"
   fi
   infoln "Using organization ${USING_ORG}"
-  if [ $USING_ORG -eq 1 ]; then
-    export CORE_PEER_LOCALMSPID="Org1MSP"
-    export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG1_CA
-    export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+  if [ $USING_ORG == "bank" ]; then
+    export CORE_PEER_LOCALMSPID="OrgbankMSP"
+    export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_bank_CA
+    export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/bank.anrail.com/users/Admin@bank.anrail.com/msp
     export CORE_PEER_ADDRESS=localhost:7051
-  elif [ $USING_ORG -eq 2 ]; then
-    export CORE_PEER_LOCALMSPID="Org2MSP"
-    export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG2_CA
-    export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
+  elif [ $USING_ORG == "breeder" ]; then
+    export CORE_PEER_LOCALMSPID="OrgbreederMSP"
+    export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_breeder_CA
+    export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/breeder.anrail.com/users/Admin@breeder.anrail.com/msp
     export CORE_PEER_ADDRESS=localhost:9051
 
-  elif [ $USING_ORG -eq 3 ]; then
-    export CORE_PEER_LOCALMSPID="Org3MSP"
-    export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG3_CA
-    export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org3.example.com/users/Admin@org3.example.com/msp
-    export CORE_PEER_ADDRESS=localhost:11051
+  elif [ $USING_ORG == "government" ]; then
+    export CORE_PEER_LOCALMSPID="OrggovernmentMSP"
+    export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_government_CA
+    export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/government.anrail.com/users/Admin@government.anrail.com/msp
+    export CORE_PEER_ADDRESS=localhost:8051
+
+  elif [ "$USING_ORG" == "hospital" ]; then
+    export CORE_PEER_LOCALMSPID="OrghospitalMSP"
+    export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_hospital_CA
+    export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/hospital.anrail.com/users/Admin@hospital.anrail.com/msp
+    export CORE_PEER_ADDRESS=localhost:6051
+
+  elif [ $USING_ORG == "insurance" ]; then
+    export CORE_PEER_LOCALMSPID="OrginsuranceMSP"
+    export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_insurance_CA
+    export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/insurance.anrail.com/users/Admin@insurance.anrail.com/msp
+    export CORE_PEER_ADDRESS=localhost:5051
+
+  elif [ $USING_ORG == "pthospital" ]; then
+    export CORE_PEER_LOCALMSPID="OrgpthospitalMSP"
+    export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_pthospital_CA
+    export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/pthospital.anrail.com/users/Admin@pthospital.anrail.com/msp
+    export CORE_PEER_ADDRESS=localhost:6070
+
   else
     errorln "ORG Unknown"
   fi
@@ -60,12 +82,18 @@ setGlobalsCLI() {
   else
     USING_ORG="${OVERRIDE_ORG}"
   fi
-  if [ $USING_ORG -eq 1 ]; then
-    export CORE_PEER_ADDRESS=peer0.org1.example.com:7051
-  elif [ $USING_ORG -eq 2 ]; then
-    export CORE_PEER_ADDRESS=peer0.org2.example.com:9051
-  elif [ $USING_ORG -eq 3 ]; then
-    export CORE_PEER_ADDRESS=peer0.org3.example.com:11051
+  if [ $USING_ORG == "bank" ]; then
+    export CORE_PEER_ADDRESS=peer0.bank.anrail.com:7051
+  elif [ $USING_ORG == "breeder" ]; then
+    export CORE_PEER_ADDRESS=peer0.breeder.anrail.com:9051
+  elif [ $USING_ORG == "government" ]; then
+    export CORE_PEER_ADDRESS=peer0.government.anrail.com:8051
+  elif [ $USING_ORG == "hospital" ]; then
+    export CORE_PEER_ADDRESS=peer0.hospital.anrail.com:6051
+  elif [ $USING_ORG == "insurance" ]; then
+    export CORE_PEER_ADDRESS=peer0.insurance.anrail.com:5051
+  elif [ $USING_ORG == "pthospital" ]; then
+    export CORE_PEER_ADDRESS=peer0.pthospital.anrail.com:6070
   else
     errorln "ORG Unknown"
   fi
@@ -84,7 +112,7 @@ parsePeerConnectionParameters() {
     PEERS="$PEERS $PEER"
     PEER_CONN_PARMS="$PEER_CONN_PARMS --peerAddresses $CORE_PEER_ADDRESS"
     ## Set path to TLS certificate
-    TLSINFO=$(eval echo "--tlsRootCertFiles \$PEER0_ORG$1_CA")
+    TLSINFO=$(eval echo "--tlsRootCertFiles \$PEER0_$1_CA")
     PEER_CONN_PARMS="$PEER_CONN_PARMS $TLSINFO"
     # shift by one to get to the next organization
     shift

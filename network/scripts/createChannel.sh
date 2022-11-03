@@ -8,7 +8,7 @@ CHANNEL_NAME="$1"
 DELAY="$2"
 MAX_RETRY="$3"
 VERBOSE="$4"
-: ${CHANNEL_NAME:="mychannel"}
+: ${CHANNEL_NAME:="recordchannel"}
 : ${DELAY:="3"}
 : ${MAX_RETRY:="5"}
 : ${VERBOSE:="false"}
@@ -19,28 +19,28 @@ fi
 
 createChannelTx() {
 	set -x
-	configtxgen -profile TwoOrgsChannel -outputCreateChannelTx ./channel-artifacts/${CHANNEL_NAME}.tx -channelID $CHANNEL_NAME
+	configtxgen -profile recordChannel -outputCreateChannelTx ./channel-artifacts/${CHANNEL_NAME}.tx -channelID $CHANNEL_NAME
 	res=$?
 	{ set +x; } 2>/dev/null
-  verifyResult $res "Failed to generate channel configuration transaction..."
+  verifyResult $res "創建通道配置失敗..."
 }
 
 createChannel() {
-	setGlobals 1
+	setGlobals hospital
 	# Poll in case the raft leader is not set yet
 	local rc=1
 	local COUNTER=1
 	while [ $rc -ne 0 -a $COUNTER -lt $MAX_RETRY ] ; do
 		sleep $DELAY
 		set -x
-		peer channel create -o localhost:7050 -c $CHANNEL_NAME --ordererTLSHostnameOverride orderer.example.com -f ./channel-artifacts/${CHANNEL_NAME}.tx --outputBlock $BLOCKFILE --tls --cafile $ORDERER_CA >&log.txt
+		peer channel create -o localhost:7050 -c $CHANNEL_NAME --ordererTLSHostnameOverride orderer.anrail.com -f ./channel-artifacts/${CHANNEL_NAME}.tx --outputBlock $BLOCKFILE --tls --cafile $ORDERER_CA >&log.txt
 		res=$?
 		{ set +x; } 2>/dev/null
 		let rc=$res
 		COUNTER=$(expr $COUNTER + 1)
 	done
 	cat log.txt
-	verifyResult $res "Channel creation failed"
+	verifyResult $res "創建通道失敗..."
 }
 
 # joinChannel ORG
@@ -84,15 +84,15 @@ createChannel
 successln "Channel '$CHANNEL_NAME' created"
 
 ## Join all the peers to the channel
-infoln "Joining org1 peer to the channel..."
-joinChannel 1
-infoln "Joining org2 peer to the channel..."
-joinChannel 2
+infoln "Joining hospital peer to the channel..."
+joinChannel hospital
+infoln "Joining pthospital peer to the channel..."
+joinChannel pthospital
 
 ## Set the anchor peers for each org in the channel
-infoln "Setting anchor peer for org1..."
-setAnchorPeer 1
-infoln "Setting anchor peer for org2..."
-setAnchorPeer 2
+infoln "Setting anchor peer for hospital..."
+setAnchorPeer hospital
+infoln "Setting anchor peer for pthospital..."
+setAnchorPeer pthospital
 
 successln "Channel '$CHANNEL_NAME' joined"
