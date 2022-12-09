@@ -2,7 +2,7 @@
 
 source scripts/utils.sh
 
-CHANNEL_NAME=${1:-"recordchannel"}
+CHANNEL_NAME=${1:-"railchannel"}
 CC_NAME=${2}
 CC_SRC_PATH=${3}
 CC_SRC_LANGUAGE=${4}
@@ -288,8 +288,14 @@ packageChaincode
 ## Install chaincode on peer0.org1 and peer0.org2
 infoln "Installing chaincode on peer0.hospital..."
 installChaincode hospital
-infoln "Install chaincode on peer0.pthospital..."
-installChaincode pthospital
+infoln "Install chaincode on peer0.bank..."
+installChaincode bank
+infoln "Install chaincode on peer0.breeder..."
+installChaincode breeder
+infoln "Install chaincode on peer0.government..."
+installChaincode government
+infoln "Install chaincode on peer0.insurance..."
+installChaincode insurance
 
 ## query whether the chaincode is installed
 queryInstalled hospital
@@ -297,32 +303,41 @@ queryInstalled hospital
 ## approve the definition for org1
 approveForMyOrg hospital
 
-## check whether the chaincode definition is ready to be committed
-## expect org1 to have approved and org2 not to
-checkCommitReadiness hospital "\"OrghospitalMSP\": true" "\"OrgpthospitalMSP\": false"
-checkCommitReadiness pthospital "\"OrghospitalMSP\": true" "\"OrgpthospitalMSP\": false"
+# ## check whether the chaincode definition is ready to be committed
+# ## expect org1 to have approved and org2 not to
+# checkCommitReadiness hospital "\"OrghospitalMSP\": true" "\"OrgpthospitalMSP\": false"
+# checkCommitReadiness pthospital "\"OrghospitalMSP\": true" "\"OrgpthospitalMSP\": false"
 
 ## now approve also for org2
-approveForMyOrg pthospital
+approveForMyOrg bank
 
-## check whether the chaincode definition is ready to be committed
-## expect them both to have approved
-checkCommitReadiness hospital "\"OrghospitalMSP\": true" "\"OrgpthospitalMSP\": true"
-checkCommitReadiness pthospital "\"OrghospitalMSP\": true" "\"OrgpthospitalMSP\": true"
+approveForMyOrg breeder
+
+approveForMyOrg government
+
+approveForMyOrg insurance
+
+# ## check whether the chaincode definition is ready to be committed
+# ## expect them both to have approved
+# checkCommitReadiness hospital "\"OrghospitalMSP\": true" "\"OrgpthospitalMSP\": true"
+# checkCommitReadiness pthospital "\"OrghospitalMSP\": true" "\"OrgpthospitalMSP\": true"
 
 ## now that we know for sure both orgs have approved, commit the definition
-commitChaincodeDefinition hospital pthospital
+commitChaincodeDefinition hospital bank breeder insurance government
 
 ## query on both orgs to see that the definition committed successfully
 queryCommitted hospital
-queryCommitted pthospital
+queryCommitted bank
+queryCommitted breeder
+queryCommitted government
+queryCommitted insurance
 
 ## Invoke the chaincode - this does require that the chaincode have the 'initLedger'
 ## method defined
 if [ "$CC_INIT_FCN" = "NA" ]; then
   infoln "Chaincode initialization is not required"
 else
-  chaincodeInvokeInit hospital pthospital
+  chaincodeInvokeInit hospital bank breeder insurance government
 fi
 
 exit 0

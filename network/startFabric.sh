@@ -5,25 +5,27 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 # Exit on first error
+
+#   shell set 指令 執行模式遇到 error 立即退出
 set -e
 
-# don't rewrite paths for Windows Git Bash users
+
 export MSYS_NO_PATHCONV=1
 starttime=$(date +%s)
 
-CC_SRC_PATH="../chaincode/record/"
+# chaincode 鏈碼的位址
+CC_SRC_PATH="../chaincode/"
 
 
-# clean out any old identites in the wallets
-rm -rf ../application/server/lib/wallet/*
+# 清理錢包資料夾中舊的身份資料
+rm -rf ../application/server/wallet/*
 
 
-# launch network; create channel and join peer to channel
-
-./network.sh down
+# 啟動網路部屬
+./network.sh down 
 ./network.sh up
 ./network.sh createChannel
-./network.sh deployCC -ccn petinfo -ccv 1 -cci initLedger -ccl javascript -ccp ${CC_SRC_PATH}
+./network.sh deployCC -ccn petcontract -ccv 1 -cci initLedger -ccl typescript -ccp ${CC_SRC_PATH}
 
 
 

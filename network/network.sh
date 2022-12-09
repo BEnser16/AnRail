@@ -1,9 +1,9 @@
 #!/bin/bash
-#
 
-export PATH=${PWD}/../bin:$PATH
-export FABRIC_CFG_PATH=${PWD}/configtx
-export VERBOSE=false
+
+export PATH=${PWD}/../bin:$PATH # 設定 fabric 二進位工具的位址
+export FABRIC_CFG_PATH=${PWD}/configtx # 設定 configtx.yaml 的位址
+export VERBOSE=false # 將詳細模式設定為 false
 
 # 載入命令行設定及幫助文件
 . scripts/utils.sh
@@ -174,7 +174,7 @@ MAX_RETRY=5
 # default for delay between commands
 CLI_DELAY=3
 # channel name defaults to "mychannel"
-CHANNEL_NAME="recordchannel"
+CHANNEL_NAME="railchannel"
 # chaincode name defaults to "NA"
 CC_NAME="NA"
 # chaincode path defaults to "NA"
@@ -192,12 +192,6 @@ CC_SRC_LANGUAGE="NA"
 CC_VERSION="1.0"
 # Chaincode definition sequence
 CC_SEQUENCE=1
-# default image tag
-IMAGETAG="latest"
-# default ca image tag
-CA_IMAGETAG="latest"
-# default database
-DATABASE="leveldb"
 
 # Parse commandline args
 

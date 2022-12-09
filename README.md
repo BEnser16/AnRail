@@ -17,5 +17,5 @@
 
     `cd network/` 進入 network 資料夾 <br>
 
-    `./build.sh` 執行部屬腳本
+    `./startFabric.sh` 執行部屬腳本
 

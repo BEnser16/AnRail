@@ -8,7 +8,7 @@ CHANNEL_NAME="$1"
 DELAY="$2"
 MAX_RETRY="$3"
 VERBOSE="$4"
-: ${CHANNEL_NAME:="recordchannel"}
+: ${CHANNEL_NAME:="railchannel"}
 : ${DELAY:="3"}
 : ${MAX_RETRY:="5"}
 : ${VERBOSE:="false"}
@@ -19,7 +19,7 @@ fi
 
 createChannelTx() {
 	set -x
-	configtxgen -profile recordChannel -outputCreateChannelTx ./channel-artifacts/${CHANNEL_NAME}.tx -channelID $CHANNEL_NAME
+	configtxgen -profile RailChannel -outputCreateChannelTx ./channel-artifacts/${CHANNEL_NAME}.tx -channelID $CHANNEL_NAME
 	res=$?
 	{ set +x; } 2>/dev/null
   verifyResult $res "創建通道配置失敗..."
@@ -86,13 +86,26 @@ successln "Channel '$CHANNEL_NAME' created"
 ## Join all the peers to the channel
 infoln "Joining hospital peer to the channel..."
 joinChannel hospital
-infoln "Joining pthospital peer to the channel..."
-joinChannel pthospital
+infoln "Joining bank peer to the channel..."
+joinChannel bank
+infoln "Joining breeder peer to the channel..."
+joinChannel breeder
+infoln "Joining government peer to the channel..."
+joinChannel government
+infoln "Joining insurance peer to the channel..."
+joinChannel insurance
+
 
 ## Set the anchor peers for each org in the channel
 infoln "Setting anchor peer for hospital..."
 setAnchorPeer hospital
-infoln "Setting anchor peer for pthospital..."
-setAnchorPeer pthospital
+infoln "Setting anchor peer for bank..."
+setAnchorPeer bank
+infoln "Setting anchor peer for breeder..."
+setAnchorPeer breeder
+infoln "Setting anchor peer for government..."
+setAnchorPeer government
+infoln "Setting anchor peer for insurance..."
+setAnchorPeer insurance
 
 successln "Channel '$CHANNEL_NAME' joined"

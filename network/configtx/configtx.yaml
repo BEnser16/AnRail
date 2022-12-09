@@ -428,14 +428,13 @@ Profiles:
                     - *InsuranceOrg
                     - *GovernmentOrg
     
-    allowanceChannel:
+    RailChannel:
         Consortium: SampleConsortium
         <<: *ChannelDefaults
         Application:
             <<: *ApplicationDefaults
             Organizations:
                 - *HospitalOrg
-                - *PTHospitalOrg
                 - *BreederOrg
                 - *BankOrg
                 - *InsuranceOrg
