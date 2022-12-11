@@ -1,8 +1,9 @@
 //  登入處理
 const router = require("express").Router();
 import { Request , Response } from 'express';
-import {  Wallets , X509Identity , Gateway} from 'fabric-network';
+import {  Wallets , X509Identity , Gateway  } from 'fabric-network';
 import * as FabricCAServices from 'fabric-ca-client';
+
 import * as path from 'path';
 import * as fs from 'fs';
 import * as jwt from 'jsonwebtoken';
@@ -29,6 +30,7 @@ router.post("/loginhospital" , async(req:Request , res:Response) => {
         if (!adminIdentity) {
             console.log('An identity for the admin user "admin" does not exist in the wallet');
             console.log('Run the enrollAdmin.js application before retrying');
+            res.status(400).send("醫院管理員不存在！");
             return;
         } else {
             console.log("管理員已存在！");
@@ -57,7 +59,7 @@ router.post("/loginhospital" , async(req:Request , res:Response) => {
 
 router.post("/loginbreeder" , async(req:Request , res:Response) => {
     try {
-        console.log("接受登入請求,執行");
+        console.log("接受一般飼主登入請求,執行");
         // 載入網路配置
         const ccpPath = path.resolve(__dirname,'../../../network', 'organizations', 'peerOrganizations', 'breeder.anrail.com', 'connection-breeder.json');
         const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
@@ -72,9 +74,9 @@ router.post("/loginbreeder" , async(req:Request , res:Response) => {
         console.log(`Wallet path: ${walletPath}`);
 
         // 確認是否有管理員存在
-        const adminIdentity = await wallet.get('admin');
+        const adminIdentity = await wallet.get('bradmin');
         if (!adminIdentity) {
-            console.log('An identity for the admin user "admin" does not exist in the wallet');
+            console.log('An identity for the admin user "bradmin" does not exist in the wallet');
             console.log('Run the enrollAdmin.js application before retrying');
             return;
         } else {
@@ -88,9 +90,41 @@ router.post("/loginbreeder" , async(req:Request , res:Response) => {
             return;
         } else {
             console.log("使用者名稱存在！");
-            const tokenObject = {_id:req.body.userID , role:req.body.role , email:req.body.email};
-            const token = jwt.sign(tokenObject , "TOKENPASS");
-            res.send({success:true , token:"JWT " + token , loginUserIdentity});
+
+            // Create a new gateway for connecting to our peer node.
+            const gateway = new Gateway();
+            await gateway.connect(ccp, { wallet, identity: req.body.userID , discovery: { enabled: true, asLocalhost: true } });
+
+            // Get the network (channel) our contract is deployed to.
+            const network = await gateway.getNetwork('railchannel');
+
+            // Get the contract from the network.
+            const contract = network.getContract('petcontract');
+
+            const userobj = await contract.evaluateTransaction('queryAccount' , req.body.userID);
+            
+            console.log('Transaction has been evaluate');
+
+            console.log(userobj);
+            const userstr = new TextDecoder("utf-8").decode(userobj);
+            const userjson = JSON.parse(userstr);
+
+            if(req.body.password !== userjson.password) {
+                res.status(400).send("密碼不正確!");
+            } else {
+                
+                const tokenObject = {_id:req.body.userID , role:req.body.role};
+                const token = jwt.sign(tokenObject , "TOKENPASS");
+                res.status(200).send({success:true , token:"JWT " + token , loginUserIdentity});
+            }
+            
+            
+
+            // Disconnect from the gateway.
+            await gateway.disconnect();
+
+
+           
         }
 
         
@@ -134,14 +168,16 @@ router.post("/register" , async(req:Request , res:Response) => {
 
         // 創建使用者資料
         const provider = wallet.getProviderRegistry().getProvider(adminIdentity.type);
-        const adminUser = await provider.getUserContext(adminIdentity, 'bradmin');
+        const bradminUser = await provider.getUserContext(adminIdentity, 'bradmin');
 
         console.log("管理員帳號資訊：");
-        console.log(adminUser);
+        console.log(bradminUser);
+        console.log("結束--------");
 
         // Register the user, enroll the user, and import the new identity into the wallet.
-        const secret = await ca.register({ affiliation: '', enrollmentID: req.body.userID, role: 'client' }, adminUser);
-        const enrollment = await ca.enroll({ enrollmentID: req.body.userID, enrollmentSecret: secret });
+        const secret = await ca.register({ affiliation: 'breeder.department1', enrollmentID: req.body.userID, enrollmentSecret: req.body.password , role: 'client' }, bradminUser);
+        const enrollment = await ca.enroll({ enrollmentID: req.body.userID, enrollmentSecret: secret});
+        
         const x509Identity : X509Identity = {
             credentials: {
                 certificate: enrollment.certificate,
@@ -152,7 +188,6 @@ router.post("/register" , async(req:Request , res:Response) => {
         };
         await wallet.put(req.body.userID, x509Identity);
         console.log(`Successfully registered and enrolled admin user ${req.body.userID} and imported it into the wallet`);
-        
 
         // Create a new gateway for connecting to our peer node.
         const gateway = new Gateway();
@@ -170,7 +205,7 @@ router.post("/register" , async(req:Request , res:Response) => {
         // Disconnect from the gateway.
         await gateway.disconnect();
 
-        res.status(200).send("註冊成功");
+        res.status(200).send("新的註冊完成");
 
     } catch (error) {
         res.status(400).send("註冊錯誤！")

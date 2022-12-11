@@ -21,18 +21,18 @@ app.listen(8000, () => {
 });
 
 
-//  連接至 MongoDB
-mongoose
-  .connect(process.env.DB_CONNECT , {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  } as ConnectOptions)
-  .then(() => {
-    console.log("Connect to mongoDB atlas.");
-  })
-  .catch((err) => {
-    console.log(err);
-});
+// //  連接至 MongoDB
+// mongoose
+//   .connect(process.env.DB_CONNECT , {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true,
+//   } as ConnectOptions)
+//   .then(() => {
+//     console.log("Connect to mongoDB atlas.");
+//   })
+//   .catch((err) => {
+//     console.log(err);
+// });
 
 
 

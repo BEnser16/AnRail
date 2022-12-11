@@ -63,6 +63,9 @@ export default function SignIn() {
         }
         // setCurrentUser(AuthService.getCurrentUser());
         navigate("/hospitalhome");
+      }).catch(error => {
+        console.log("sending to Auth service catch error...");
+        console.log(error.response);
       });
        
     } else if(role === "一般飼主") {
@@ -74,7 +77,10 @@ export default function SignIn() {
         }
         // setCurrentUser(AuthService.getCurrentUser());
         navigate("/home");
-      });
+      }).catch(error => {
+        console.log("sending to Auth service catch error...");
+        console.log(error.response);
+      });;
      
     }
 

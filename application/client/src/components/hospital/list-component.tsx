@@ -13,8 +13,14 @@ import {
 import infoService from '../../service/info-service';
 
 
-export default function ListComponent(props) {
-    let [AllInfoData , setAllInfoData] = useState(null);
+export default function ListComponent(props:any) {
+    let [AllInfoData , setAllInfoData] = useState({
+        name:'',
+        medicalNumber:'',
+        owner:'',
+        remark:'',
+        petid:''
+    });
     let {infoData , setInfoData} = props;
     let navigate = useNavigate();
     
@@ -33,8 +39,8 @@ export default function ListComponent(props) {
         });
     } , []);
     
-    function checkInfo(_id) {
-        infoService.get(_id).then((check_data) => {
+    function checkInfo(petid:string) {
+        infoService.get(petid).then((check_data) => {
             console.log(check_data);
             setInfoData(check_data.data);
           }).catch((error) => {
@@ -66,7 +72,7 @@ export default function ListComponent(props) {
                                 <MDBCardText>
                                     {AllInfoData.remark}
                                 </MDBCardText>
-                                <MDBBtn onClick={() => checkInfo(AllInfoData._id)}>查看</MDBBtn>
+                                <MDBBtn onClick={() => checkInfo(AllInfoData.petid)}>查看</MDBBtn>
                             </MDBCardBody>
                         </MDBCard>
                     // ))

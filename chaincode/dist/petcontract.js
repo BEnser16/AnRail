@@ -133,6 +133,14 @@ class PetContract extends fabric_contract_api_1.Contract {
         await ctx.stub.putState(userID, Buffer.from(JSON.stringify(user)));
         console.info('============= END : Create Pet ===========');
     }
+    async queryAccount(ctx, userID) {
+        const accountAsBytes = await ctx.stub.getState(userID); // get the car from chaincode state
+        if (!accountAsBytes || accountAsBytes.length === 0) {
+            throw new Error(`${userID} does not exist`);
+        }
+        console.log(accountAsBytes.toString());
+        return accountAsBytes.toString();
+    }
 }
 exports.PetContract = PetContract;
 //# sourceMappingURL=petcontract.js.map

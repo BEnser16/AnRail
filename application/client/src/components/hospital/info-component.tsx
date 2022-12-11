@@ -1,23 +1,40 @@
 import React , {useState} from 'react'
 import { MDBTable, MDBTableHead, MDBTableBody , MDBInputGroup,MDBBtn} from 'mdb-react-ui-kit';
-import infoService from '../../service/info-service';
+import InfoService from '../../service/info-service';
 import EditInfoComponent from './edit-info-component';
 import ListComponent from './list-component';
 import NavComponent from './nav-component';
 import AuthService from '../../service/auth-service';
 
 const InfoComponent = () => {
-  let [infoData , setInfoData] = useState(null);
+  let [infoData , setInfoData] = useState({
+    info: {
+      name:'',
+      owner:'',
+      species:'',
+      breed:'',
+      phone:'',
+      chipID:'',
+      birthday:'',
+      gender:'',
+      bloodType:'',
+      ligation:false,
+      allergy:'',
+      majorDiseases:'',
+      remark:'',
+
+    }
+  });
   let [search , setSearch] = useState("");
   let [editTime , setEditTime] = useState(false);
   let [currentUser , setCurrentUser] = useState(AuthService.getCurrentUser());
 
-  const inputSearch = (e) => {
+  const inputSearch = (e:any) => {
     setSearch(e.target.value);
   }
   const handleSearchInfo = () => {
     console.log(editTime);
-    infoService.get(search).then((data) => {
+    InfoService.get(search).then((data) => {
       console.log(data);
       setInfoData(data.data);
     }).catch((error) => {
@@ -26,7 +43,7 @@ const InfoComponent = () => {
   }
   const handleDeleteInfo = () => {
     try{
-      infoService.delete(search);
+      InfoService.delete(search);
     } catch(error) {
       console.log("發送刪除病歷請求錯誤");
       console.log(error);
@@ -76,11 +93,11 @@ const InfoComponent = () => {
                   <td >電話</td>
                   <td >{infoData.info.phone}</td>
                   <td >病歷號</td>
-                  <td >{infoData.info._id}</td>
+                  <td >{infoData.info.chipID}</td>
                 </tr>
                 <tr>
                   <td >晶片號</td>
-                  <td >{infoData.info.chip}</td>
+                  <td >{infoData.info.chipID}</td>
                   <td >生日</td>
                   <td >{infoData.info.birthday}</td>
                 </tr>

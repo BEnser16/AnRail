@@ -9,9 +9,9 @@ import {
   MDBTable,
   MDBTableBody
 } from 'mdb-react-ui-kit';
-import infoService from '../../service/info-service';
+import InfoService from '../../service/info-service';
 
-export default function EditInfoComponent(props) {
+export default function EditInfoComponent(props:any) {
     let {infoData , setInfoData} = props;
     let {search , setSearch} = props;
     let [name , setName] = useState(infoData.info.name);
@@ -19,53 +19,55 @@ export default function EditInfoComponent(props) {
     let [species , setSpecies] = useState(infoData.info.species);
     let [breed , setBreed] = useState(infoData.info.breed);
     let [owner , setOwner] = useState(infoData.info.owner);
+    let [ownerID , setOwnerID] = useState(infoData.info.ownerID);
     let [phone , setPhone] = useState(infoData.info.phone);
-    let [chip , setChip] = useState(infoData.info.chip);
+    let [chipID , setChipID] = useState(infoData.info.chipID);
     let [birthday , setBirthday] = useState(infoData.info.birthday);
     let [gender , setGender] = useState(infoData.info.gender);
     let [bloodType , setBloodType] = useState(infoData.info.bloodType);
     let [allergy , setAllergy] = useState(infoData.info.allergy);
     let [majorDiseases , setMajorDiseases] = useState(infoData.info.majorDiseases);
     let [remark , setRemark] = useState(infoData.info.remark);
+    let [hospital , setHospital] = useState(infoData.info.hospital);
     
-    const inputName = (e) => {
+    const inputName = (e:any) => {
         setName(e.target.value);
     }
     const ligationCheck = () => {
         setLigation(!ligation);
     }
-    const inputSpecies = (e) => {
+    const inputSpecies = (e:any) => {
         setSpecies(e.target.value);
     }
-    const inputBreed = (e) => {
+    const inputBreed = (e:any) => {
         setBreed(e.target.value);
     }
-    const inputOwner = (e) => {
+    const inputOwner = (e:any) => {
         setOwner(e.target.value);
     }
-    const inputPhone = (e) => {
+    const inputPhone = (e:any) => {
         setPhone(e.target.value);
     }
-    const inputChip = (e) => {
-        setChip(e.target.value);
+    const inputChip = (e:any) => {
+        setChipID(e.target.value);
     }
-    const inputBirthday = (e) => {
+    const inputBirthday = (e:any) => {
         setBirthday(e.target.value);
     }
-    const inputGender = (e) => {
+    const inputGender = (e:any) => {
         setGender(e.target.value);
     }
-    const inputBloodType = (e) => {
+    const inputBloodType = (e:any) => {
         setBloodType(e.target.value);
     }
-    const inputAllergy = (e) => {
+    const inputAllergy = (e:any) => {
         setAllergy(e.target.value);
     }
-    const inputMajorDiseases = (e) => {
+    const inputMajorDiseases = (e:any) => {
         setMajorDiseases(e.target.value);
     }
     
-    const inputRemark = (e) => {
+    const inputRemark = (e:any) => {
         setRemark(e.target.value);
     }
 
@@ -73,7 +75,7 @@ export default function EditInfoComponent(props) {
 
     const handleDeleteInfo = () => {
         try{
-          infoService.delete(search);
+          InfoService.delete(search);
         } catch(error) {
           console.log("發送刪除病歷請求錯誤");
           console.log(error);
@@ -94,8 +96,8 @@ export default function EditInfoComponent(props) {
 
     const editInfo = () => {
         console.log("Edited! sending patch request...");
-        console.log(search , name, species, breed , owner , phone , chip , birthday , gender , bloodType , ligation , allergy , majorDiseases , remark);
-        infoService.patch( search , name, species, breed , owner , phone , chip , birthday , gender , bloodType , ligation , allergy , majorDiseases , remark)
+        console.log(search , name, species, breed , owner , phone , chipID , birthday , gender , bloodType , ligation , allergy , majorDiseases , remark);
+        InfoService.patch( search , name, species, breed , owner ,ownerID, phone  , birthday , gender , bloodType , ligation , allergy , majorDiseases , remark , hospital )
           .then(() => {
             window.alert("This Info has been edited.");
             
@@ -136,7 +138,7 @@ export default function EditInfoComponent(props) {
               </tr>
               <tr>
                 <td >晶片號</td>
-                <td ><input type="text" value={chip} onChange={inputChip} /></td>
+                <td ><input type="text" value={chipID} onChange={inputChip} /></td>
                 <td >生日</td>
                 <td ><input type="text" value={birthday} onChange={inputBirthday} /></td>
               </tr>

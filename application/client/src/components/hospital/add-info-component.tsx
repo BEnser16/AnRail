@@ -6,67 +6,69 @@ import {
   MDBCheckbox,
   MDBBtn
 } from 'mdb-react-ui-kit';
-import infoService from '../../services/info-service';
+import InfoService from '../../service/info-service';
 
 export default function AddInfoComponent() {
-    let [name , setName] = useState();
+    let [name , setName] = useState('');
     let [ligation , setLigation] = useState(false);
-    let [species , setSpecies] = useState();
-    let [breed , setBreed] = useState();
-    let [owner , setOwner] = useState();
-    let [phone , setPhone] = useState();
-    let [chip , setChip] = useState();
-    let [birthday , setBirthday] = useState();
-    let [gender , setGender] = useState();
-    let [bloodType , setBloodType] = useState();
-    let [allergy , setAllergy] = useState();
-    let [majorDiseases , setMajorDiseases] = useState();
-    let [remark , setRemark] = useState();
-    const inputName = (e) => {
+    let [species , setSpecies] = useState('');
+    let [breed , setBreed] = useState('');
+    let [owner , setOwner] = useState('');
+    let [ownerID , setOwnerID] = useState('');
+    let [phone , setPhone] = useState('');
+    let [chipID , setChipID] = useState('');
+    let [birthday , setBirthday] = useState('');
+    let [gender , setGender] = useState('');
+    let [bloodType , setBloodType] = useState('');
+    let [allergy , setAllergy] = useState('');
+    let [majorDiseases , setMajorDiseases] = useState('');
+    let [remark , setRemark] = useState('');
+    let [hospital , setHospital] = useState('');
+    const inputName = (e:any) => {
         setName(e.target.value);
     }
     const ligationCheck = () => {
         setLigation(!ligation);
     }
-    const inputSpecies = (e) => {
+    const inputSpecies = (e:any) => {
         setSpecies(e.target.value);
     }
-    const inputBreed = (e) => {
+    const inputBreed = (e:any) => {
         setBreed(e.target.value);
     }
-    const inputOwner = (e) => {
+    const inputOwner = (e:any) => {
         setOwner(e.target.value);
     }
-    const inputPhone = (e) => {
+    const inputPhone = (e:any) => {
         setPhone(e.target.value);
     }
-    const inputChip = (e) => {
-        setChip(e.target.value);
+    const inputChip = (e:any) => {
+        setChipID(e.target.value);
     }
-    const inputBirthday = (e) => {
+    const inputBirthday = (e:any) => {
         setBirthday(e.target.value);
     }
-    const inputGender = (e) => {
+    const inputGender = (e:any) => {
         setGender(e.target.value);
     }
-    const inputBloodType = (e) => {
+    const inputBloodType = (e:any) => {
         setBloodType(e.target.value);
     }
-    const inputAllergy = (e) => {
+    const inputAllergy = (e:any) => {
         setAllergy(e.target.value);
     }
-    const inputMajorDiseases = (e) => {
+    const inputMajorDiseases = (e:any) => {
         setMajorDiseases(e.target.value);
     }
     
-    const inputRemark = (e) => {
+    const inputRemark = (e:any) => {
         setRemark(e.target.value);
     }
 
     const postInfo = () => {
         console.log("ready pose..");
-        console.log(name, species, breed , owner , phone , chip , birthday , gender , bloodType , ligation , allergy , majorDiseases , remark);
-        infoService.create(name, species, breed , owner , phone , chip , birthday , gender , bloodType , ligation , allergy , majorDiseases , remark)
+        console.log(name, species, breed , owner ,ownerID, phone , chipID , birthday , gender , bloodType , ligation , allergy , majorDiseases , remark , hospital);
+        InfoService.create(name, species, breed , owner ,ownerID, phone , chipID , birthday , gender , bloodType , ligation , allergy , majorDiseases , remark , hospital)
           .then(() => {
             window.alert("New Pet-Info has been created.");
           })
@@ -86,6 +88,7 @@ export default function AddInfoComponent() {
                 <MDBCol>
                     <MDBInput name='name' onChange={inputName} label='寵物名稱' />
                 </MDBCol>
+                
                 <MDBCol>
                     <MDBCheckbox checked={ligation} onChange={ligationCheck} name='ligation' label='結紮' />
                 </MDBCol>
@@ -125,9 +128,9 @@ export default function AddInfoComponent() {
                 </MDBCol>
             </MDBRow>
             
-            <MDBInput wrapperClass='mb-4' textarea name='allergy' onChange={inputAllergy}  label='過敏' />
-            <MDBInput wrapperClass='mb-4' textarea name='majorDiseases' onChange={inputMajorDiseases}  label='重大疾病' />
-            <MDBInput wrapperClass='mb-4' textarea name='remark' onChange={inputRemark}  label='備註' />
+            <MDBInput wrapperClass='mb-4'  name='allergy' onChange={inputAllergy}  label='過敏' />
+            <MDBInput wrapperClass='mb-4'  name='majorDiseases' onChange={inputMajorDiseases}  label='重大疾病' />
+            <MDBInput wrapperClass='mb-4'  name='remark' onChange={inputRemark}  label='備註' />
             <MDBBtn className='mb-4 mt-2' onClick={postInfo} type='button' href='/info' block>
                 送出
             </MDBBtn>

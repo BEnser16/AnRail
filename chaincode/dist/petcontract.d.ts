@@ -6,4 +6,5 @@ export declare class PetContract extends Contract {
     queryAllPets(ctx: Context): Promise<string>;
     changePetOwner(ctx: Context, petNumber: string, newOwner: string): Promise<void>;
     signupbreeder(ctx: Context, userID: string, email: string, password: string, role: string): Promise<void>;
+    queryAccount(ctx: Context, userID: string): Promise<string>;
 }
