@@ -38,7 +38,7 @@ export default function SignIn() {
   
   const navigate = useNavigate();
 
-  const [role, setRole] = React.useState('');
+  let [role, setRole] = React.useState('');
 
   const handleChange = (event: SelectChangeEvent) => {
     setRole(event.target.value as string);
@@ -132,7 +132,7 @@ export default function SignIn() {
               required
               fullWidth
               id="email"
-              label="使用者名稱"
+              label="使用者ID"
               name="email"
               autoComplete="email"
               autoFocus

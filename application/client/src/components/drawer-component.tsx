@@ -19,19 +19,46 @@ import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import AuthService from '../service/auth-service';
 import {useNavigate} from "react-router-dom";
+import BreedSerivce from '../service/breeder-service';
+import PetCard from './petcard-component';
+import {IPet} from '../interface/pet';
 
 const drawerWidth = 240;
 
 export default function ClippedDrawer(props:any) {
 
   const navigate = useNavigate();
+  let [sidebarmode , setSidebarmode] = React.useState('');
+  let [mypetdata , setMypetdata] = React.useState<IPet[]>([]);
   let {currentUser , setCurrentUser} = props;
+
   const handleLogout = () => {
     AuthService.logout();
     window.alert("Logout successfully! now redirect to the home page. ");  
     navigate('/');
     setCurrentUser(null);
   };
+
+  const handleMypets = () => {
+    const usertoken = AuthService.getCurrentUser();
+    console.log(usertoken);
+    
+    
+    const userobj = JSON.parse(usertoken.logindata);
+    
+    BreedSerivce.getMypets(userobj.userID).then((response) => {
+      console.log('第一筆');
+      console.log(response.data.mypetlist[0].Record.name);
+      setMypetdata(response.data.mypetlist);
+      console.log('state');
+      
+      setSidebarmode('re');
+      setSidebarmode('checkmypets');
+
+    });
+    
+    
+  }
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -51,6 +78,7 @@ export default function ClippedDrawer(props:any) {
           </Typography>
           <Button variant="outlined" onClick={handleLogout} color="warning" sx={{ml:3 , mr:1}} >
             登出
+            
           </Button>
           
 
@@ -68,13 +96,29 @@ export default function ClippedDrawer(props:any) {
         <Box sx={{ overflow: 'auto' }}>
           <List>
             {['我的寵物', '診療紀錄', '寵物投保', '保險資料'].map((text, index) => (
+              
               <ListItem key={text} disablePadding>
-                <ListItemButton>
-                  <ListItemIcon>
-                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                  </ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItemButton>
+                { index === 0 ? 
+                  <ListItemButton onClick={handleMypets} >
+                      
+                      <ListItemIcon>
+                        {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                      </ListItemIcon>
+                    <ListItemText primary={text} />
+                  </ListItemButton>
+                  :
+                  <ListItemButton >
+                      <ListItemIcon>
+                        {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                      </ListItemIcon>
+                    <ListItemText primary={text} />
+                  </ListItemButton>
+
+                }
+                
+
+
+
               </ListItem>
             ))}
           </List>
@@ -92,11 +136,18 @@ export default function ClippedDrawer(props:any) {
             ))}
           </List>
         </Box>
+        
       </Drawer>
+      
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <Toolbar />
         
+        {sidebarmode === "checkmypets" ? <PetCard mypetdata={mypetdata} setMypetdata={setMypetdata}  /> : null}
+        
+        
       </Box>
+      
     </Box>
+    
   );
 }

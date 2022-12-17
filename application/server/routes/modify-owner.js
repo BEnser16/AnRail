@@ -25,7 +25,7 @@ async function main() {
         const identity = await wallet.get('appUser');
         if (!identity) {
             console.log('An identity for the user "appUser" does not exist in the wallet');
-            console.log('Run the modigy-pet.js application before retrying');
+            console.log('Run the registerUser.ts application before retrying');
             return;
         }
 

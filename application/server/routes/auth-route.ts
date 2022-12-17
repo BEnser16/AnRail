@@ -8,7 +8,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as jwt from 'jsonwebtoken';
 
-
+//  醫療人員登入
 router.post("/loginhospital" , async(req:Request , res:Response) => {
     try {
         console.log("接受登入請求,執行");
@@ -26,9 +26,9 @@ router.post("/loginhospital" , async(req:Request , res:Response) => {
         console.log(`Wallet path: ${walletPath}`);
 
         // 確認是否有管理員存在
-        const adminIdentity = await wallet.get('admin');
+        const adminIdentity = await wallet.get('hoadmin');
         if (!adminIdentity) {
-            console.log('An identity for the admin user "admin" does not exist in the wallet');
+            console.log('An identity for the admin user "hoadmin" does not exist in the wallet');
             console.log('Run the enrollAdmin.js application before retrying');
             res.status(400).send("醫院管理員不存在！");
             return;
@@ -56,7 +56,7 @@ router.post("/loginhospital" , async(req:Request , res:Response) => {
     }
 });
 
-
+//  一般飼主登入
 router.post("/loginbreeder" , async(req:Request , res:Response) => {
     try {
         console.log("接受一般飼主登入請求,執行");
@@ -87,7 +87,7 @@ router.post("/loginbreeder" , async(req:Request , res:Response) => {
         if (!loginUserIdentity) {
             console.log(loginUserIdentity);
             console.log('未知的使用者名稱...');
-            return;
+            return ;
         } else {
             console.log("使用者名稱存在！");
 
@@ -113,9 +113,10 @@ router.post("/loginbreeder" , async(req:Request , res:Response) => {
                 res.status(400).send("密碼不正確!");
             } else {
                 
-                const tokenObject = {_id:req.body.userID , role:req.body.role};
-                const token = jwt.sign(tokenObject , "TOKENPASS");
-                res.status(200).send({success:true , token:"JWT " + token , loginUserIdentity});
+                const tokenObject = {userID:req.body.userID , role:req.body.role};
+                const logindata = JSON.stringify(tokenObject);
+                const token = jwt.sign(logindata , "TOKENPASS");
+                res.status(200).send({success:true , token:"JWT " + token , logindata});
             }
             
             
@@ -135,6 +136,7 @@ router.post("/loginbreeder" , async(req:Request , res:Response) => {
     }
 });
 
+//  一般飼主註冊
 router.post("/register" , async(req:Request , res:Response) => {
     try {
         console.log("接受請求,伺服器執行註冊");
@@ -199,7 +201,7 @@ router.post("/register" , async(req:Request , res:Response) => {
         // Get the contract from the network.
         const contract = network.getContract('petcontract');
 
-        await contract.submitTransaction('signupbreeder' , req.body.userID , req.body.email , req.body.password , 'breeder');
+        await contract.submitTransaction('signupbreeder' , req.body.userID ,req.body.username , req.body.email , req.body.password , 'breeder');
         console.log('Transaction has been submitted');
 
         // Disconnect from the gateway.

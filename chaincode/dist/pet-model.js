@@ -4,6 +4,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PetModel = void 0;
+//  寵物的資料模型
 class PetModel {
 }
 exports.PetModel = PetModel;

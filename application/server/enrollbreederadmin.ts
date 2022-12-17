@@ -11,6 +11,7 @@ import { Wallets, X509Identity } from 'fabric-network';
 import * as fs from 'fs';
 import * as path from 'path';
 
+//  啟用預先設定的飼主管理員帳號
 async function main() {
     try {
         // load the network configuration

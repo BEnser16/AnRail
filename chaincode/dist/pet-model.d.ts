@@ -1,17 +1,16 @@
 export declare class PetModel {
     docType?: string;
-    medicalNumber: string;
     name: string;
     species: string;
     breed: string;
     owner: string;
-    ownerid: string;
+    ownerID: string;
     phone: string;
-    chip: string;
+    chipID: string;
     birthday: string;
     gender: string;
     bloodType: string;
-    ligation: string;
+    ligation: boolean;
     allergy: string;
     majorDiseases: string;
     remark: string;

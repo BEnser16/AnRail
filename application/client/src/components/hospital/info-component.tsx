@@ -70,7 +70,7 @@ const InfoComponent = () => {
          <EditInfoComponent search={search} setSearch={setSearch}  infoData={infoData} setInfoData={setInfoData} />
         )}
            
-        {infoData != null && !editTime && (  
+        {infoData !== null && !editTime && (  
             <MDBTable striped className='table-dark rounded-5 square ' >
               <MDBTableBody>
                 <tr>
@@ -131,7 +131,7 @@ const InfoComponent = () => {
               </MDBTableBody>
             </MDBTable>
           )}
-          {infoData == null && !editTime && (
+          {infoData === null && !editTime && (
             <ListComponent infoData={infoData} setInfoData={setInfoData} />
           )} 
           {/* <ListComponent infoData={infoData} setInfoData={setInfoData} /> */}

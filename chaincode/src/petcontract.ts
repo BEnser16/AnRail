@@ -12,11 +12,13 @@ import { UserModel } from './user-model';
 
 
 
-
+//  智能合約 讓Server直接調用這裡的funtion
 export class PetContract extends Contract {
 
+    //  初始化 佈署完fabric 自動預先調用
     public async initLedger(ctx:Context) {
         console.info('============= START : Initialize Ledger ===========');
+        //  預先存在一隻寵物基本資料
         const pets:PetModel[] = [
             {
                 
@@ -38,23 +40,26 @@ export class PetContract extends Contract {
             },
         ];
 
+        //  預先設定兩組管理員帳號 飼主身份 醫院身份
         const accounts:UserModel[] = [
             {
                 userID: 'bradmin',
                 email: 'bradmin@gmail.com',
+                username:'B11',
                 password: 'adminpw',
                 role: 'admin'
             },
             {
                 userID: 'hoadmin',
                 email: 'hoadmin@gmail.com',
+                username:'B00',
                 password: 'adminpw',
                 role: 'admin'
             },
         ];
 
         
-
+        //  利用putState 將上面的資料放入 fabric 帳本
         for (let i = 0; i < pets.length; i++) {
             pets[i].docType = 'pet';
             await ctx.stub.putState(pets[i].chipID, Buffer.from(JSON.stringify(pets[i])));
@@ -71,6 +76,7 @@ export class PetContract extends Contract {
         console.info('============= END : Initialize Ledger ===========');
     }
 
+    //  查詢單隻寵物 依照chipID 晶片號
     public async queryPet(ctx:Context, chipID:string): Promise<string> {
         const petAsBytes = await ctx.stub.getState(chipID); // get the car from chaincode state
         if (!petAsBytes || petAsBytes.length === 0) {
@@ -80,7 +86,7 @@ export class PetContract extends Contract {
         return petAsBytes.toString();
     }
 
-
+    //  新增一隻寵物 放入帳本
     public async createPet(ctx:Context, chipID:string , medicalNumber:string , name:string , species:string , breed:string, owner:string , ownerid:string ,phone:string , chip:string , birthday:string , gender:string , bloodType:string , ligation:string , allergy:string , majorDiseases:string , remark:string , hospital:string) {
         console.info('============= START : Create Pet ===========');
 
@@ -100,6 +106,7 @@ export class PetContract extends Contract {
         console.info('============= END : Create Pet ===========');
     }
 
+    //  查詢目前所有寵物
     public async queryAllPets(ctx:Context): Promise<string> {
         const startKey = '';
         const endKey = '';
@@ -119,7 +126,7 @@ export class PetContract extends Contract {
         return JSON.stringify(allResults);
     }
     
-
+    //  更改寵物的擁有者
     public async changePetOwner(ctx:Context, chipID:string, newOwner:string) {
         console.info('============= START : changeCarOwner ===========');
 
@@ -134,12 +141,14 @@ export class PetContract extends Contract {
         console.info('============= END : changeCarOwner ===========');
     }
 
-    public async signupbreeder(ctx:Context , userID:string , email:string , password:string , role:string) {
+    //  註冊一個 飼主身份的帳戶
+    public async signupbreeder(ctx:Context , userID:string , username:string , email:string , password:string , role:string) {
         console.info('============= START : signup for a new account ===========');
 
         const user = {
             docType: 'account',
             userID: userID,
+            username: username,
             email: email,
             password: password,
             role: role,
@@ -153,6 +162,7 @@ export class PetContract extends Contract {
 
     }
 
+    //  依照 userID 查詢帳戶 返回帳戶資料
     public async queryAccount(ctx:Context, userID:string): Promise<string> {
         const accountAsBytes = await ctx.stub.getState(userID); // get the car from chaincode state
         if (!accountAsBytes || accountAsBytes.length === 0) {

@@ -37,17 +37,18 @@ export default function SignUp() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
-      userID:data.get('userName'),
+      userID:data.get('userID'),
       email: data.get('email'),
       password: data.get('password'),
     });
 
-    const userID = data.get('userName');
+    const userID = data.get('userID');
     const email = data.get('email');
     const password = data.get('password');
+    const username = data.get('username');
 
     if(data.get('checkpassword') === password) {
-      AuthService.register(userID , email , password).then(() => {
+      AuthService.register(userID , username ,email , password).then(() => {
         window.alert(
             "Registration success! redirect to the login page!"
         );
@@ -88,10 +89,22 @@ export default function SignUp() {
               <Grid item xs={12}>
                 <TextField
                   autoComplete="given-name"
-                  name="userName"
+                  name="userID"
                   required
                   fullWidth
-                  id="userName"
+                  id="userID"
+                  label="身份證字號"
+                  autoFocus
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <TextField
+                  autoComplete="given-name"
+                  name="username"
+                  required
+                  fullWidth
+                  id="username"
                   label="使用者名稱"
                   autoFocus
                 />

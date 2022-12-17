@@ -14,40 +14,52 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PetContract = void 0;
 const fabric_contract_api_1 = require("fabric-contract-api");
+//  智能合約 讓Server直接調用這裡的funtion
 class PetContract extends fabric_contract_api_1.Contract {
+    //  初始化 佈署完fabric 自動預先調用
     async initLedger(ctx) {
         console.info('============= START : Initialize Ledger ===========');
+        //  預先存在一隻寵物基本資料
         const pets = [
             {
-                medicalNumber: '001',
                 name: '大黃',
                 species: '狗',
                 breed: '黃金獵犬',
                 owner: '陳大平',
-                ownerid: 'F100700100',
+                ownerID: 'F100700100',
                 phone: '0900-277-277',
-                chip: '已施打',
+                chipID: 'A001',
                 birthday: '2001-10-10',
                 gender: '公',
                 bloodType: '1.1',
-                ligation: '已結紮',
+                ligation: false,
                 allergy: '無',
                 majorDiseases: '腫瘤',
                 remark: '體型癰腫 個性溫馴',
                 hospital: '高雄動物醫院'
             },
         ];
+        //  預先設定兩組管理員帳號 飼主身份 醫院身份
         const accounts = [
             {
-                userID: 'admin',
-                email: 'admin@gmail.com',
+                userID: 'bradmin',
+                email: 'bradmin@gmail.com',
+                username: 'B11',
+                password: 'adminpw',
+                role: 'admin'
+            },
+            {
+                userID: 'hoadmin',
+                email: 'hoadmin@gmail.com',
+                username: 'B00',
                 password: 'adminpw',
                 role: 'admin'
             },
         ];
+        //  利用putState 將上面的資料放入 fabric 帳本
         for (let i = 0; i < pets.length; i++) {
             pets[i].docType = 'pet';
-            await ctx.stub.putState('100' + i, Buffer.from(JSON.stringify(pets[i])));
+            await ctx.stub.putState(pets[i].chipID, Buffer.from(JSON.stringify(pets[i])));
             console.info('Added <--> ', pets[i]);
         }
         for (let i = 0; i < accounts.length; i++) {
@@ -57,15 +69,17 @@ class PetContract extends fabric_contract_api_1.Contract {
         }
         console.info('============= END : Initialize Ledger ===========');
     }
-    async queryPet(ctx, petNumber) {
-        const petAsBytes = await ctx.stub.getState(petNumber); // get the car from chaincode state
+    //  查詢單隻寵物 依照chipID 晶片號
+    async queryPet(ctx, chipID) {
+        const petAsBytes = await ctx.stub.getState(chipID); // get the car from chaincode state
         if (!petAsBytes || petAsBytes.length === 0) {
-            throw new Error(`${petNumber} does not exist`);
+            throw new Error(`${chipID} does not exist`);
         }
         console.log(petAsBytes.toString());
         return petAsBytes.toString();
     }
-    async createPet(ctx, petNumber, medicalNumber, name, species, breed, owner, ownerid, phone, chip, birthday, gender, bloodType, ligation, allergy, majorDiseases, remark, hospital) {
+    //  新增一隻寵物 放入帳本
+    async createPet(ctx, chipID, medicalNumber, name, species, breed, owner, ownerid, phone, chip, birthday, gender, bloodType, ligation, allergy, majorDiseases, remark, hospital) {
         console.info('============= START : Create Pet ===========');
         const pet = {
             docType: 'pet',
@@ -77,9 +91,10 @@ class PetContract extends fabric_contract_api_1.Contract {
             ownerid,
             phone, chip, birthday, gender, bloodType, ligation, allergy, majorDiseases, remark, hospital,
         };
-        await ctx.stub.putState(petNumber, Buffer.from(JSON.stringify(pet)));
+        await ctx.stub.putState(chipID, Buffer.from(JSON.stringify(pet)));
         console.info('============= END : Create Pet ===========');
     }
+    //  查詢目前所有寵物
     async queryAllPets(ctx) {
         var e_1, _a;
         const startKey = '';
@@ -110,22 +125,25 @@ class PetContract extends fabric_contract_api_1.Contract {
         console.info(allResults);
         return JSON.stringify(allResults);
     }
-    async changePetOwner(ctx, petNumber, newOwner) {
+    //  更改寵物的擁有者
+    async changePetOwner(ctx, chipID, newOwner) {
         console.info('============= START : changeCarOwner ===========');
-        const petAsBytes = await ctx.stub.getState(petNumber); // get the pet from chaincode state
+        const petAsBytes = await ctx.stub.getState(chipID); // get the pet from chaincode state
         if (!petAsBytes || petAsBytes.length === 0) {
-            throw new Error(`${petNumber} does not exist`);
+            throw new Error(`${chipID} does not exist`);
         }
         const pet = JSON.parse(petAsBytes.toString());
         pet.owner = newOwner;
-        await ctx.stub.putState(petNumber, Buffer.from(JSON.stringify(pet)));
+        await ctx.stub.putState(chipID, Buffer.from(JSON.stringify(pet)));
         console.info('============= END : changeCarOwner ===========');
     }
-    async signupbreeder(ctx, userID, email, password, role) {
+    //  註冊一個 飼主身份的帳戶
+    async signupbreeder(ctx, userID, username, email, password, role) {
         console.info('============= START : signup for a new account ===========');
         const user = {
             docType: 'account',
             userID: userID,
+            username: username,
             email: email,
             password: password,
             role: role,
@@ -133,6 +151,7 @@ class PetContract extends fabric_contract_api_1.Contract {
         await ctx.stub.putState(userID, Buffer.from(JSON.stringify(user)));
         console.info('============= END : Create Pet ===========');
     }
+    //  依照 userID 查詢帳戶 返回帳戶資料
     async queryAccount(ctx, userID) {
         const accountAsBytes = await ctx.stub.getState(userID); // get the car from chaincode state
         if (!accountAsBytes || accountAsBytes.length === 0) {

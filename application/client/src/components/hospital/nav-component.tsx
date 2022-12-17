@@ -12,7 +12,7 @@ import {
 } from 'mdb-react-ui-kit';
 import AuthService from '../../service/auth-service';
 
-const NavComponent = (props) => {
+const NavComponent = (props:any) => {
   const [showNavColor, setShowNavColor] = useState(false);
   const [showNavColorSecond, setShowNavColorSecond] = useState(false);
   const [showNavColorThird, setShowNavColorThird] = useState(false);
@@ -25,7 +25,7 @@ const NavComponent = (props) => {
 
   return (
     <nav >
-      <MDBNavbar expand='lg' dark bgColor='dark' position="fixed" >
+      <MDBNavbar expand='lg' dark bgColor='dark' >
         <MDBContainer fluid className='m-2'>
           <MDBNavbarBrand href='#'>動物醫院</MDBNavbarBrand>
           <MDBNavbarToggler

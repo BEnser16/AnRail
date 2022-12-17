@@ -6,6 +6,7 @@ const cors = require("cors");
 const query = require("./routes/query");
 const authRoute = require("./routes/auth-route");
 const infoRoute = require("./routes/info-route");
+const breederRoute = require("./routes/breeder-route");
 import * as mongoose from 'mongoose';
 import {ConnectOptions} from 'mongoose';
 
@@ -41,5 +42,6 @@ app.listen(8000, () => {
 app.use("/api/v1/auth" , authRoute);
 app.use("/api/v1/query" , query);
 app.use("/api/v1/info" , infoRoute);
+app.use("/api/v1/breeder" , breederRoute);
 
 

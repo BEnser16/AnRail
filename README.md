@@ -8,14 +8,28 @@
 
 * Ubuntu 22.04
 
-* docker & docker-compose
+* Docker & Docker-compose
 
 * Node.js
 
 #### Usage：
 * 部屬網路 
 
-    `cd network/` 進入 network 資料夾 <br>
+    `cd network/`   進入 network 資料夾 <br>
 
-    `./startFabric.sh` 執行部屬腳本
+    `./startFabric.sh`  執行部屬腳本 <br>
+
+    `./network.sh down` 停止fabric網路 <br>
+
+* 啟動伺服器 
+
+    `cd server/`   進入 server 資料夾 <br>
+
+    `npx nodemon index.ts` 啟動伺服器 <br>
+
+* 註冊管理員
+
+    `cd server/`   進入 server 資料夾 <br>
+
+    `ts-node enrollAdmin.ts` 註冊管理員-醫療身份 <br>
 

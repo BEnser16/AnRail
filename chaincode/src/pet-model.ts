@@ -2,6 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+//  寵物的資料模型
 export class PetModel {
     public docType?: string;
     public name:string;
