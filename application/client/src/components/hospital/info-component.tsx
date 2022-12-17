@@ -6,9 +6,10 @@ import ListComponent from './list-component';
 import NavComponent from './nav-component';
 import AuthService from '../../service/auth-service';
 
+
 const InfoComponent = () => {
   let [infoData , setInfoData] = useState({
-    info: {
+    resultjson: {
       name:'',
       owner:'',
       species:'',
@@ -35,7 +36,9 @@ const InfoComponent = () => {
   const handleSearchInfo = () => {
     console.log(editTime);
     InfoService.get(search).then((data) => {
-      console.log(data);
+      let jsonData = JSON.stringify(data.data)
+      console.log(jsonData);
+      console.log(data.data);
       setInfoData(data.data);
     }).catch((error) => {
       console.log(error);
@@ -79,54 +82,54 @@ const InfoComponent = () => {
                 </tr>
                 <tr>         
                   <td ><b>寵物名</b></td>
-                  <td >{infoData.info.name}</td>
+                  <td >{infoData.resultjson.name}</td>
                   <td ><b>飼主</b></td>
-                  <td >{infoData.info.owner}</td>
+                  <td >{}</td>
                 </tr>
                 <tr>
                   <td  >種類</td>
-                  <td >{infoData.info.species}</td>
+                  <td >{}</td>
                   <td >品種</td>
-                  <td >{infoData.info.breed}</td>
+                  <td >{}</td>
                 </tr>
                 <tr>
                   <td >電話</td>
-                  <td >{infoData.info.phone}</td>
+                  <td >{}</td>
                   <td >病歷號</td>
-                  <td >{infoData.info.chipID}</td>
+                  <td >{}</td>
                 </tr>
                 <tr>
                   <td >晶片號</td>
-                  <td >{infoData.info.chipID}</td>
+                  <td >{}</td>
                   <td >生日</td>
-                  <td >{infoData.info.birthday}</td>
+                  <td >{}</td>
                 </tr>
                 <tr>
                   <td >年齡</td>
                   <td ></td>
                   <td >性別</td>
-                  <td >{infoData.info.gender}</td>
+                  <td >{}</td>
                 </tr>
                 <tr>
                   <td >血型</td>
-                  <td >{infoData.info.bloodType}</td>
+                  <td >{}</td>
                   <td >結紮</td>
-                  {infoData.info.ligation == true && (
+                  {true == true && (
                     <td>已結紮</td>
                   )}
-                  {infoData.info.ligation != true && (
+                  {true != true && (
                     <td>未結紮</td>
                   )}                 
                 </tr>
                 <tr>
                   <td >過敏</td>
-                  <td >{infoData.info.allergy}</td>
+                  <td >{}</td>
                   <td >重大疾病</td>
-                  <td >{infoData.info.majorDiseases}</td>
+                  <td >{}</td>
                 </tr>
                 <tr className='table-warning '>
                   <td>備註</td>
-                  <td colSpan={3}>{infoData.info.remark}</td>
+                  <td colSpan={3}>{}</td>
                 </tr>
               </MDBTableBody>
             </MDBTable>
