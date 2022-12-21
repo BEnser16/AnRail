@@ -16,12 +16,31 @@ import MailIcon from '@mui/icons-material/Mail';
 import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
 import Chip from '@mui/material/Chip';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Stack from '@mui/material/Stack';
 import AuthService from '../service/auth-service';
 import {useNavigate} from "react-router-dom";
 import BreedSerivce from '../service/breeder-service';
 import PetCard from './petcard-component';
 import {IPet} from '../interface/pet';
+import { purple , blueGrey } from '@mui/material/colors';
+import PetsIcon from '@mui/icons-material/Pets';
+import MedicationIcon from '@mui/icons-material/Medication';
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      // Purple and green play nicely together.
+      main:blueGrey[800],
+    },
+    secondary: {
+      // This is green.A700 as hex.
+      main: '#00838f',
+    },
+    
+  },
+});
+
 
 const drawerWidth = 240;
 
@@ -63,29 +82,32 @@ export default function ClippedDrawer(props:any) {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar color="inherit" position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
-        <Toolbar>
-          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 , mr: 2}}>
-            飼主用戶端
-          </Typography>
+      <ThemeProvider theme={theme}>
+        <AppBar color='primary' position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+          <Toolbar >
+            <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 , mr: 2}}>
+                客戶端
+            </Typography>
 
-          <Stack direction="row" spacing={1}>
+            <Stack direction="row" spacing={1}>
+              
+              <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+            </Stack>
+            <Typography variant="subtitle1"  sx={{ m: 1}}>
+              Remy Sharp
+            </Typography>
+            <Button variant="outlined" onClick={handleLogout} color='inherit' sx={{ml:3 , mr:1}} >
+              登出
+              
+            </Button>
             
-            <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-          </Stack>
-          <Typography variant="subtitle1"  sx={{ m: 1}}>
-            Remy Sharp
-          </Typography>
-          <Button variant="outlined" onClick={handleLogout} color="warning" sx={{ml:3 , mr:1}} >
-            登出
-            
-          </Button>
-          
 
-        </Toolbar>
-      </AppBar>
+          </Toolbar>
+        </AppBar>
+      
       <Drawer
         variant="permanent"
+        
         sx={{
           width: drawerWidth,
           flexShrink: 0,
@@ -93,23 +115,23 @@ export default function ClippedDrawer(props:any) {
         }}
       >
         <Toolbar />
-        <Box sx={{ overflow: 'auto' }}>
-          <List>
+        <Box sx={{ overflow: 'auto' }} >
+          <List >
             {['我的寵物', '診療紀錄', '寵物投保', '保險資料'].map((text, index) => (
               
-              <ListItem key={text} disablePadding>
+              <ListItem key={text} disablePadding >
                 { index === 0 ? 
-                  <ListItemButton onClick={handleMypets} >
+                  <ListItemButton  onClick={handleMypets} >
                       
                       <ListItemIcon>
-                        {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                        <PetsIcon></PetsIcon>
                       </ListItemIcon>
                     <ListItemText primary={text} />
                   </ListItemButton>
                   :
                   <ListItemButton >
                       <ListItemIcon>
-                        {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                        <MedicationIcon></MedicationIcon>
                       </ListItemIcon>
                     <ListItemText primary={text} />
                   </ListItemButton>
@@ -122,22 +144,11 @@ export default function ClippedDrawer(props:any) {
               </ListItem>
             ))}
           </List>
-          <Divider />
-          <List>
-            {['All mail', 'Trash', 'Spam'].map((text, index) => (
-              <ListItem key={text} disablePadding>
-                <ListItemButton>
-                  <ListItemIcon>
-                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                  </ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
+          
         </Box>
         
       </Drawer>
+      </ThemeProvider>
       
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <Toolbar />

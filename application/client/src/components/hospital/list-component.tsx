@@ -27,12 +27,10 @@ export default function ListComponent(props:any) {
     useEffect(() => {
         setInfoData(null);
         infoService.getAllpets().then((data) => {
-            console.log(data);
-            console.log("字串裡")
-            console.log(data.data.resultjson);
+            
             let objpet = JSON.parse(data.data.resultjson);
-            console.log('物件');
-            console.log(objpet);
+            // console.log('物件');
+            // console.log(objpet);
             setAllInfoData(objpet[0].Record);
         }).catch((error) => {
             console.log(error);

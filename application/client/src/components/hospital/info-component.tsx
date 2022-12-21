@@ -8,24 +8,27 @@ import AuthService from '../../service/auth-service';
 
 
 const InfoComponent = () => {
-  let [infoData , setInfoData] = useState({
-    resultjson: {
-      name:'',
-      owner:'',
-      species:'',
-      breed:'',
-      phone:'',
-      chipID:'',
-      birthday:'',
-      gender:'',
-      bloodType:'',
-      ligation:false,
-      allergy:'',
-      majorDiseases:'',
-      remark:'',
+  let [infoData , setInfoData] = useState<{
+    
+    name:string;
+    species:string;
+    breed:string;
+    owner:string;
+    ownerID:string;
+    phone:string;
+    chipID:string;
+    birthday:string;
+    gender:string;
+    bloodType:string;
+    ligation:boolean;
+    allergy:string;
+    majorDiseases:string;
+    remark:string;
+    hospital:string;
 
-    }
-  });
+    
+  } | null >(null);
+
   let [search , setSearch] = useState("");
   let [editTime , setEditTime] = useState(false);
   let [currentUser , setCurrentUser] = useState(AuthService.getCurrentUser());
@@ -36,14 +39,19 @@ const InfoComponent = () => {
   const handleSearchInfo = () => {
     console.log(editTime);
     InfoService.get(search).then((data) => {
-      let jsonData = JSON.stringify(data.data)
-      console.log(jsonData);
-      console.log(data.data);
-      setInfoData(data.data);
+      
+      console.log("getpet 返回值：" + data);
+      //  把json字符串 轉為object
+      const searchinfo_json_object = JSON.parse(data.data.resultjson);
+      console.log("test pet name" + searchinfo_json_object.name);
+      
+      setInfoData(searchinfo_json_object);
+      
     }).catch((error) => {
       console.log(error);
     })
   }
+
   const handleDeleteInfo = () => {
     try{
       InfoService.delete(search);
@@ -82,37 +90,37 @@ const InfoComponent = () => {
                 </tr>
                 <tr>         
                   <td ><b>寵物名</b></td>
-                  <td >{infoData.resultjson.name}</td>
+                  <td >{infoData.name}</td>
                   <td ><b>飼主</b></td>
-                  <td >{}</td>
+                  <td >{infoData.owner}</td>
                 </tr>
                 <tr>
-                  <td  >種類</td>
-                  <td >{}</td>
+                  <td >種類</td>
+                  <td >{infoData.breed}</td>
                   <td >品種</td>
-                  <td >{}</td>
+                  <td >{infoData.species}</td>
                 </tr>
                 <tr>
                   <td >電話</td>
-                  <td >{}</td>
+                  <td >{infoData.phone}</td>
                   <td >病歷號</td>
                   <td >{}</td>
                 </tr>
                 <tr>
                   <td >晶片號</td>
-                  <td >{}</td>
+                  <td >{infoData.chipID}</td>
                   <td >生日</td>
-                  <td >{}</td>
+                  <td >{infoData.birthday}</td>
                 </tr>
                 <tr>
                   <td >年齡</td>
                   <td ></td>
                   <td >性別</td>
-                  <td >{}</td>
+                  <td >{infoData.gender}</td>
                 </tr>
                 <tr>
                   <td >血型</td>
-                  <td >{}</td>
+                  <td >{infoData.bloodType}</td>
                   <td >結紮</td>
                   {true == true && (
                     <td>已結紮</td>
@@ -123,13 +131,13 @@ const InfoComponent = () => {
                 </tr>
                 <tr>
                   <td >過敏</td>
-                  <td >{}</td>
+                  <td >{infoData.allergy}</td>
                   <td >重大疾病</td>
-                  <td >{}</td>
+                  <td >{infoData.majorDiseases}</td>
                 </tr>
                 <tr className='table-warning '>
                   <td>備註</td>
-                  <td colSpan={3}>{}</td>
+                  <td colSpan={3}>{infoData.remark}</td>
                 </tr>
               </MDBTableBody>
             </MDBTable>
