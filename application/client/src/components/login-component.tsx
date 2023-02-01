@@ -18,6 +18,7 @@ import InputLabel from '@mui/material/InputLabel';
 import {useNavigate} from "react-router-dom";
 import AuthService from '../service/auth-service';
 import FormControl from '@mui/material/FormControl';
+import { Fullscreen } from '@mui/icons-material';
 
 function Copyright(props: any) {
   return (
@@ -32,7 +33,22 @@ function Copyright(props: any) {
   );
 }
 
-const theme = createTheme();
+const theme = createTheme({
+  palette: {
+    primary: {
+      light: '#757ce8',
+      main: '#00838f',
+      dark: '#006064',
+      contrastText: '#fff',
+    },
+    secondary: {
+      light: '#ff7961',
+      main: '#009688',
+      dark: '#006064',
+      contrastText: '#000',
+    },
+  },
+});
 
 export default function SignIn() {
   
@@ -94,87 +110,93 @@ export default function SignIn() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign in
-          </Typography>
-          
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 2 }}>
-            <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">身份</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={role}
-                  label="role"
-                  onChange={handleChange}
-                >
-                  <MenuItem value={"一般飼主"}>一般飼主</MenuItem>
-                  <MenuItem value={"醫療人員"}>醫療人員</MenuItem>
-                  <MenuItem value={"保險業者"}>保險業者</MenuItem>
-                  <MenuItem value={"政府人員"}>政府人員</MenuItem>
-                </Select>
-            </FormControl>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="使用者ID"
-              name="email"
-              autoComplete="email"
-              autoFocus
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="密碼"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-            />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Sign In
-            </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
+      <Box sx={{ display: 'flex',
+        flexWrap: 'wrap', height: 100 , bgcolor: 'secondary.main' , mb:2}} >
+        <Container component="main" maxWidth="xs" >
+          <CssBaseline />
+          <Box
+            sx={{
+              marginTop: 8,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              
+              
+            }}
+          >
+            <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+              <LockOutlinedIcon />
+            </Avatar>
+            <Typography component="h1" variant="h5">
+              Sign in
+            </Typography>
+            
+            <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 2 }}>
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">身份</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={role}
+                    label="role"
+                    onChange={handleChange}
+                  >
+                    <MenuItem value={"一般飼主"}>一般飼主</MenuItem>
+                    <MenuItem value={"醫療人員"}>醫療人員</MenuItem>
+                    <MenuItem value={"保險業者"}>保險業者</MenuItem>
+                    <MenuItem value={"政府人員"}>政府人員</MenuItem>
+                  </Select>
+              </FormControl>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="使用者ID"
+                name="email"
+                autoComplete="email"
+                autoFocus
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="密碼"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+              />
+              <FormControlLabel
+                control={<Checkbox value="remember" color="primary" />}
+                label="Remember me"
+              />
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Sign In
+              </Button>
+              <Grid container>
+                <Grid item xs>
+                  <Link href="#" variant="body2">
+                    Forgot password?
+                  </Link>
+                </Grid>
+                <Grid item>
+                  <Link href="/signup" variant="body2">
+                    {"Don't have an account? Sign Up"}
+                  </Link>
+                </Grid>
               </Grid>
-              <Grid item>
-                <Link href="/signup" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid>
-            </Grid>
+            </Box>
           </Box>
-        </Box>
-        <Copyright sx={{ mt: 8, mb: 4 }} />
-      </Container>
+          <Copyright sx={{ mt: 8, mb: 4 }} />
+        </Container>
+      </Box>
+      
     </ThemeProvider>
   );
 }

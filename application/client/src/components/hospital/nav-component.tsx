@@ -52,7 +52,7 @@ const NavComponent = (props:any) => {
 
               {currentUser && (
                  <MDBNavbarItem >
-                    <MDBNavbarLink href='/info'>病歷</MDBNavbarLink>
+                    <MDBNavbarLink href='/hospitalhome'>病歷</MDBNavbarLink>
                 </MDBNavbarItem>
               )}
 

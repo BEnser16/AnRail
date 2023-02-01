@@ -7,8 +7,12 @@ import {
   MDBBtn
 } from 'mdb-react-ui-kit';
 import InfoService from '../../service/info-service';
+import NavComponent from './nav-component';
+import AuthService from '../../service/auth-service';
 
 export default function AddInfoComponent() {
+
+    let [currentUser , setCurrentUser] = useState(AuthService.getCurrentUser());
     let [name , setName] = useState('');
     let [ligation , setLigation] = useState(false);
     let [species , setSpecies] = useState('');
@@ -80,7 +84,9 @@ export default function AddInfoComponent() {
     };
     
   return (
-    <div className='d-flex'  style={{ height: '100vh' }}>
+    <div>
+        <NavComponent currentUser={currentUser} setCurrentUser={setCurrentUser} />
+        <div className='d-flex'  style={{ height: '100vh' }}>
         <div className='col-2'></div>
         <form className='mt-5 col-6 m-5'>
             <h3 className='mb-4'>新增病歷</h3>
@@ -136,5 +142,8 @@ export default function AddInfoComponent() {
             </MDBBtn>
         </form>
     </div>
+
+    </div>
+    
   );
 }
