@@ -117,7 +117,7 @@ export default function ClippedDrawer(props:any) {
         <Toolbar />
         <Box sx={{ overflow: 'auto' }} >
           <List >
-            {['我的寵物', '診療紀錄', '寵物投保', '保險資料'].map((text, index) => (
+            {['我的寵物', '診療紀錄', '寵物保險', '醫療查詢'].map((text, index) => (
               
               <ListItem key={text} disablePadding >
                 { index === 0 ? 

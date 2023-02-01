@@ -46,7 +46,7 @@ async function main() {
             type: 'X.509',
         };
         await wallet.put('bradmin', x509Identity);
-        console.log('Successfully enrolled admin user "admin" and imported it into the wallet');
+        console.log('Successfully enrolled admin user "bradmin" and imported it into the wallet');
 
     } catch (error) {
         console.error(`Failed to enroll breeder's admin user "bradmin": ${error}`);
