@@ -79,17 +79,24 @@ class PetContract extends fabric_contract_api_1.Contract {
         return petAsBytes.toString();
     }
     //  新增一隻寵物 放入帳本
-    async createPet(ctx, chipID, medicalNumber, name, species, breed, owner, ownerid, phone, chip, birthday, gender, bloodType, ligation, allergy, majorDiseases, remark, hospital) {
+    async createPet(ctx, chipID, name, species, breed, owner, ownerID, phone, birthday, gender, bloodType, ligation, allergy, majorDiseases, remark, hospital) {
         console.info('============= START : Create Pet ===========');
         const pet = {
             docType: 'pet',
-            medicalNumber,
             name,
             species,
             breed,
             owner,
-            ownerid,
-            phone, chip, birthday, gender, bloodType, ligation, allergy, majorDiseases, remark, hospital,
+            ownerID,
+            phone,
+            birthday,
+            gender,
+            bloodType,
+            ligation,
+            allergy,
+            majorDiseases,
+            remark,
+            hospital
         };
         await ctx.stub.putState(chipID, Buffer.from(JSON.stringify(pet)));
         console.info('============= END : Create Pet ===========');
@@ -127,7 +134,7 @@ class PetContract extends fabric_contract_api_1.Contract {
     }
     //  更改寵物的擁有者
     async changePetOwner(ctx, chipID, newOwner) {
-        console.info('============= START : changeCarOwner ===========');
+        console.info('============= START : changePetOwner ===========');
         const petAsBytes = await ctx.stub.getState(chipID); // get the pet from chaincode state
         if (!petAsBytes || petAsBytes.length === 0) {
             throw new Error(`${chipID} does not exist`);
@@ -135,7 +142,32 @@ class PetContract extends fabric_contract_api_1.Contract {
         const pet = JSON.parse(petAsBytes.toString());
         pet.owner = newOwner;
         await ctx.stub.putState(chipID, Buffer.from(JSON.stringify(pet)));
-        console.info('============= END : changeCarOwner ===========');
+        console.info('============= END : changePetOwner ===========');
+    }
+    //  更改寵物的資料
+    async changePetInfo(ctx, chipID, Newname, Newspecies, Newbreed, Newowner, NewownerID, Newphone, Newbirthday, Newgender, NewbloodType, Newligation, Newallergy, NewmajorDiseases, Newremark, Newhospital) {
+        console.info('============= START : changePetInfo ===========');
+        const petAsBytes = await ctx.stub.getState(chipID); // get the pet from chaincode state
+        if (!petAsBytes || petAsBytes.length === 0) {
+            throw new Error(`${chipID} does not exist`);
+        }
+        const pet = JSON.parse(petAsBytes.toString());
+        pet.name = Newname;
+        pet.species = Newspecies;
+        pet.breed = Newbreed;
+        pet.owner = Newowner;
+        pet.ownerID = NewownerID;
+        pet.phone = Newphone;
+        pet.birthday = Newbirthday;
+        pet.gender = Newgender;
+        pet.bloodType = NewbloodType;
+        pet.ligation = Newligation;
+        pet.allergy = Newallergy;
+        pet.majorDiseases = NewmajorDiseases;
+        pet.remark = Newremark;
+        pet.hospital = Newhospital;
+        await ctx.stub.putState(chipID, Buffer.from(JSON.stringify(pet)));
+        console.info('============= END : changePetInfo ===========');
     }
     //  註冊一個 飼主身份的帳戶
     async signupbreeder(ctx, userID, username, email, password, role) {

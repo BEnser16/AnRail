@@ -87,19 +87,25 @@ export class PetContract extends Contract {
     }
 
     //  新增一隻寵物 放入帳本
-    public async createPet(ctx:Context, chipID:string , medicalNumber:string , name:string , species:string , breed:string, owner:string , ownerid:string ,phone:string , chip:string , birthday:string , gender:string , bloodType:string , ligation:string , allergy:string , majorDiseases:string , remark:string , hospital:string) {
+    public async createPet(ctx:Context, chipID:string, name:string, species:string, breed:string, owner:string, ownerID:string, phone:string, birthday:string, gender:string, bloodType:string, ligation:boolean, allergy:string, majorDiseases:string, remark:string, hospital:string) {
         console.info('============= START : Create Pet ===========');
 
         const pet = {
             docType: 'pet',
-            medicalNumber,
             name,
-            species ,
+            species,
             breed,
             owner,
-            ownerid,
-            phone , chip , birthday , gender , bloodType , ligation , allergy , majorDiseases , remark , hospital,
-            
+            ownerID,
+            phone,
+            birthday,
+            gender,
+            bloodType,
+            ligation,
+            allergy,
+            majorDiseases,
+            remark,
+            hospital
         };
 
         await ctx.stub.putState(chipID, Buffer.from(JSON.stringify(pet)));
@@ -128,7 +134,7 @@ export class PetContract extends Contract {
     
     //  更改寵物的擁有者
     public async changePetOwner(ctx:Context, chipID:string, newOwner:string) {
-        console.info('============= START : changeCarOwner ===========');
+        console.info('============= START : changePetOwner ===========');
 
         const petAsBytes = await ctx.stub.getState(chipID); // get the pet from chaincode state
         if (!petAsBytes || petAsBytes.length === 0) {
@@ -138,7 +144,35 @@ export class PetContract extends Contract {
         pet.owner = newOwner;
 
         await ctx.stub.putState(chipID, Buffer.from(JSON.stringify(pet)));
-        console.info('============= END : changeCarOwner ===========');
+        console.info('============= END : changePetOwner ===========');
+    }
+
+    //  更改寵物的資料
+    public async changePetInfo(ctx:Context, chipID:string, Newname:string, Newspecies:string, Newbreed:string, Newowner:string, NewownerID:string, Newphone:string, Newbirthday:string, Newgender:string, NewbloodType:string, Newligation:boolean, Newallergy:string, NewmajorDiseases:string, Newremark:string, Newhospital:string) {
+        console.info('============= START : changePetInfo ===========');
+
+        const petAsBytes = await ctx.stub.getState(chipID); // get the pet from chaincode state
+        if (!petAsBytes || petAsBytes.length === 0) {
+            throw new Error(`${chipID} does not exist`);
+        }
+        const pet = JSON.parse(petAsBytes.toString());
+        pet.name = Newname
+        pet.species = Newspecies
+        pet.breed = Newbreed
+        pet.owner = Newowner
+        pet.ownerID = NewownerID
+        pet.phone = Newphone
+        pet.birthday = Newbirthday
+        pet.gender = Newgender
+        pet.bloodType = NewbloodType
+        pet.ligation = Newligation
+        pet.allergy = Newallergy
+        pet.majorDiseases = NewmajorDiseases
+        pet.remark = Newremark
+        pet.hospital = Newhospital
+
+        await ctx.stub.putState(chipID, Buffer.from(JSON.stringify(pet)));
+        console.info('============= END : changePetInfo ===========');
     }
 
     //  註冊一個 飼主身份的帳戶
