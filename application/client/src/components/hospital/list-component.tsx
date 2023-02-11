@@ -16,10 +16,9 @@ import infoService from '../../service/info-service';
 export default function ListComponent(props:any) {
     let [AllInfoData , setAllInfoData] = useState({
         name:'',
-        medicalNumber:'',
         owner:'',
         remark:'',
-        petid:''
+        chipID:''
     });
     let {infoData , setInfoData} = props;
     let navigate = useNavigate();
@@ -37,10 +36,12 @@ export default function ListComponent(props:any) {
         });
     } , []);
     
-    function checkInfo(petid:string) {
-        infoService.get(petid).then((check_data) => {
-            console.log(check_data);
-            setInfoData(check_data.data);
+    function checkInfo(chipID:string) {
+        infoService.get(chipID).then((check_data) => {
+            console.log(check_data.data);
+            // 有斜線的json資料 轉為json object 再存入
+            let basicDataObj = JSON.parse(check_data.data.resultjson);
+            setInfoData(basicDataObj);
           }).catch((error) => {
             console.log(error);
         })
@@ -51,7 +52,7 @@ export default function ListComponent(props:any) {
         {AllInfoData != null && (
             <section className='d-flex justify-content-center w-50'>
                 {
-                    // AllInfoData.map((one_data) => (
+                    //AllInfoData.map((one_data:any) => (
                         <MDBCard className='ms-2 me-2'>
                             <MDBRipple rippleColor='light' rippleTag='div' className='bg-image hover-overlay'>
                                 
@@ -63,17 +64,14 @@ export default function ListComponent(props:any) {
                             <MDBCardBody>
                                 <MDBCardTitle>{AllInfoData.name}</MDBCardTitle>
                                 <MDBCardText>
-                                    病歷號:{AllInfoData.medicalNumber}
-                                    <br />
+                                    晶片號:{AllInfoData.chipID} <br />
                                     飼主:{AllInfoData.owner}
                                 </MDBCardText>
-                                <MDBCardText>
-                                    {AllInfoData.remark}
-                                </MDBCardText>
-                                <MDBBtn onClick={() => checkInfo(AllInfoData.petid)}>查看</MDBBtn>
+                                   
+                                <MDBBtn onClick={() => checkInfo(AllInfoData.chipID)}>查看</MDBBtn>
                             </MDBCardBody>
                         </MDBCard>
-                    // ))
+                    //))
                 }
             </section>
             

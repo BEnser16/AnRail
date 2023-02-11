@@ -43,6 +43,9 @@ export default function AddInfoComponent() {
     const inputOwner = (e:any) => {
         setOwner(e.target.value);
     }
+    const inputOwnerID = (e:any) => {
+        setOwnerID(e.target.value);
+    }
     const inputPhone = (e:any) => {
         setPhone(e.target.value);
     }
@@ -67,6 +70,9 @@ export default function AddInfoComponent() {
     
     const inputRemark = (e:any) => {
         setRemark(e.target.value);
+    }
+    const inputHospital = (e:any) => {
+        setHospital(e.target.value);
     }
 
     const postInfo = () => {
@@ -115,16 +121,6 @@ export default function AddInfoComponent() {
                     <MDBInput wrapperClass='mb-4' name='phone' type='tel' onChange={inputPhone}  label='電話' />
                 </MDBCol>
             </MDBRow>
-            <MDBInput wrapperClass='mb-4'  label='病歷號' />
-            <MDBInput wrapperClass='mb-4' name='chip' onChange={inputChip}  label='晶片號  ' />
-            <MDBRow className='mb-4'>
-                <MDBCol>
-                    <MDBInput name='birthday' onChange={inputBirthday}  label='生日' />
-                </MDBCol>
-                <MDBCol>
-                    <MDBInput label='年齡' />
-                </MDBCol>
-            </MDBRow>
             <MDBRow className='mb-4'>
                 <MDBCol>
                     <MDBInput name='gender' onChange={inputGender}  label='性別' />
@@ -133,11 +129,21 @@ export default function AddInfoComponent() {
                     <MDBInput name='bloodType' onChange={inputBloodType}  label='血型' />
                 </MDBCol>
             </MDBRow>
+            <MDBInput wrapperClass='mb-4' name='chip' onChange={inputChip}  label='晶片號  ' />
+            <MDBInput wrapperClass='mb-4' name='ownerID' onChange={inputOwnerID}  label='飼主身份證字號  ' />
+            <MDBRow className='mb-4'>
+                <MDBCol>
+                    <MDBInput name='birthday' placeholder='YYYY-MM-DD' onChange={inputBirthday}  label='生日' />
+                </MDBCol>
+                
+            </MDBRow>
+            
             
             <MDBInput wrapperClass='mb-4'  name='allergy' onChange={inputAllergy}  label='過敏' />
             <MDBInput wrapperClass='mb-4'  name='majorDiseases' onChange={inputMajorDiseases}  label='重大疾病' />
             <MDBInput wrapperClass='mb-4'  name='remark' onChange={inputRemark}  label='備註' />
-            <MDBBtn className='mb-4 mt-2' onClick={postInfo} type='button' href='/info' block>
+            <MDBInput wrapperClass='mb-4'  name='hospital' onChange={inputHospital}  label='所屬醫院' />
+            <MDBBtn className='mb-4 mt-2' onClick={postInfo} type='button' block>
                 送出
             </MDBBtn>
         </form>

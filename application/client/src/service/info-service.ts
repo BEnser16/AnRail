@@ -1,10 +1,11 @@
 import axios from "axios";
 const API_URL = "http://localhost:8000/api/v1/info";
 
+// For hospital
 class InfoService {
     
     create(name:string , species:string, breed:string , owner:string ,ownerID:string, phone :string, chipID :string, birthday :string, gender :string, bloodType :string, ligation :boolean, allergy :string, majorDiseases :string, remark:string , hospital:string){
-        return axios.post(API_URL + "/create-Info" , {name, species, breed , owner ,ownerID, phone , chipID , birthday , gender , bloodType , ligation , allergy , majorDiseases , remark , hospital});
+        return axios.post(API_URL + "/createpet" , {name, species, breed , owner ,ownerID, phone , chipID , birthday , gender , bloodType , ligation , allergy , majorDiseases , remark , hospital});
     };
 
     get(chipID:string) {

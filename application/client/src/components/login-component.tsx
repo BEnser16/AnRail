@@ -35,17 +35,12 @@ function Copyright(props: any) {
 
 const theme = createTheme({
   palette: {
+    mode: 'light',
     primary: {
-      light: '#757ce8',
-      main: '#00838f',
-      dark: '#006064',
-      contrastText: '#fff',
+      main: '#009688',
     },
     secondary: {
-      light: '#ff7961',
-      main: '#009688',
-      dark: '#006064',
-      contrastText: '#000',
+      main: '#673ab7',
     },
   },
 });

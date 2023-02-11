@@ -14,21 +14,21 @@ import InfoService from '../../service/info-service';
 export default function EditInfoComponent(props:any) {
     let {infoData , setInfoData} = props;
     let {search , setSearch} = props;
-    let [name , setName] = useState(infoData.info.name);
+    let [name , setName] = useState(infoData.name);
     let [ligation , setLigation] = useState(false);
-    let [species , setSpecies] = useState(infoData.info.species);
-    let [breed , setBreed] = useState(infoData.info.breed);
-    let [owner , setOwner] = useState(infoData.info.owner);
-    let [ownerID , setOwnerID] = useState(infoData.info.ownerID);
-    let [phone , setPhone] = useState(infoData.info.phone);
-    let [chipID , setChipID] = useState(infoData.info.chipID);
-    let [birthday , setBirthday] = useState(infoData.info.birthday);
-    let [gender , setGender] = useState(infoData.info.gender);
-    let [bloodType , setBloodType] = useState(infoData.info.bloodType);
-    let [allergy , setAllergy] = useState(infoData.info.allergy);
-    let [majorDiseases , setMajorDiseases] = useState(infoData.info.majorDiseases);
-    let [remark , setRemark] = useState(infoData.info.remark);
-    let [hospital , setHospital] = useState(infoData.info.hospital);
+    let [species , setSpecies] = useState(infoData.species);
+    let [breed , setBreed] = useState(infoData.breed);
+    let [owner , setOwner] = useState(infoData.owner);
+    let [ownerID , setOwnerID] = useState(infoData.ownerID);
+    let [phone , setPhone] = useState(infoData.phone);
+    let [chipID , setChipID] = useState(infoData.chipID);
+    let [birthday , setBirthday] = useState(infoData.birthday);
+    let [gender , setGender] = useState(infoData.gender);
+    let [bloodType , setBloodType] = useState(infoData.bloodType);
+    let [allergy , setAllergy] = useState(infoData.allergy);
+    let [majorDiseases , setMajorDiseases] = useState(infoData.majorDiseases);
+    let [remark , setRemark] = useState(infoData.remark);
+    let [hospital , setHospital] = useState(infoData.hospital);
     
     const inputName = (e:any) => {
         setName(e.target.value);
@@ -48,7 +48,7 @@ export default function EditInfoComponent(props:any) {
     const inputPhone = (e:any) => {
         setPhone(e.target.value);
     }
-    const inputChip = (e:any) => {
+    const inputChipID = (e:any) => {
         setChipID(e.target.value);
     }
     const inputBirthday = (e:any) => {
@@ -97,7 +97,7 @@ export default function EditInfoComponent(props:any) {
     const editInfo = () => {
         console.log("Edited! sending patch request...");
         console.log(search , name, species, breed , owner , phone , chipID , birthday , gender , bloodType , ligation , allergy , majorDiseases , remark);
-        InfoService.patch( search , name, species, breed , owner ,ownerID, phone  , birthday , gender , bloodType , ligation , allergy , majorDiseases , remark , hospital )
+        InfoService.patch( chipID , name, species, breed , owner ,ownerID, phone  , birthday , gender , bloodType , ligation , allergy , majorDiseases , remark , hospital )
           .then(() => {
             window.alert("This Info has been edited.");
             
@@ -116,7 +116,7 @@ export default function EditInfoComponent(props:any) {
             <MDBTableBody>
               <tr>
                 <td colSpan={3} className='fs-3' ><b>RECORD</b></td>
-                <td align='right'><MDBBtn color='success' onClick={editInfo} href='/info'>完成</MDBBtn> <MDBBtn color='danger' className='ms-2' onClick={handleDeleteInfo} href='/info'>Delete</MDBBtn></td>
+                <td align='right'><MDBBtn color='success' onClick={editInfo} href='/hospitalhome'>完成</MDBBtn> <MDBBtn color='danger' className='ms-2' onClick={handleDeleteInfo} href='/hospitalhome'>Delete</MDBBtn></td>
               </tr>
               <tr>         
                 <td ><b>寵物名</b></td>
@@ -134,11 +134,11 @@ export default function EditInfoComponent(props:any) {
                 <td >電話</td>
                 <td ><input type="text" value={phone} onChange={inputPhone} /></td>
                 <td >病歷號</td>
-                <td >{infoData.info._id}</td>
+                <td ></td>
               </tr>
               <tr>
                 <td >晶片號</td>
-                <td ><input type="text" value={chipID} onChange={inputChip} /></td>
+                <td ></td>
                 <td >生日</td>
                 <td ><input type="text" value={birthday} onChange={inputBirthday} /></td>
               </tr>
