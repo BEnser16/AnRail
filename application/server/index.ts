@@ -21,6 +21,10 @@ app.listen(8000, () => {
     console.log("sever running on port 8000. ");
 });
 
+app.get('/', (req, res) => {
+    res.send('Hello World!')
+});
+
 
 // //  連接至 MongoDB
 // mongoose
