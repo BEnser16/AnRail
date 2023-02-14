@@ -18,7 +18,7 @@ import InputLabel from '@mui/material/InputLabel';
 import {useNavigate} from "react-router-dom";
 import AuthService from '../service/auth-service';
 import FormControl from '@mui/material/FormControl';
-import { Fullscreen } from '@mui/icons-material';
+import { Fullscreen, Height, Margin } from '@mui/icons-material';
 
 function Copyright(props: any) {
   return (
@@ -38,6 +38,8 @@ const theme = createTheme({
     mode: 'light',
     primary: {
       main: '#009688',
+      dark: '#006064',
+      light: '#eceff1'
     },
     secondary: {
       main: '#673ab7',
@@ -105,28 +107,33 @@ export default function SignIn() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Box sx={{ display: 'flex',
-        flexWrap: 'wrap', height: 100 , bgcolor: 'secondary.main' , mb:2}} >
-        <Container component="main" maxWidth="xs" >
-          <CssBaseline />
+      <Box sx={{
+        display:"flex" , flexDirection: 'column', minHeight:1200 , zIndex:"tooltip" , height:'100%' , bgcolor: 'primary.dark' }} >
+        <Container component="main" maxWidth="md" >
+          
           <Box
             sx={{
-              marginTop: 8,
+              marginTop: 18,
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              
+              bgcolor: 'primary.light',
+              px:14,
+              py:8,
+              marginX:4,
+              borderRadius: '16px'
               
             }}
+            
           >
-            <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+            <Avatar sx={{ mb: 3, bgcolor: 'primary.main' }}>
               <LockOutlinedIcon />
             </Avatar>
-            <Typography component="h1" variant="h5">
-              Sign in
+            <Typography component="h1" variant="h4">
+              歡迎登入
             </Typography>
             
-            <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 2 }}>
+            <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 4 }}>
               <FormControl fullWidth>
                 <InputLabel id="demo-simple-select-label">身份</InputLabel>
                   <Select
@@ -147,7 +154,7 @@ export default function SignIn() {
                 required
                 fullWidth
                 id="email"
-                label="使用者ID"
+                label="身分證字號"
                 name="email"
                 autoComplete="email"
                 autoFocus
@@ -164,7 +171,7 @@ export default function SignIn() {
               />
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
-                label="Remember me"
+                label="記住我"
               />
               <Button
                 type="submit"
@@ -172,23 +179,23 @@ export default function SignIn() {
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
               >
-                Sign In
+                登入
               </Button>
               <Grid container>
                 <Grid item xs>
                   <Link href="#" variant="body2">
-                    Forgot password?
+                    忘記密碼?
                   </Link>
                 </Grid>
                 <Grid item>
                   <Link href="/signup" variant="body2">
-                    {"Don't have an account? Sign Up"}
+                    {"還沒有帳號嗎? 按我註冊"}
                   </Link>
                 </Grid>
               </Grid>
             </Box>
           </Box>
-          <Copyright sx={{ mt: 8, mb: 4 }} />
+          
         </Container>
       </Box>
       

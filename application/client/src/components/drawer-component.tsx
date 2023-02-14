@@ -26,18 +26,19 @@ import {IPet} from '../interface/pet';
 import { purple , blueGrey } from '@mui/material/colors';
 import PetsIcon from '@mui/icons-material/Pets';
 import MedicationIcon from '@mui/icons-material/Medication';
+import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety';
 
 const theme = createTheme({
   palette: {
+    mode: 'light',
     primary: {
-      // Purple and green play nicely together.
-      main:blueGrey[800],
+      main: '#009688',
+      dark: '#006064',
+      light: '#e8f5e9'
     },
     secondary: {
-      // This is green.A700 as hex.
-      main: '#00838f',
+      main: '#673ab7',
     },
-    
   },
 });
 
@@ -80,12 +81,14 @@ export default function ClippedDrawer(props:any) {
   }
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <ThemeProvider theme={theme}>
+    <Box sx={{ display: 'flex'}}>
       <CssBaseline />
-      <ThemeProvider theme={theme}>
-        <AppBar color='primary' position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+      
+        <AppBar  position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1  , bgcolor: 'primary.main' ,py:1}}>
           <Toolbar >
-            <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 , mr: 2}}>
+            <HealthAndSafetyIcon />
+            <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 , mr: 2 , mx:2}}>
                 客戶端
             </Typography>
 
@@ -112,34 +115,32 @@ export default function ClippedDrawer(props:any) {
           width: drawerWidth,
           flexShrink: 0,
           [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
+          
         }}
       >
         <Toolbar />
-        <Box sx={{ overflow: 'auto' }} >
+        <Box sx={{ display:'flex' , flexDirection:"column" , overflow: 'auto' , bgcolor: 'primary.dark' , minHeight:969}} >
           <List >
             {['我的寵物', '診療紀錄', '寵物保險', '醫療查詢'].map((text, index) => (
               
-              <ListItem key={text} disablePadding >
+              <ListItem key={text} disablePadding  sx={{mt:2}} >
                 { index === 0 ? 
-                  <ListItemButton  onClick={handleMypets} >
+                  <ListItemButton  onClick={handleMypets}>
                       
-                      <ListItemIcon>
+                      <ListItemIcon style={{ color: '#FFFFFF' }}>
                         <PetsIcon></PetsIcon>
                       </ListItemIcon>
-                    <ListItemText primary={text} />
+                    <ListItemText primary={<Typography variant="body1" style={{ color: '#FFFFFF' }}>{text}</Typography>} />
                   </ListItemButton>
                   :
                   <ListItemButton >
-                      <ListItemIcon>
+                      <ListItemIcon style={{ color: '#FFFFFF' }}>
                         <MedicationIcon></MedicationIcon>
                       </ListItemIcon>
-                    <ListItemText primary={text} />
+                    <ListItemText primary={<Typography variant="body1" style={{ color: '#FFFFFF' }}>{text}</Typography>}/>
                   </ListItemButton>
 
                 }
-                
-
-
 
               </ListItem>
             ))}
@@ -148,7 +149,7 @@ export default function ClippedDrawer(props:any) {
         </Box>
         
       </Drawer>
-      </ThemeProvider>
+      
       
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <Toolbar />
@@ -159,6 +160,7 @@ export default function ClippedDrawer(props:any) {
       </Box>
       
     </Box>
+    </ThemeProvider>
     
   );
 }
