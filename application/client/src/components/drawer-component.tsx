@@ -6,16 +6,12 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
 import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
-import Chip from '@mui/material/Chip';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Stack from '@mui/material/Stack';
 import AuthService from '../service/auth-service';
@@ -23,10 +19,12 @@ import {useNavigate} from "react-router-dom";
 import BreedSerivce from '../service/breeder-service';
 import PetCard from './petcard-component';
 import {IPet} from '../interface/pet';
-import { purple , blueGrey } from '@mui/material/colors';
 import PetsIcon from '@mui/icons-material/Pets';
 import MedicationIcon from '@mui/icons-material/Medication';
 import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety';
+import Container from '@mui/material/Container';
+import Divider from '@mui/material/Divider';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 const theme = createTheme({
   palette: {
@@ -34,10 +32,12 @@ const theme = createTheme({
     primary: {
       main: '#009688',
       dark: '#006064',
-      light: '#e8f5e9'
+      light: '#eceff1'
     },
     secondary: {
       main: '#673ab7',
+      dark: '#121827',
+      light: '#232b35'
     },
   },
 });
@@ -49,6 +49,7 @@ export default function ClippedDrawer(props:any) {
 
   const navigate = useNavigate();
   let [sidebarmode , setSidebarmode] = React.useState('');
+  let [midtitle , setMidtitle] = React.useState('Overview');
   let [mypetdata , setMypetdata] = React.useState<IPet[]>([]);
   let {currentUser , setCurrentUser} = props;
 
@@ -74,6 +75,7 @@ export default function ClippedDrawer(props:any) {
       
       setSidebarmode('re');
       setSidebarmode('checkmypets');
+      setMidtitle("我的寵物");
 
     });
     
@@ -82,14 +84,14 @@ export default function ClippedDrawer(props:any) {
 
   return (
     <ThemeProvider theme={theme}>
-    <Box sx={{ display: 'flex'}}>
+    <Box sx={{ display: 'flex', bgcolor: 'primary.light', minHeight:"100vh"}}>
       <CssBaseline />
       
-        <AppBar  position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1  , bgcolor: 'primary.main' ,py:1}}>
+        <AppBar  position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1  , bgcolor: 'secondary.dark'}}>
           <Toolbar >
-            <HealthAndSafetyIcon />
+            <HealthAndSafetyIcon sx={{color:'primary.main'}}/>
             <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 , mr: 2 , mx:2}}>
-                客戶端
+                Health
             </Typography>
 
             <Stack direction="row" spacing={1}>
@@ -99,7 +101,8 @@ export default function ClippedDrawer(props:any) {
             <Typography variant="subtitle1"  sx={{ m: 1}}>
               Remy Sharp
             </Typography>
-            <Button variant="outlined" onClick={handleLogout} color='inherit' sx={{ml:3 , mr:1}} >
+            <Button variant="contained" onClick={handleLogout}  sx={{ml:3 , mr:1, bgcolor: 'primary.dark'}} >
+              <LogoutIcon sx={{mr:1}}/>
               登出
               
             </Button>
@@ -119,7 +122,7 @@ export default function ClippedDrawer(props:any) {
         }}
       >
         <Toolbar />
-        <Box sx={{ display:'flex' , flexDirection:"column" , overflow: 'auto' , bgcolor: 'primary.dark' , minHeight:969}} >
+        <Box sx={{ display:'flex' , flexDirection:"column" , overflow: 'auto' , bgcolor: 'primary.light' , minHeight:969}} >
           <List >
             {['我的寵物', '診療紀錄', '寵物保險', '醫療查詢'].map((text, index) => (
               
@@ -127,17 +130,17 @@ export default function ClippedDrawer(props:any) {
                 { index === 0 ? 
                   <ListItemButton  onClick={handleMypets}>
                       
-                      <ListItemIcon style={{ color: '#FFFFFF' }}>
+                      <ListItemIcon sx={{ color: 'primary.main' }}>
                         <PetsIcon></PetsIcon>
                       </ListItemIcon>
-                    <ListItemText primary={<Typography variant="body1" style={{ color: '#FFFFFF' }}>{text}</Typography>} />
+                    <ListItemText primary={<Typography variant="body1" style={{ color: 'inherit' , fontWeight:"bold"}}>{text}</Typography>} />
                   </ListItemButton>
                   :
                   <ListItemButton >
-                      <ListItemIcon style={{ color: '#FFFFFF' }}>
+                      <ListItemIcon sx={{ color: 'primary.main' }}>
                         <MedicationIcon></MedicationIcon>
                       </ListItemIcon>
-                    <ListItemText primary={<Typography variant="body1" style={{ color: '#FFFFFF' }}>{text}</Typography>}/>
+                    <ListItemText primary={<Typography variant="body1" style={{ color: 'inherit' , fontWeight:"bold"}}>{text}</Typography>}/>
                   </ListItemButton>
 
                 }
@@ -154,7 +157,12 @@ export default function ClippedDrawer(props:any) {
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <Toolbar />
         
-        {sidebarmode === "checkmypets" ? <PetCard mypetdata={mypetdata} setMypetdata={setMypetdata}  /> : null}
+        <Container maxWidth="xl">
+          <Typography variant="h4" style={{ color: 'inherit' }} sx={{mb:4 , mt:2 , fontWeight:"bold"}}>{midtitle}</Typography>
+          
+          {sidebarmode === "checkmypets" ? <PetCard mypetdata={mypetdata} setMypetdata={setMypetdata}  /> : null}
+        </Container>
+        
         
         
       </Box>

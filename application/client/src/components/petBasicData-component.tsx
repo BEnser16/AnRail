@@ -14,14 +14,14 @@ import Avatar from '@mui/material/Avatar';
 export default function BasicTable(props:IPet[] | any) {
     let {mypetdata , setMypetdata} = props;
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 , mt: 3}} aria-label="simple table">
+    <TableContainer component={Paper} sx={{borderRadius:"12px"}}>
+      <Table sx={{ minWidth: 650}} aria-label="simple table">
         <TableHead>
          
         </TableHead>
         <TableBody>
             <TableRow>
-            <Avatar alt="Remy Sharp" src="https://i.epochtimes.com/assets/uploads/2018/05/dog-3313578-450x300.jpg" sx={{ width: 170, height: 160 , mb: 4 }} />
+            <Avatar alt="Remy Sharp" src="https://i.epochtimes.com/assets/uploads/2018/05/dog-3313578-450x300.jpg" sx={{ width: 170, height: 160 , m: 4 }} />
             
                 <TableCell>名稱: {mypetdata[0].Record.name}</TableCell>
                 

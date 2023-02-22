@@ -9,6 +9,7 @@
 import { PetModel } from './pet-model';
 import { Context, Contract } from 'fabric-contract-api';
 import { UserModel } from './user-model';
+import { InsuranceModel } from './insurance';
 
 
 
@@ -58,6 +59,24 @@ export class PetContract extends Contract {
             },
         ];
 
+        const Insurances:InsuranceModel[] = [
+            {
+                docType:'insurance',
+                ID:'Insurance1',
+                PolicyName:'米得寵',
+                State:'ISSUED',
+                Phrase:0,
+                StartDate:null,
+                EndDate:null,
+                ProposerName:"",
+                ProposeID:"",
+                PetChipID:"",
+                PetBornDate:null,
+                DogNorCat:false,
+                
+            },
+        ];
+
         
         //  利用putState 將上面的資料放入 fabric 帳本
         for (let i = 0; i < pets.length; i++) {
@@ -72,6 +91,9 @@ export class PetContract extends Contract {
             console.info("create account > " , accounts[i]);
         }
 
+        for(const i of Insurances) {
+            await ctx.stub.putState(i.ID , Buffer.from(JSON.stringify(i)));
+        }
 
         console.info('============= END : Initialize Ledger ===========');
     }
@@ -206,8 +228,92 @@ export class PetContract extends Contract {
         return accountAsBytes.toString();
     }
 
+    //  單類查詢
+    public async queryDocType(ctx:Context , docType:string ) {
+        let queryString = {selector: {
+            docType:""   
+        }};
+        
+        queryString.selector.docType = docType;
+        
+        //  使用query json 字串進行 rich query
+        return await this.GetQueryResultForQueryString(ctx, JSON.stringify(queryString));
+    }
 
+    // public async purchaseInsurance() {
+
+    // }
     
+
+    // public async getAge(PetBornDate:Date , yearNorMonth:boolean): Promise<number> {
+    //     const today = new Date();
+    //     let years = today.getFullYear() - PetBornDate.getFullYear();
+    //     let months = today.getMonth() - PetBornDate.getMonth();
+
+    //     // 如果月份差值為負數，表示今年還沒到生日，年齡要扣 1 歲，並加上 12 個月
+    //     if (months < 0) {
+    //         years--;
+    //         months += 12;
+    //     }
+
+    //     if(yearNorMonth) {
+    //         return years;
+    //     } else {
+    //         return months;
+    //     }
+    // }
+
+
+    // GetAssetHistory returns the chain of custody for an asset since issuance.
+	async GetAssetHistory(ctx:Context, assetName:string) {
+
+		let resultsIterator = await ctx.stub.getHistoryForKey(assetName);
+		let results = await this.GetAllResults(resultsIterator, true);
+
+		return JSON.stringify(results);
+	}
+
+
+
+
+    public async GetQueryResultForQueryString(ctx: Context, queryString: string): Promise<string> {
+        const resultsIterator = await ctx.stub.getQueryResult(queryString);
+        const results = await this.GetAllResults(resultsIterator, false);
+        return JSON.stringify(results);
+    }
+    
+    public async GetAllResults(iterator: any, isHistory: boolean): Promise<object[]> {
+        const allResults: object[] = [];
+        let res = await iterator.next();
+        while (!res.done) {
+            if (res.value && res.value.value.toString()) {
+            const jsonRes: any = {};
+            console.log(res.value.value.toString('utf8'));
+            if (isHistory && isHistory === true) {
+                jsonRes.TxId = res.value.tx_id;
+                jsonRes.Timestamp = res.value.timestamp;
+                try {
+                jsonRes.Value = JSON.parse(res.value.value.toString('utf8'));
+                } catch (err) {
+                console.log(err);
+                jsonRes.Value = res.value.value.toString('utf8');
+                }
+            } else {
+                jsonRes.Key = res.value.key;
+                try {
+                jsonRes.Record = JSON.parse(res.value.value.toString('utf8'));
+                } catch (err) {
+                console.log(err);
+                jsonRes.Record = res.value.value.toString('utf8');
+                }
+            }
+            allResults.push(jsonRes);
+            }
+            res = await iterator.next();
+        }
+        iterator.close();
+        return allResults;
+    }
     
 
 }
