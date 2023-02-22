@@ -25,6 +25,7 @@ import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety';
 import Container from '@mui/material/Container';
 import Divider from '@mui/material/Divider';
 import LogoutIcon from '@mui/icons-material/Logout';
+import InsurCard from './insurCard-component';
 
 const theme = createTheme({
   palette: {
@@ -51,6 +52,7 @@ export default function ClippedDrawer(props:any) {
   let [sidebarmode , setSidebarmode] = React.useState('');
   let [midtitle , setMidtitle] = React.useState('Overview');
   let [mypetdata , setMypetdata] = React.useState<IPet[]>([]);
+  let [allinsurData , setallinsurData] = React.useState([]);
   let {currentUser , setCurrentUser} = props;
 
   const handleLogout = () => {
@@ -70,6 +72,24 @@ export default function ClippedDrawer(props:any) {
     BreedSerivce.getMypets(userobj.userID).then((response) => {
       console.log('第一筆');
       console.log(response.data.mypetlist[0].Record.name);
+      
+      setSidebarmode('re');
+      setSidebarmode('checkinsurance');
+      setMidtitle("寵物保險");
+
+    });
+    
+    
+  }
+
+  const handleInsurance = () => {
+    const usertoken = AuthService.getCurrentUser();
+    console.log("user token: " + usertoken);
+    const userobj = JSON.parse(usertoken.logindata);
+    
+    BreedSerivce.getAllInsurance(userobj.userID).then((response) => {
+      console.log('保險返回值:');
+      console.log(response);
       setMypetdata(response.data.mypetlist);
       console.log('state');
       
@@ -78,9 +98,8 @@ export default function ClippedDrawer(props:any) {
       setMidtitle("我的寵物");
 
     });
-    
-    
   }
+
 
   return (
     <ThemeProvider theme={theme}>
@@ -127,7 +146,7 @@ export default function ClippedDrawer(props:any) {
             {['我的寵物', '診療紀錄', '寵物保險', '醫療查詢'].map((text, index) => (
               
               <ListItem key={text} disablePadding  sx={{mt:2}} >
-                { index === 0 ? 
+                { index === 0 &&
                   <ListItemButton  onClick={handleMypets}>
                       
                       <ListItemIcon sx={{ color: 'primary.main' }}>
@@ -135,7 +154,26 @@ export default function ClippedDrawer(props:any) {
                       </ListItemIcon>
                     <ListItemText primary={<Typography variant="body1" style={{ color: 'inherit' , fontWeight:"bold"}}>{text}</Typography>} />
                   </ListItemButton>
-                  :
+                }
+                { index === 1 &&
+                  <ListItemButton >
+                      <ListItemIcon sx={{ color: 'primary.main' }}>
+                        <MedicationIcon></MedicationIcon>
+                      </ListItemIcon>
+                    <ListItemText primary={<Typography variant="body1" style={{ color: 'inherit' , fontWeight:"bold"}}>{text}</Typography>}/>
+                  </ListItemButton>
+
+                }
+                { index === 2 &&
+                  <ListItemButton onClick={handleInsurance}>
+                      <ListItemIcon sx={{ color: 'primary.main' }}>
+                        <MedicationIcon></MedicationIcon>
+                      </ListItemIcon>
+                    <ListItemText primary={<Typography variant="body1" style={{ color: 'inherit' , fontWeight:"bold"}}>{text}</Typography>}/>
+                  </ListItemButton>
+
+                }
+                { index === 3 &&
                   <ListItemButton >
                       <ListItemIcon sx={{ color: 'primary.main' }}>
                         <MedicationIcon></MedicationIcon>
@@ -161,6 +199,7 @@ export default function ClippedDrawer(props:any) {
           <Typography variant="h4" style={{ color: 'inherit' }} sx={{mb:4 , mt:2 , fontWeight:"bold"}}>{midtitle}</Typography>
           
           {sidebarmode === "checkmypets" ? <PetCard mypetdata={mypetdata} setMypetdata={setMypetdata}  /> : null}
+          {sidebarmode === "checkinsurance" ? <InsurCard allinsurData={allinsurData} setallinsurData={setallinsurData}  /> : null}
         </Container>
         
         

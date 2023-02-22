@@ -76,7 +76,7 @@ router.post("/getmypets" , async(req:Request , res:Response ) => {
 
 
 //  查詢所有保險
-router.get("/getallinsurance" , async(req:Request , res:Response ) => {
+router.post("/getallinsurance" , async(req:Request , res:Response ) => {
     try {
         
         // 載入網路配置
@@ -110,33 +110,19 @@ router.get("/getallinsurance" , async(req:Request , res:Response ) => {
         const result = await contract.evaluateTransaction('queryDocType' , 'insurance');
         console.log("這是queryDocType insurance 返回值: " + result);
         const resultstr = result.toString('utf-8');
-        const resltObject = JSON.parse(resultstr);
-        console.log(resltObject);
-
-
-        let mypetlist:{ Key: string, Record: IPet }[] = [];
-        // const dataArray:[] = resltObject.data;
-        resltObject.forEach( function(element:{
-            Key:string,
-            Record:IPet
-        }) {
-            
-            if(element.Record.ownerID == req.body.userID){
-                mypetlist.push(element);
-            }
-        });
-
+        const resultObject = JSON.parse(resultstr);
+        console.log("result object: " + resultObject);
         
         
-        res.status(200).json({mypetlist});
-        console.log(`我的寵物有: ${mypetlist}`);
+        res.status(200).json({resultObject});
+        console.log(`目前的所有保險: ${resultObject}`);
 
         // 關閉 gateway.
         await gateway.disconnect();
         
     } catch (error) {
         console.error(`Failed to evaluate transaction: ${error}`);
-        res.status(400).send("查閱我的寵物失敗...")
+        res.status(400).send("api getallinsurance 查詢doctype:insurance失敗...")
         process.exit(1);
     }
 });

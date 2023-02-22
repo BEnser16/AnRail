@@ -8,6 +8,11 @@ class BreederService {
         
         return axios.post(API_URL + "/getmypets" , {userID});
     }
+
+    getAllInsurance(userID:any) {
+        return axios.post(API_URL + "/getallinsurance" , {userID});
+
+    }
 }
 
 export default new BreederService();
