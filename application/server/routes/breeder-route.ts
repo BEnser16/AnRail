@@ -7,9 +7,9 @@ import * as fs from 'fs';
 import {IPet} from '../interface/pet';
 
 //  調用petcontract 的 queryallpets 方法 得到目前所有寵物的資料
-router.get("/getmypets" , async(req:Request , res:Response ) => {
+router.post("/getmypets" , async(req:Request , res:Response ) => {
     try {
-        
+        console.log("開始查詢doctype:pet的資料...");
         // 載入網路配置
         const ccpPath = path.resolve(__dirname,'../../../network', 'organizations', 'peerOrganizations', 'breeder.anrail.com', 'connection-breeder.json');
         const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));

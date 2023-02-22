@@ -38,11 +38,11 @@ router.post("/loginhospital" , async(req:Request , res:Response) => {
 
         const loginUserIdentity = await wallet.get(req.body.userID);
         if (!loginUserIdentity) {
-            console.log(loginUserIdentity);
+            // console.log(loginUserIdentity);
             console.log('未知的使用者名稱...');
             return;
         } else {
-            console.log("使用者名稱存在！");
+            console.log("找到使用者名稱！");
             const tokenObject = {_id:req.body.userID  , role:req.body.role};
             const token = jwt.sign(tokenObject , "TOKENPASS");
             res.send({success:true , token:"JWT " + token , loginUserIdentity});
