@@ -4,18 +4,52 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 'use strict';
-var __asyncValues = (this && this.__asyncValues) || function (o) {
-    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
-    var m = o[Symbol.asyncIterator], i;
-    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
-    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
-    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PetContract = void 0;
-const fabric_contract_api_1 = require("fabric-contract-api");
+const { Contract } = require('fabric-contract-api');
 //  智能合約 讓Server直接調用這裡的funtion
-class PetContract extends fabric_contract_api_1.Contract {
+class PetContract extends Contract {
+    //  搜尋資料內容的兩個函式
+    async GetQueryResultForQueryString(ctx, queryString) {
+        let resultsIterator = await ctx.stub.getQueryResult(queryString);
+        let results = await this.GetAllResults(resultsIterator, false);
+        return JSON.stringify(results);
+    }
+    async GetAllResults(iterator, isHistory) {
+        let allResults = [];
+        let res = await iterator.next();
+        while (!res.done) {
+            if (res.value && res.value.value.toString()) {
+                let jsonRes = {};
+                console.log(res.value.value.toString('utf8'));
+                if (isHistory && isHistory === true) {
+                    jsonRes.TxId = res.value.tx_id;
+                    jsonRes.Timestamp = res.value.timestamp;
+                    try {
+                        jsonRes.Value = JSON.parse(res.value.value.toString('utf8'));
+                    }
+                    catch (err) {
+                        console.log(err);
+                        jsonRes.Value = res.value.value.toString('utf8');
+                    }
+                }
+                else {
+                    jsonRes.Key = res.value.key;
+                    try {
+                        jsonRes.Record = JSON.parse(res.value.value.toString('utf8'));
+                    }
+                    catch (err) {
+                        console.log(err);
+                        jsonRes.Record = res.value.value.toString('utf8');
+                    }
+                }
+                allResults.push(jsonRes);
+            }
+            res = await iterator.next();
+        }
+        iterator.close();
+        return allResults;
+    }
     //  初始化 佈署完fabric 自動預先調用
     async initLedger(ctx) {
         console.info('============= START : Initialize Ledger ===========');
@@ -103,34 +137,11 @@ class PetContract extends fabric_contract_api_1.Contract {
     }
     //  查詢目前所有寵物
     async queryAllPets(ctx) {
-        var e_1, _a;
-        const startKey = '';
-        const endKey = '';
-        const allResults = [];
-        try {
-            for (var _b = __asyncValues(ctx.stub.getStateByRange(startKey, endKey)), _c; _c = await _b.next(), !_c.done;) {
-                const { key, value } = _c.value;
-                const strValue = Buffer.from(value).toString('utf8');
-                let record;
-                try {
-                    record = JSON.parse(strValue);
-                }
-                catch (err) {
-                    console.log(err);
-                    record = strValue;
-                }
-                allResults.push({ Key: key, Record: record });
-            }
-        }
-        catch (e_1_1) { e_1 = { error: e_1_1 }; }
-        finally {
-            try {
-                if (_c && !_c.done && (_a = _b.return)) await _a.call(_b);
-            }
-            finally { if (e_1) throw e_1.error; }
-        }
-        console.info(allResults);
-        return JSON.stringify(allResults);
+        let queryString = {};
+        queryString.selector = {};
+        queryString.selector.docType = 'pet';
+        //  使用query json 字串進行 rich query
+        return await this.GetQueryResultForQueryString(ctx, JSON.stringify(queryString));
     }
     //  更改寵物的擁有者
     async changePetOwner(ctx, chipID, newOwner) {
@@ -191,6 +202,47 @@ class PetContract extends fabric_contract_api_1.Contract {
         }
         console.log(accountAsBytes.toString());
         return accountAsBytes.toString();
+    }
+    //  新增寵物病歷紀錄 使用chipID綁定寵物
+    async createPetRecord(ctx, recordID, chipID, date, type, doctor, describe, complete) {
+        console.info('============= START : Create Record ===========');
+        const record = {
+            docType: 'record',
+            chipID,
+            date,
+            type,
+            doctor,
+            describe,
+            complete,
+        };
+        await ctx.stub.putState(recordID, Buffer.from(JSON.stringify(record)));
+        console.info('============= END : Create Record ===========');
+    }
+    //  更改病歷的資料
+    async changePetRecord(ctx, recordID, NewchipID, Newdate, Newtype, Newdoctor, Newdescribe, Newcomplete) {
+        console.info('============= START : changePetRecord ===========');
+        const petAsBytes = await ctx.stub.getState(recordID); // get the reocrd from chaincode state
+        if (!petAsBytes || petAsBytes.length === 0) {
+            throw new Error(`${recordID} does not exist`);
+        }
+        const record = JSON.parse(petAsBytes.toString());
+        record.chipID = NewchipID;
+        record.date = Newdate;
+        record.type = Newtype;
+        record.doctor = Newdoctor;
+        record.describe = Newdescribe;
+        record.complete = Newcomplete;
+        await ctx.stub.putState(recordID, Buffer.from(JSON.stringify(record)));
+        console.info('============= END : changePetRecord ===========');
+    }
+    // 查詢寵物病歷紀錄 使用chipID搜尋
+    async queryRecord(ctx, chipID) {
+        let queryString = {};
+        queryString.selector = {};
+        queryString.selector.docType = 'record';
+        queryString.selector.chipID = chipID;
+        //  使用query json 字串進行 rich query
+        return await this.GetQueryResultForQueryString(ctx, JSON.stringify(queryString));
     }
 }
 exports.PetContract = PetContract;

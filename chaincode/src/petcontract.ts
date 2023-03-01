@@ -7,14 +7,60 @@
 'use strict';
 
 import { PetModel } from './pet-model';
-import { Context, Contract } from 'fabric-contract-api';
+import { Context } from 'fabric-contract-api';
 import { UserModel } from './user-model';
+<<<<<<< Updated upstream
 import { InsuranceModel } from './insurance';
+=======
+const {Contract} = require('fabric-contract-api');
+>>>>>>> Stashed changes
 
 
 
 //  智能合約 讓Server直接調用這裡的funtion
 export class PetContract extends Contract {
+
+    //  搜尋資料內容的兩個函式
+    async GetQueryResultForQueryString(ctx, queryString) {
+
+        let resultsIterator = await ctx.stub.getQueryResult(queryString);
+        let results = await this.GetAllResults(resultsIterator, false);
+    
+        return JSON.stringify(results);
+    }
+
+    async GetAllResults(iterator, isHistory) {
+        let allResults = [];
+        let res = await iterator.next();
+        while (!res.done) {
+            if (res.value && res.value.value.toString()) {
+                let jsonRes = {};
+                console.log(res.value.value.toString('utf8'));
+                if (isHistory && isHistory === true) {
+                    jsonRes.TxId = res.value.tx_id;
+                    jsonRes.Timestamp = res.value.timestamp;
+                    try {
+                        jsonRes.Value = JSON.parse(res.value.value.toString('utf8'));
+                    } catch (err) {
+                        console.log(err);
+                        jsonRes.Value = res.value.value.toString('utf8');
+                    }
+                } else {
+                    jsonRes.Key = res.value.key;
+                    try {
+                        jsonRes.Record = JSON.parse(res.value.value.toString('utf8'));
+                    } catch (err) {
+                        console.log(err);
+                        jsonRes.Record = res.value.value.toString('utf8');
+                    }
+                }
+                allResults.push(jsonRes);
+            }
+            res = await iterator.next();
+        }
+        iterator.close();
+        return allResults;
+    }
 
     //  初始化 佈署完fabric 自動預先調用
     public async initLedger(ctx:Context) {
@@ -136,22 +182,11 @@ export class PetContract extends Contract {
 
     //  查詢目前所有寵物
     public async queryAllPets(ctx:Context): Promise<string> {
-        const startKey = '';
-        const endKey = '';
-        const allResults:{ Key: string, Record: string }[] = [];
-        for await (const {key, value} of ctx.stub.getStateByRange(startKey, endKey)) {
-            const strValue = Buffer.from(value).toString('utf8');
-            let record:string;
-            try {
-                record = JSON.parse(strValue);
-            } catch (err) {
-                console.log(err);
-                record = strValue;
-            }
-            allResults.push({ Key: key, Record: record });
-        }
-        console.info(allResults);
-        return JSON.stringify(allResults);
+        let queryString = {};
+        queryString.selector = {};
+        queryString.selector.docType = 'pet';
+        //  使用query json 字串進行 rich query
+        return await this.GetQueryResultForQueryString(ctx, JSON.stringify(queryString)); 
     }
     
     //  更改寵物的擁有者
@@ -228,6 +263,7 @@ export class PetContract extends Contract {
         return accountAsBytes.toString();
     }
 
+<<<<<<< Updated upstream
     //  單類查詢
     public async queryDocType(ctx:Context , docType:string ) {
         let queryString = {selector: {
@@ -262,6 +298,65 @@ export class PetContract extends Contract {
     //         return months;
     //     }
     // }
+=======
+    //  新增寵物病歷紀錄 使用chipID綁定寵物
+    public async createPetRecord(ctx:Context,recordID:string ,chipID:string, date:string, type:string, doctor:string, describe:string, complete:boolean) {
+        
+        console.info('============= START : Create Record ===========');
+
+        const record = {
+            docType: 'record',
+            chipID,
+            date,
+            type,
+            doctor,
+            describe,
+            complete,
+        };
+
+        await ctx.stub.putState(recordID, Buffer.from(JSON.stringify(record)));
+        console.info('============= END : Create Record ===========');
+    }
+
+    //  更改病歷的資料
+    public async changePetRecord(ctx:Context,recordID:string ,NewchipID:string, Newdate:string, Newtype:string, Newdoctor:string, Newdescribe:string, Newcomplete:boolean) {
+        console.info('============= START : changePetRecord ===========');
+
+        const petAsBytes = await ctx.stub.getState(recordID); // get the reocrd from chaincode state
+        if (!petAsBytes || petAsBytes.length === 0) {
+            throw new Error(`${recordID} does not exist`);
+        }
+        const record = JSON.parse(petAsBytes.toString());
+        record.chipID = NewchipID
+        record.date = Newdate
+        record.type = Newtype
+        record.doctor = Newdoctor
+        record.describe = Newdescribe
+        record.complete = Newcomplete
+
+        await ctx.stub.putState(recordID, Buffer.from(JSON.stringify(record)));
+        console.info('============= END : changePetRecord ===========');
+    }
+
+    //  查詢所有寵物病歷紀錄
+    public async queryAllRecord(ctx:Context): Promise<string> {
+        let queryString = {};
+        queryString.selector = {};
+        queryString.selector.docType = 'record';
+        //  使用query json 字串進行 rich query
+        return await this.GetQueryResultForQueryString(ctx, JSON.stringify(queryString)); 
+    }
+
+    // 查詢寵物病歷紀錄 使用chipID搜尋
+    public async queryRecord(ctx, chipID) {
+        let queryString = {};
+        queryString.selector = {};
+        queryString.selector.docType = 'record';
+        queryString.selector.chipID = chipID;
+        //  使用query json 字串進行 rich query
+        return await this.GetQueryResultForQueryString(ctx, JSON.stringify(queryString)); 
+    }
+>>>>>>> Stashed changes
 
 
     // GetAssetHistory returns the chain of custody for an asset since issuance.
@@ -314,6 +409,7 @@ export class PetContract extends Contract {
         iterator.close();
         return allResults;
     }
+    
     
 
 }
