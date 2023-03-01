@@ -90,6 +90,22 @@ class PetContract extends Contract {
                 role: 'admin'
             },
         ];
+        const Insurances = [
+            {
+                docType: 'insurance',
+                ID: 'Insurance1',
+                PolicyName: '米得寵',
+                State: 'ISSUED',
+                Phrase: 0,
+                StartDate: null,
+                EndDate: null,
+                ProposerName: "",
+                ProposeID: "",
+                PetChipID: "",
+                PetBornDate: null,
+                DogNorCat: false,
+            },
+        ];
         //  利用putState 將上面的資料放入 fabric 帳本
         for (let i = 0; i < pets.length; i++) {
             pets[i].docType = 'pet';
@@ -100,6 +116,9 @@ class PetContract extends Contract {
             accounts[i].docType = 'account';
             await ctx.stub.putState(accounts[i].userID, Buffer.from(JSON.stringify(accounts[i])));
             console.info("create account > ", accounts[i]);
+        }
+        for (const i of Insurances) {
+            await ctx.stub.putState(i.ID, Buffer.from(JSON.stringify(i)));
         }
         console.info('============= END : Initialize Ledger ===========');
     }
@@ -203,6 +222,32 @@ class PetContract extends Contract {
         console.log(accountAsBytes.toString());
         return accountAsBytes.toString();
     }
+    //  單類查詢
+    async queryDocType(ctx, docType) {
+        let queryString = { selector: {
+                docType: ""
+            } };
+        queryString.selector.docType = docType;
+        //  使用query json 字串進行 rich query
+        return await this.GetQueryResultForQueryString(ctx, JSON.stringify(queryString));
+    }
+    // public async purchaseInsurance() {
+    // }
+    // public async getAge(PetBornDate:Date , yearNorMonth:boolean): Promise<number> {
+    //     const today = new Date();
+    //     let years = today.getFullYear() - PetBornDate.getFullYear();
+    //     let months = today.getMonth() - PetBornDate.getMonth();
+    //     // 如果月份差值為負數，表示今年還沒到生日，年齡要扣 1 歲，並加上 12 個月
+    //     if (months < 0) {
+    //         years--;
+    //         months += 12;
+    //     }
+    //     if(yearNorMonth) {
+    //         return years;
+    //     } else {
+    //         return months;
+    //     }
+    // }
     //  新增寵物病歷紀錄 使用chipID綁定寵物
     async createPetRecord(ctx, recordID, chipID, date, type, doctor, describe, complete) {
         console.info('============= START : Create Record ===========');
@@ -235,6 +280,14 @@ class PetContract extends Contract {
         await ctx.stub.putState(recordID, Buffer.from(JSON.stringify(record)));
         console.info('============= END : changePetRecord ===========');
     }
+    //  查詢所有寵物病歷紀錄
+    async queryAllRecord(ctx) {
+        let queryString = {};
+        queryString.selector = {};
+        queryString.selector.docType = 'record';
+        //  使用query json 字串進行 rich query
+        return await this.GetQueryResultForQueryString(ctx, JSON.stringify(queryString));
+    }
     // 查詢寵物病歷紀錄 使用chipID搜尋
     async queryRecord(ctx, chipID) {
         let queryString = {};
@@ -243,6 +296,12 @@ class PetContract extends Contract {
         queryString.selector.chipID = chipID;
         //  使用query json 字串進行 rich query
         return await this.GetQueryResultForQueryString(ctx, JSON.stringify(queryString));
+    }
+    // GetAssetHistory returns the chain of custody for an asset since issuance.
+    async GetAssetHistory(ctx, assetName) {
+        let resultsIterator = await ctx.stub.getHistoryForKey(assetName);
+        let results = await this.GetAllResults(resultsIterator, true);
+        return JSON.stringify(results);
     }
 }
 exports.PetContract = PetContract;
