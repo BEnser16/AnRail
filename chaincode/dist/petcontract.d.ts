@@ -8,4 +8,6 @@ export declare class PetContract extends Contract {
     changePetInfo(ctx: Context, chipID: string, Newname: string, Newspecies: string, Newbreed: string, Newowner: string, NewownerID: string, Newphone: string, Newbirthday: string, Newgender: string, NewbloodType: string, Newligation: boolean, Newallergy: string, NewmajorDiseases: string, Newremark: string, Newhospital: string): Promise<void>;
     signupbreeder(ctx: Context, userID: string, username: string, email: string, password: string, role: string): Promise<void>;
     queryAccount(ctx: Context, userID: string): Promise<string>;
+    createPetRecord(ctx: Context, chipID: string, date: string, type: string, doctor: string, describe: string, complete: boolean): Promise<void>;
+    queryRecord(ctx: Context, chipID: string): Promise<string>;
 }
