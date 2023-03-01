@@ -53,10 +53,9 @@ router.get("/getallpets" , async(req:Request , res:Response ) => {
     }
 });
 
-<<<<<<< Updated upstream
-=======
+
+
 //  調用petcontract 的 createpet 方法 新增寵物的資料
->>>>>>> Stashed changes
 router.post("/createpet" , async(req:Request , res:Response ) => {
     try {
         console.log("開始執行創建新的寵物資料");
