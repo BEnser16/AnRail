@@ -4,7 +4,7 @@ import { Request , Response } from 'express';
 import {  Wallets , Gateway} from 'fabric-network';
 import * as path from 'path';
 import * as fs from 'fs';
-import {IPet} from '../interface/pet';
+import {IPet} from '../interface/IPet';
 
 //  調用petcontract 的 queryallpets 方法 得到目前所有寵物的資料
 router.post("/getmypets" , async(req:Request , res:Response ) => {

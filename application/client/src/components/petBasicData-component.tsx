@@ -6,7 +6,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import {IPet} from '../interface/pet';
+import {IPet} from '../interface/IPet';
 import Avatar from '@mui/material/Avatar';
 
 

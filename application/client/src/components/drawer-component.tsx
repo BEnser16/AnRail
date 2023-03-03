@@ -16,9 +16,9 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Stack from '@mui/material/Stack';
 import AuthService from '../service/auth-service';
 import {useNavigate} from "react-router-dom";
-import BreedSerivce from '../service/breeder-service';
+import BreederSerivce from '../service/breeder-service';
 import PetCard from './petcard-component';
-import {IPet} from '../interface/pet';
+import {IPet} from '../interface/IPet';
 import PetsIcon from '@mui/icons-material/Pets';
 import MedicationIcon from '@mui/icons-material/Medication';
 import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety';
@@ -26,6 +26,8 @@ import Container from '@mui/material/Container';
 import Divider from '@mui/material/Divider';
 import LogoutIcon from '@mui/icons-material/Logout';
 import InsurCard from './insurCard-component';
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
+import SearchIcon from '@mui/icons-material/Search';
 
 const theme = createTheme({
   palette: {
@@ -52,7 +54,7 @@ export default function ClippedDrawer(props:any) {
   let [sidebarmode , setSidebarmode] = React.useState('');
   let [midtitle , setMidtitle] = React.useState('Overview');
   let [mypetdata , setMypetdata] = React.useState<IPet[]>([]);
-  let [allinsurData , setallinsurData] = React.useState([]);
+  let [allinsurData , setallinsurData] = React.useState({});
   let {currentUser , setCurrentUser} = props;
 
   const handleLogout = () => {
@@ -65,17 +67,17 @@ export default function ClippedDrawer(props:any) {
   const handleMypets = () => {
     const usertoken = AuthService.getCurrentUser();
     console.log(usertoken);
-    
-    
     const userobj = JSON.parse(usertoken.logindata);
     
-    BreedSerivce.getMypets(userobj.userID).then((response) => {
-      console.log('第一筆');
-      console.log(response.data.mypetlist[0].Record.name);
-      
+    BreederSerivce.getMypets(userobj.userID).then((response) => {
+      const usertoken = AuthService.getCurrentUser();
+      console.log(currentUser);
+      console.log("user token: " + usertoken);
+      console.log("first data: " + response.data.mypetlist[0].Record.name);
+      setMypetdata(response.data.mypetlist);
       setSidebarmode('re');
-      setSidebarmode('checkinsurance');
-      setMidtitle("寵物保險");
+      setSidebarmode('checkmypets');
+      setMidtitle("我的寵物");
 
     });
     
@@ -87,15 +89,18 @@ export default function ClippedDrawer(props:any) {
     console.log("user token: " + usertoken);
     const userobj = JSON.parse(usertoken.logindata);
     
-    BreedSerivce.getAllInsurance(userobj.userID).then((response) => {
+    BreederSerivce.getAllInsurance(userobj.userID).then((response) => {
       console.log('保險返回值:');
-      console.log(response);
-      setMypetdata(response.data.mypetlist);
-      console.log('state');
-      
+      console.log(response.data.resultObject);
+      //  要先有mypetdata state
+      setallinsurData({
+        insurData:response.data.resultObject,
+        petdata:mypetdata,
+        userID:userobj.userID
+      });     
       setSidebarmode('re');
-      setSidebarmode('checkmypets');
-      setMidtitle("我的寵物");
+      setSidebarmode('checkinsurance');
+      setMidtitle("寵物保險");
 
     });
   }
@@ -117,8 +122,9 @@ export default function ClippedDrawer(props:any) {
               
               <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
             </Stack>
-            <Typography variant="subtitle1"  sx={{ m: 1}}>
-              Remy Sharp
+            <Typography variant="subtitle1"  sx={{ ml: 1}}>
+              {/* {currentUser} */}
+              user
             </Typography>
             <Button variant="contained" onClick={handleLogout}  sx={{ml:3 , mr:1, bgcolor: 'primary.dark'}} >
               <LogoutIcon sx={{mr:1}}/>
@@ -141,7 +147,7 @@ export default function ClippedDrawer(props:any) {
         }}
       >
         <Toolbar />
-        <Box sx={{ display:'flex' , flexDirection:"column" , overflow: 'auto' , bgcolor: 'primary.light' , minHeight:969}} >
+        <Box sx={{ display:'flex' , flexDirection:"column" , overflow: 'auto' , bgcolor: 'primary.light' , minHeight:"100vh"}} >
           <List >
             {['我的寵物', '診療紀錄', '寵物保險', '醫療查詢'].map((text, index) => (
               
@@ -158,7 +164,7 @@ export default function ClippedDrawer(props:any) {
                 { index === 1 &&
                   <ListItemButton >
                       <ListItemIcon sx={{ color: 'primary.main' }}>
-                        <MedicationIcon></MedicationIcon>
+                        <ReceiptLongIcon></ReceiptLongIcon>
                       </ListItemIcon>
                     <ListItemText primary={<Typography variant="body1" style={{ color: 'inherit' , fontWeight:"bold"}}>{text}</Typography>}/>
                   </ListItemButton>
@@ -176,7 +182,7 @@ export default function ClippedDrawer(props:any) {
                 { index === 3 &&
                   <ListItemButton >
                       <ListItemIcon sx={{ color: 'primary.main' }}>
-                        <MedicationIcon></MedicationIcon>
+                        <SearchIcon></SearchIcon>
                       </ListItemIcon>
                     <ListItemText primary={<Typography variant="body1" style={{ color: 'inherit' , fontWeight:"bold"}}>{text}</Typography>}/>
                   </ListItemButton>

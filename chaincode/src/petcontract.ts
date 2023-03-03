@@ -1,15 +1,8 @@
-/*
- * Copyright IBM Corp. All Rights Reserved.
- *
- * SPDX-License-Identifier: Apache-2.0
- */
-
-'use strict';
 
 import { PetModel } from './pet-model';
 import { Context, Contract } from 'fabric-contract-api';
 import { UserModel } from './user-model';
-import { InsuranceModel } from './insurance';
+import { InsuranceModel } from './insurance-model';
 
 
 
@@ -47,6 +40,8 @@ export class PetContract extends Contract {
                 userID: 'bradmin',
                 email: 'bradmin@gmail.com',
                 username:'B11',
+                birthDate: new Date("2023-02-06"),
+                phone: 123 ,
                 password: 'adminpw',
                 role: 'admin'
             },
@@ -54,6 +49,8 @@ export class PetContract extends Contract {
                 userID: 'hoadmin',
                 email: 'hoadmin@gmail.com',
                 username:'B00',
+                birthDate: new Date("2023-02-06"),
+                phone: 123 ,
                 password: 'adminpw',
                 role: 'admin'
             },
@@ -69,7 +66,9 @@ export class PetContract extends Contract {
                 StartDate:null,
                 EndDate:null,
                 ProposerName:"",
-                ProposeID:"",
+                ProposerID:"",
+                ProposeAddress:"高雄市",
+                PetName:"小白",
                 PetChipID:"",
                 PetBornDate:null,
                 DogNorCat:false,
@@ -263,6 +262,59 @@ export class PetContract extends Contract {
     //     }
     // }
 
+     //  新增寵物病歷紀錄 使用chipID綁定寵物
+     public async createPetRecord(ctx:Context,recordID:string ,chipID:string, date:string, type:string, doctor:string, describe:string, complete:boolean) {
+        
+        console.info('============= START : Create Record ===========');
+
+        const record = {
+            docType: 'record',
+            chipID,
+            date,
+            type,
+            doctor,
+            describe,
+            complete,
+        };
+
+        await ctx.stub.putState(recordID, Buffer.from(JSON.stringify(record)));
+        console.info('============= END : Create Record ===========');
+    }
+
+    //  更改病歷的資料
+    public async changePetRecord(ctx:Context,recordID:string ,NewchipID:string, Newdate:string, Newtype:string, Newdoctor:string, Newdescribe:string, Newcomplete:boolean) {
+        console.info('============= START : changePetRecord ===========');
+
+        const petAsBytes = await ctx.stub.getState(recordID); // get the reocrd from chaincode state
+        if (!petAsBytes || petAsBytes.length === 0) {
+            throw new Error(`${recordID} does not exist`);
+        }
+        const record = JSON.parse(petAsBytes.toString());
+        record.chipID = NewchipID
+        record.date = Newdate
+        record.type = Newtype
+        record.doctor = Newdoctor
+        record.describe = Newdescribe
+        record.complete = Newcomplete
+
+        await ctx.stub.putState(recordID, Buffer.from(JSON.stringify(record)));
+        console.info('============= END : changePetRecord ===========');
+    }
+
+
+    // 查詢寵物病歷紀錄 使用chipID搜尋
+    public async queryRecord(ctx:Context, chipID:string) {
+        
+        let queryString = {selector: {
+            docType:"",
+            chipID:""   
+        }};
+        
+        queryString.selector.docType = 'record';
+        queryString.selector.chipID = chipID;
+        //  使用query json 字串進行 rich query
+        return await this.GetQueryResultForQueryString(ctx, JSON.stringify(queryString)); 
+    }
 
     // GetAssetHistory returns the chain of custody for an asset since issuance.
 	async GetAssetHistory(ctx:Context, assetName:string) {
