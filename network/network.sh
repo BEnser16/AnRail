@@ -141,6 +141,8 @@ function removeUnwantedImages() {
 
 # Tear down running network
 function networkDown() {
+  # 清理錢包資料夾中舊的身份資料
+  rm -rf ../application/server/wallet/*
   
   docker-compose -f docker/docker-compose-net.yaml -f docker/docker-compose-couch.yaml -f docker/docker-compose-ca.yaml down --volumes --remove-orphans
   
