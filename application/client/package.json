@@ -7,6 +7,7 @@
     "@emotion/styled": "^11.10.5",
     "@mui/icons-material": "^5.10.16",
     "@mui/material": "^5.10.16",
+    "@reduxjs/toolkit": "^1.9.3",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -14,7 +15,9 @@
     "@types/node": "^16.18.4",
     "@types/react": "^18.0.25",
     "@types/react-dom": "^18.0.9",
+    "@types/react-redux": "^7.1.25",
     "axios": "^1.2.0",
+    "immer": "^9.0.19",
     "mdb-react-ui-kit": "^4.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -28,7 +31,6 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
- 
   "browserslist": {
     "production": [
       ">0.2%",
@@ -42,6 +44,7 @@
     ]
   },
   "devDependencies": {
+    "@redux-devtools/core": "^3.13.1",
     "@typescript-eslint/eslint-plugin": "^5.6.0",
     "@typescript-eslint/parser": "^5.6.0",
     "eslint": "^7.32.0",

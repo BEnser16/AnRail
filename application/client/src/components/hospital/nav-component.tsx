@@ -40,15 +40,6 @@ const NavComponent = (props:any) => {
           </MDBNavbarToggler>
           <MDBCollapse show={showNavColor} navbar>
             <MDBNavbarNav className='me-auto mb-2 mb-lg-0 d-flex '>
-              <MDBNavbarItem className='active'>
-                <MDBNavbarLink aria-current='page' href='/'>
-                  首頁
-                </MDBNavbarLink>
-              </MDBNavbarItem>
-              
-              <MDBNavbarItem >
-                <MDBNavbarLink href='/about'>關於我們</MDBNavbarLink>
-              </MDBNavbarItem>
 
               {currentUser && (
                  <MDBNavbarItem >

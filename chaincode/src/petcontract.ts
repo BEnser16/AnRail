@@ -94,6 +94,8 @@ export class PetContract extends Contract {
             await ctx.stub.putState(i.ID , Buffer.from(JSON.stringify(i)));
         }
 
+        
+
         console.info('============= END : Initialize Ledger ===========');
     }
 
@@ -262,8 +264,8 @@ export class PetContract extends Contract {
     //     }
     // }
 
-     //  新增寵物病歷紀錄 使用chipID綁定寵物
-     public async createPetRecord(ctx:Context,recordID:string ,chipID:string, date:string, type:string, doctor:string, describe:string, complete:boolean) {
+    //  新增寵物病歷紀錄 使用chipID綁定寵物
+    public async createPetRecord(ctx:Context,recordID:string ,chipID:string, date:string, type:string, doctor:string, describe:string, complete:boolean) {
         
         console.info('============= START : Create Record ===========');
 
