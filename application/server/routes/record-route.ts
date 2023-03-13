@@ -37,7 +37,7 @@ router.post("/createrecord" , async(req:Request , res:Response ) => {
 
         // Evaluate the specified transaction.
         // recordID為單一病歷的key 後續查詢使用chipID
-        await contract.submitTransaction('createPetRecord', req.body.recordID, req.body.chipID, req.body.date, req.body.type, req.body.doctor, req.body.describe, req.body.complete);
+        await contract.submitTransaction('createPetRecord',req.body.recordType, req.body.recordID, req.body.chipID, req.body.date, req.body.type, req.body.doctor, req.body.describe, req.body.complete);
         console.log('Transaction has been submitted');
         res.status(200).send("evaluate transaction 新增病歷資料成功...");
 
@@ -54,6 +54,11 @@ router.post("/createrecord" , async(req:Request , res:Response ) => {
 const getrecord = async(req:Request , res:Response ) =>{
     try {
         const { id: chipID } = req.params;
+        //const {recordType:recordType} = req.params;
+        const {recordType:recordType} = req.body;
+
+
+        
         // 載入網路配置
         const ccpPath = path.resolve(__dirname,'../../../network', 'organizations', 'peerOrganizations', 'hospital.anrail.com', 'connection-hospital.json');
         const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
@@ -82,7 +87,7 @@ const getrecord = async(req:Request , res:Response ) =>{
         const contract = network.getContract('petcontract');
 
         // Evaluate the specified transaction.
-        const result = await contract.evaluateTransaction('queryRecord',chipID);
+        const result = await contract.evaluateTransaction('queryRecord',recordType,chipID);
         const resultjson = result.toString('utf-8');
         res.status(200).json({resultjson});
         console.log(`Transaction has been evaluated, result is: ${resultjson}`);
