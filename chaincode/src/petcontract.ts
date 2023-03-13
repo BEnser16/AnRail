@@ -265,12 +265,12 @@ export class PetContract extends Contract {
     // }
 
     //  新增寵物病歷紀錄 使用chipID綁定寵物
-    public async createPetRecord(ctx:Context,recordID:string ,chipID:string, date:string, type:string, doctor:string, describe:string, complete:boolean) {
+    public async createPetRecord(ctx:Context,recordType:string, recordID:string ,chipID:string, date:string, type:string, doctor:string, describe:string, complete:boolean) {
         
         console.info('============= START : Create Record ===========');
 
         const record = {
-            docType: 'record',
+            docType: recordType,
             chipID,
             date,
             type,
@@ -305,14 +305,14 @@ export class PetContract extends Contract {
 
 
     // 查詢寵物病歷紀錄 使用chipID搜尋
-    public async queryRecord(ctx:Context, chipID:string) {
+    public async queryRecord(ctx:Context, recordType:string, chipID:string) {
         
         let queryString = {selector: {
             docType:"",
             chipID:""   
         }};
         
-        queryString.selector.docType = 'record';
+        queryString.selector.docType = recordType;
         queryString.selector.chipID = chipID;
         //  使用query json 字串進行 rich query
         return await this.GetQueryResultForQueryString(ctx, JSON.stringify(queryString)); 

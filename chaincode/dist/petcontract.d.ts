@@ -8,6 +8,11 @@ export declare class PetContract extends Contract {
     changePetInfo(ctx: Context, chipID: string, Newname: string, Newspecies: string, Newbreed: string, Newowner: string, NewownerID: string, Newphone: string, Newbirthday: string, Newgender: string, NewbloodType: string, Newligation: boolean, Newallergy: string, NewmajorDiseases: string, Newremark: string, Newhospital: string): Promise<void>;
     signupbreeder(ctx: Context, userID: string, username: string, email: string, password: string, role: string): Promise<void>;
     queryAccount(ctx: Context, userID: string): Promise<string>;
-    createPetRecord(ctx: Context, chipID: string, date: string, type: string, doctor: string, describe: string, complete: boolean): Promise<void>;
-    queryRecord(ctx: Context, chipID: string): Promise<string>;
+    queryDocType(ctx: Context, docType: string): Promise<string>;
+    createPetRecord(ctx: Context, recordType: string, recordID: string, chipID: string, date: string, type: string, doctor: string, describe: string, complete: boolean): Promise<void>;
+    changePetRecord(ctx: Context, recordID: string, NewchipID: string, Newdate: string, Newtype: string, Newdoctor: string, Newdescribe: string, Newcomplete: boolean): Promise<void>;
+    queryRecord(ctx: Context, recordType: string, chipID: string): Promise<string>;
+    GetAssetHistory(ctx: Context, assetName: string): Promise<string>;
+    GetQueryResultForQueryString(ctx: Context, queryString: string): Promise<string>;
+    GetAllResults(iterator: any, isHistory: boolean): Promise<object[]>;
 }

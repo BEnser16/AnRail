@@ -1,27 +1,16 @@
-export declare class PetInsuranceSC {
+export declare class InsuranceModel {
     docType?: string;
     ID: string;
-    Contract: {
-        Phrase: number;
-        State: string;
-        StartContractDate: string;
-        EndContractDate: string;
-    };
-    Proposer: {
-        Name: string;
-        ID: string;
-        BornDate: Date;
-        PhoneNumber: string;
-        Email: string;
-    };
-    ForPet: {
-        DogNorCat: boolean;
-        PetName: string;
-        ChipID: string;
-        BornDate: Date;
-        ageYear: number;
-        ageMonth: number;
-    };
-    getAge(birthDate: Date, yearNorMonth: boolean): number;
-    CalculatePremium(DogNorCat: boolean, BornDate: Date): number;
+    PolicyName: string;
+    State: string;
+    Phrase: number;
+    StartDate: Date;
+    EndDate: Date;
+    ProposerName: string;
+    ProposerID: string;
+    ProposeAddress: string;
+    PetName: string;
+    PetChipID: string;
+    PetBornDate: Date;
+    DogNorCat: boolean;
 }
