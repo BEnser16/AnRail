@@ -13,6 +13,7 @@ export default function InsurCard(props:any) {
     let {allinsurData , setallinsurData} = props;
     let [show , setShow] = React.useState(false);
     const handleCheckMixInsur = () => {
+        console.log(allinsurData);
         setShow(!show);
         
     }

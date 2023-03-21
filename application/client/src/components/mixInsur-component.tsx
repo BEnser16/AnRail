@@ -6,6 +6,7 @@ import Button from '@mui/material/Button';
 import InsurCalculate from './insurCalculate-component';
 import BreederService from '../service/breeder-service';
 import AuthService from '../service/auth-service';
+import InsurContent from './insurContent-component';
 
 export default function MixInsur(props:any) {
   let {allinsurData , setallinsurData} = props;
@@ -16,9 +17,7 @@ export default function MixInsur(props:any) {
       if(newValue === "two"){
         var prse = JSON.stringify(allinsurData).toString();
         var obg = JSON.parse(prse)
-        console.log("props all insur:" + allinsurData.petdata[0].Record.breed);
-          
-          
+        console.log(allinsurData);          
 
       };
   }
@@ -40,6 +39,7 @@ export default function MixInsur(props:any) {
         
       </Tabs>
       {value === "two" ? <InsurCalculate allinsurData={allinsurData} setallinsurData={setallinsurData} /> : null}
+      {value === "one" ? <InsurContent /> : null}
 
     </Box>
   );

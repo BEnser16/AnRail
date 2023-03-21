@@ -67,10 +67,11 @@ export default function BasicTabs(props:any) {
       HoRecordService.create("R001" , infoData.chipID , new_condition_record?.date , new_condition_record?.type , new_condition_record?.doctor , new_condition_record?.describe , true);
     } catch(error) {
       console.log(error);
-      setNewCondition(!newCondition);
+      
     }
 
     console.log("成功新增病歷!!");
+    setNewCondition(!newCondition);
     
   }
 
@@ -88,6 +89,39 @@ export default function BasicTabs(props:any) {
     }
   };
 
+  const inputdate = (e:any) => {
+    setNew_condition_record({
+      date:e.target.value,
+      type:new_condition_record.type,
+      doctor:new_condition_record.doctor,
+      describe:new_condition_record.describe
+    });
+  } 
+
+  const inputtype = (e:any) => {
+    setNew_condition_record({
+      date:new_condition_record.date,
+      type:e.target.value,
+      doctor:new_condition_record.doctor,
+      describe:new_condition_record.describe
+    });
+  } 
+  const inputdoctor = (e:any) => {
+    setNew_condition_record({
+      date:new_condition_record.date,
+      type:new_condition_record.type,
+      doctor:e.target.value,
+      describe:new_condition_record.describe
+    });
+  } 
+  const inputdescribe = (e:any) => {
+    setNew_condition_record({
+      date:new_condition_record.date,
+      type:new_condition_record.type,
+      doctor:new_condition_record.doctor,
+      describe:e.target.value
+    });
+  } 
   return (
     <Box sx={{ width: '100%' }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -115,10 +149,10 @@ export default function BasicTabs(props:any) {
             <Typography variant="h5">
               新增病況
             </Typography>
-            <TextField id="date" label="日期" variant="standard" value={new_condition_record?.date} sx={{mr:1}} /> 
-            <TextField id="type" label="診療類型" variant="standard" value={new_condition_record?.type} sx={{mr:1}}  />
-            <TextField id="doctor" label="主治醫師" variant="standard" value={new_condition_record?.doctor} sx={{mr:1}}  />
-            <TextField id="describe" label="描述" variant="standard" value={new_condition_record?.describe} sx={{mr:1}}  />
+            <TextField id="date" label="日期" variant="standard"  onChange={inputdate} sx={{mr:1}} /> 
+            <TextField id="type" label="診療類型" variant="standard" onChange={inputtype} sx={{mr:1}}  />
+            <TextField id="doctor" label="主治醫師" variant="standard" onChange={inputdoctor} sx={{mr:1}}  />
+            <TextField id="describe" label="描述" variant="standard" onChange={inputdescribe} sx={{mr:1}}  />
             <Button variant="contained" onClick={handle_new_condition} >取消</Button>
             <Button variant="contained" onClick={handle_create_new_condition} >完成</Button>
           </Box>

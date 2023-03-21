@@ -142,16 +142,17 @@ export default function ClippedDrawer(props:any) {
         sx={{
           width: drawerWidth,
           flexShrink: 0,
+          bgcolor: 'primary.light',
           [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
           
         }}
       >
         <Toolbar />
-        <Box sx={{ display:'flex' , flexDirection:"column" , overflow: 'auto' , bgcolor: 'primary.light' , minHeight:"100vh"}} >
+        <Box sx={{ display:'flex' , flexDirection:"column" , overflow: 'hidden' }} >
           <List >
             {['我的寵物', '診療紀錄', '寵物保險', '醫療查詢'].map((text, index) => (
               
-              <ListItem key={text} disablePadding  sx={{mt:2}} >
+              <ListItem key={text} disablePadding  sx={{mt:3}} >
                 { index === 0 &&
                   <ListItemButton  onClick={handleMypets}>
                       

@@ -9,7 +9,7 @@ class HoRecordService {
     }
 
     getallrecord() {
-        return axios.post(API_URL + "/getallrecord");
+        return axios.get(API_URL + "/getallrecord");
     }
     
     delete(chipID:string) {

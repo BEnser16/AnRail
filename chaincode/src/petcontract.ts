@@ -32,6 +32,60 @@ export class PetContract extends Contract {
                 remark:'體型癰腫 個性溫馴',
                 hospital:'高雄動物醫院'
             },
+            {
+                
+                name:'小花',
+                species:'貓',
+                breed:'MIX',
+                owner:'黃小萍',
+                ownerID:'F200700100',
+                phone:'0900-277-277',
+                chipID:'A002',
+                birthday:'2019-10-10',
+                gender:'公',
+                bloodType:'1.1',
+                ligation:false,
+                allergy:'無',
+                majorDiseases:'腫瘤',
+                remark:'體型癰腫 個性溫馴',
+                hospital:'台中動物醫院'
+            },
+            {
+                
+                name:'阿白',
+                species:'狗',
+                breed:'MIX',
+                owner:'陳大平',
+                ownerID:'F100700100',
+                phone:'0900-277-277',
+                chipID:'A003',
+                birthday:'2017-10-10',
+                gender:'公',
+                bloodType:'1.1',
+                ligation:false,
+                allergy:'無',
+                majorDiseases:'腫瘤',
+                remark:'個性兇猛',
+                hospital:'高雄動物醫院'
+            },
+            {
+                
+                name:'阿黑',
+                species:'狗',
+                breed:'MIX',
+                owner:'許傑',
+                ownerID:'F300700100',
+                phone:'0900-277-277',
+                chipID:'A004',
+                birthday:'2020-10-10',
+                gender:'公',
+                bloodType:'1.1',
+                ligation:false,
+                allergy:'無',
+                majorDiseases:'皮膚病',
+                remark:'後腿受傷',
+                hospital:'高雄動物醫院'
+            },
         ];
 
         //  預先設定兩組管理員帳號 飼主身份 醫院身份
@@ -59,7 +113,7 @@ export class PetContract extends Contract {
         const Insurances:InsuranceModel[] = [
             {
                 docType:'insurance',
-                ID:'Insurance1',
+                ID:'insurance1',
                 PolicyName:'米得寵',
                 State:'ISSUED',
                 Phrase:0,
@@ -241,28 +295,29 @@ export class PetContract extends Contract {
         return await this.GetQueryResultForQueryString(ctx, JSON.stringify(queryString));
     }
 
-    // public async purchaseInsurance() {
+    //  進行投保
+    public async purchaseInsurance(ctx:Context ,ID:string , ProposerName:string , ProposerID:string , ProposeAddress:string , PetName:string , PetChipID:string , PetBornDate:Date  , DogNorCat:boolean) {
+        let today = new Date();
+        const newinsurance = {
+            docType:"insurance",
+            ID:ID,
+            PolicyName:"米有保",
+            State:"ISSUED",
+            Phrase:1,
+            StartDate:today,
+            EndDate:new Date(today.getFullYear() + 1, today.getMonth(), today.getDate()),
+            ProposerName:ProposerName,
+            ProposerID:ProposerID,
+            ProposeAddress:ProposeAddress,
+            PetName:PetName,
+            PetChipID:PetChipID,
+            PetBornDate:PetBornDate,
+            DogNorCat:DogNorCat
 
-    // }
-    
+        }
 
-    // public async getAge(PetBornDate:Date , yearNorMonth:boolean): Promise<number> {
-    //     const today = new Date();
-    //     let years = today.getFullYear() - PetBornDate.getFullYear();
-    //     let months = today.getMonth() - PetBornDate.getMonth();
-
-    //     // 如果月份差值為負數，表示今年還沒到生日，年齡要扣 1 歲，並加上 12 個月
-    //     if (months < 0) {
-    //         years--;
-    //         months += 12;
-    //     }
-
-    //     if(yearNorMonth) {
-    //         return years;
-    //     } else {
-    //         return months;
-    //     }
-    // }
+        await ctx.stub.putState(ID , Buffer.from(JSON.stringify(newinsurance)));
+    }
 
     //  新增寵物病歷紀錄 使用chipID綁定寵物
     public async createPetRecord(ctx:Context,recordID:string ,chipID:string, date:string, type:string, doctor:string, describe:string, complete:boolean) {
