@@ -3,7 +3,6 @@
 const express = require('express')
 const app = express();
 const cors = require("cors");
-
 const authRoute = require("./routes/auth-route");
 const infoRoute = require("./routes/info-route");
 const recordRoute = require("./routes/record-route.ts")
@@ -44,7 +43,6 @@ app.get('/', (req, res) => {
 //  Route
 
 app.use("/api/v1/auth" , authRoute);
-
 app.use("/api/v1/info" , infoRoute);
 app.use("/api/v1/breeder" , breederRoute);
 app.use("/api/v1/record" , recordRoute);
