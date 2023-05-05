@@ -7,10 +7,12 @@ export class UserModel {
     public docType?: string;
     public userID: string;
     public username: string;
-    public birthDate:Date;
+    public birthDate?:Date;
     public email: string;
-    public phone:number;
+    public phone?:number;
     public password:string;
     public role?:string;
+    public address?:string;
+    public imgsrc?:string;
     
 }

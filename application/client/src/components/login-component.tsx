@@ -18,6 +18,7 @@ import InputLabel from '@mui/material/InputLabel';
 import {useNavigate} from "react-router-dom";
 import AuthService from '../service/auth-service';
 import FormControl from '@mui/material/FormControl';
+import { Footer } from './Layout';
 import { Fullscreen, Height, Margin } from '@mui/icons-material';
 
 function Copyright(props: any) {
@@ -198,7 +199,7 @@ export default function SignIn() {
           
         </Container>
       </Box>
-      
+      <Footer />
     </ThemeProvider>
   );
 }
