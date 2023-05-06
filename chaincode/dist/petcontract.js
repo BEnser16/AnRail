@@ -31,7 +31,8 @@ class PetContract extends fabric_contract_api_1.Contract {
                 allergy: '無',
                 majorDiseases: '腫瘤',
                 remark: '體型癰腫 個性溫馴',
-                hospital: '高雄動物醫院'
+                hospital: '高雄動物醫院',
+                imgID: ""
             },
         ];
         //  預先設定兩組管理員帳號 飼主身份 醫院身份
@@ -99,7 +100,7 @@ class PetContract extends fabric_contract_api_1.Contract {
         return petAsBytes.toString();
     }
     //  新增一隻寵物 放入帳本
-    async createPet(ctx, chipID, name, species, breed, owner, ownerID, phone, birthday, gender, bloodType, ligation, allergy, majorDiseases, remark, hospital) {
+    async createPet(ctx, chipID, name, species, breed, owner, ownerID, phone, birthday, gender, bloodType, ligation, allergy, majorDiseases, remark, hospital, imgID) {
         console.info('============= START : Create Pet ===========');
         const pet = {
             docType: 'pet',
@@ -116,7 +117,8 @@ class PetContract extends fabric_contract_api_1.Contract {
             allergy,
             majorDiseases,
             remark,
-            hospital
+            hospital,
+            imgID
         };
         await ctx.stub.putState(chipID, Buffer.from(JSON.stringify(pet)));
         console.info('============= END : Create Pet ===========');

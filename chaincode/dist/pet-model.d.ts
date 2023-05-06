@@ -15,4 +15,5 @@ export declare class PetModel {
     majorDiseases: string;
     remark: string;
     hospital: string;
+    imgID: string;
 }

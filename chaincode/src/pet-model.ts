@@ -20,4 +20,5 @@ export class PetModel {
     public majorDiseases:string;
     public remark:string;
     public hospital:string;
+    public imgID:string;
 }
