@@ -13,6 +13,7 @@ import InfoComponent from './components/hospital/info-component';
 import AuthService from './service/auth-service';
 import AddInfoComponent from './components/hospital/add-info-component';
 import {Footer} from './components/Layout'
+import InsuranceHome from './Pages/insurance/InsuranceHome';
 
 
 
@@ -27,6 +28,7 @@ export default function MyApp() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/hospitalhome" element={<InfoComponent />} />
         <Route path="/add-info" element={<AddInfoComponent />} />
+        <Route path="/insurancehome" element={<InsuranceHome />} />
       </Routes>
       
       

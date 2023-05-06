@@ -90,7 +90,7 @@ class PetContract extends fabric_contract_api_1.Contract {
             {
                 userID: 'bradmin',
                 email: 'bradmin@gmail.com',
-                username: 'B11',
+                username: 'BreederAdmin',
                 birthDate: new Date("2023-02-06"),
                 phone: 123,
                 password: 'adminpw',
@@ -99,9 +99,18 @@ class PetContract extends fabric_contract_api_1.Contract {
             {
                 userID: 'hoadmin',
                 email: 'hoadmin@gmail.com',
-                username: 'B00',
+                username: 'HospitalAdmin',
                 birthDate: new Date("2023-02-06"),
                 phone: 123,
+                password: 'adminpw',
+                role: 'admin'
+            },
+            {
+                userID: 'inadmin',
+                email: 'inadmin@gmail.com',
+                username: 'InsurancerAdmin',
+                birthDate: new Date("2023-02-06"),
+                phone: 12345,
                 password: 'adminpw',
                 role: 'admin'
             },
@@ -147,7 +156,7 @@ class PetContract extends fabric_contract_api_1.Contract {
         return petAsBytes.toString();
     }
     //  新增一隻寵物 放入帳本
-    async createPet(ctx, chipID, name, species, breed, owner, ownerID, phone, birthday, gender, bloodType, ligation, allergy, majorDiseases, remark, hospital) {
+    async createPet(ctx, chipID, name, species, breed, owner, ownerID, phone, birthday, gender, bloodType, ligation, allergy, majorDiseases, remark, hospital, imgID) {
         console.info('============= START : Create Pet ===========');
         const pet = {
             docType: 'pet',
@@ -164,7 +173,8 @@ class PetContract extends fabric_contract_api_1.Contract {
             allergy,
             majorDiseases,
             remark,
-            hospital
+            hospital,
+            imgID
         };
         await ctx.stub.putState(chipID, Buffer.from(JSON.stringify(pet)));
         console.info('============= END : Create Pet ===========');

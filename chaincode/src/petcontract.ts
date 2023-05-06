@@ -94,7 +94,7 @@ export class PetContract extends Contract {
             {
                 userID: 'bradmin',
                 email: 'bradmin@gmail.com',
-                username:'B11',
+                username:'BreederAdmin',
                 birthDate: new Date("2023-02-06"),
                 phone: 123 ,
                 password: 'adminpw',
@@ -103,9 +103,18 @@ export class PetContract extends Contract {
             {
                 userID: 'hoadmin',
                 email: 'hoadmin@gmail.com',
-                username:'B00',
+                username:'HospitalAdmin',
                 birthDate: new Date("2023-02-06"),
                 phone: 123 ,
+                password: 'adminpw',
+                role: 'admin'
+            },
+            {
+                userID: 'inadmin',
+                email: 'inadmin@gmail.com',
+                username:'InsurancerAdmin',
+                birthDate: new Date("2023-02-06"),
+                phone: 12345 ,
                 password: 'adminpw',
                 role: 'admin'
             },
@@ -162,7 +171,7 @@ export class PetContract extends Contract {
     }
 
     //  新增一隻寵物 放入帳本
-    public async createPet(ctx:Context, chipID:string, name:string, species:string, breed:string, owner:string, ownerID:string, phone:string, birthday:string, gender:string, bloodType:string, ligation:boolean, allergy:string, majorDiseases:string, remark:string, hospital:string) {
+    public async createPet(ctx:Context, chipID:string, name:string, species:string, breed:string, owner:string, ownerID:string, phone:string, birthday:string, gender:string, bloodType:string, ligation:boolean, allergy:string, majorDiseases:string, remark:string, hospital:string,imgID:string) {
         console.info('============= START : Create Pet ===========');
 
         const pet = {
@@ -180,7 +189,8 @@ export class PetContract extends Contract {
             allergy,
             majorDiseases,
             remark,
-            hospital
+            hospital,
+            imgID
         };
 
         await ctx.stub.putState(chipID, Buffer.from(JSON.stringify(pet)));

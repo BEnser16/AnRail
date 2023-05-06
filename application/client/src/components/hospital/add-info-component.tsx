@@ -9,6 +9,7 @@ import {
 import InfoService from '../../service/info-service';
 import NavComponent from './nav-component';
 import AuthService from '../../service/auth-service';
+import { MDBFile } from 'mdb-react-ui-kit';
 
 export default function AddInfoComponent() {
 
@@ -28,6 +29,9 @@ export default function AddInfoComponent() {
     let [majorDiseases , setMajorDiseases] = useState('');
     let [remark , setRemark] = useState('');
     let [hospital , setHospital] = useState('');
+    let formData = new FormData();
+
+
     const inputName = (e:any) => {
         setName(e.target.value);
     }
@@ -74,11 +78,24 @@ export default function AddInfoComponent() {
     const inputHospital = (e:any) => {
         setHospital(e.target.value);
     }
+    const inputimgFile = (e:any) => {
+        let inputElem = e.target;
+        let file = inputElem.files[0];
+        
+        formData.set("imgFile", file);
+        
+        console.log(formData);
+        
+
+        let test = formData.getAll("imgFile");
+        console.log(test);
+        
+    }
 
     const postInfo = () => {
         console.log("ready pose..");
-        console.log(name, species, breed , owner ,ownerID, phone , chipID , birthday , gender , bloodType , ligation , allergy , majorDiseases , remark , hospital);
-        InfoService.create(name, species, breed , owner ,ownerID, phone , chipID , birthday , gender , bloodType , ligation , allergy , majorDiseases , remark , hospital)
+        console.log(name, species, breed , owner ,ownerID, phone , chipID , birthday , gender , bloodType , ligation , allergy , majorDiseases , remark , hospital,formData);
+        InfoService.create(name, species, breed , owner ,ownerID, phone , chipID , birthday , gender , bloodType , ligation , allergy , majorDiseases , remark , hospital,formData)
           .then(() => {
             window.alert("New Pet-Info has been created.");
           })
@@ -143,7 +160,8 @@ export default function AddInfoComponent() {
             <MDBInput wrapperClass='mb-4'  name='majorDiseases' onChange={inputMajorDiseases}  label='重大疾病' />
             <MDBInput wrapperClass='mb-4'  name='remark' onChange={inputRemark}  label='備註' />
             <MDBInput wrapperClass='mb-4'  name='hospital' onChange={inputHospital}  label='所屬醫院' />
-            <MDBBtn className='mb-4 mt-2' onClick={postInfo} type='button' block>
+            <MDBFile label='上傳寵物照片' id='imgFile' onChange={inputimgFile} />
+            <MDBBtn className='mb-4 mt-3' onClick={postInfo} type='button' block>
                 送出
             </MDBBtn>
         </form>

@@ -67,14 +67,14 @@ echo "$(json_ccp $ORG $P0PORT $CAPORT $PEERPEM $CAPEM)" > organizations/peerOrga
 echo "$(yaml_ccp $ORG $P0PORT $CAPORT $PEERPEM $CAPEM)" > organizations/peerOrganizations/hospital.anrail.com/connection-hospital.yaml
 
 #保險組織配置
-ORG=inusrance
+ORG=insurance
 P0PORT=5051
 CAPORT=3054
-PEERPEM=organizations/peerOrganizations/inusrance.anrail.com/tlsca/tlsca.inusrance.anrail.com-cert.pem
-CAPEM=organizations/peerOrganizations/inusrance.anrail.com/ca/ca.inusrance.anrail.com-cert.pem
+PEERPEM=organizations/peerOrganizations/insurance.anrail.com/tlsca/tlsca.insurance.anrail.com-cert.pem
+CAPEM=organizations/peerOrganizations/insurance.anrail.com/ca/ca.insurance.anrail.com-cert.pem
 
-echo "$(json_ccp $ORG $P0PORT $CAPORT $PEERPEM $CAPEM)" > organizations/peerOrganizations/inusrance.anrail.com/connection-inusrance.json
-echo "$(yaml_ccp $ORG $P0PORT $CAPORT $PEERPEM $CAPEM)" > organizations/peerOrganizations/inusrance.anrail.com/connection-inusrance.yaml
+echo "$(json_ccp $ORG $P0PORT $CAPORT $PEERPEM $CAPEM)" > organizations/peerOrganizations/insurance.anrail.com/connection-insurance.json
+echo "$(yaml_ccp $ORG $P0PORT $CAPORT $PEERPEM $CAPEM)" > organizations/peerOrganizations/insurance.anrail.com/connection-insurance.yaml
 
 #屏東動物醫院組織配置
 ORG=pthospital

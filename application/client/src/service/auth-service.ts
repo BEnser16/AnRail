@@ -11,6 +11,10 @@ class AuthService {
         return axios.post(API_URL + "/loginbreeder" , {role ,userID , password});
     };
 
+    logininsurancer(role:any , userID:any , password:any){
+        return axios.post(API_URL + "/logininsurancer" , {role ,userID , password});
+    };
+
     logout(){
         localStorage.removeItem("user");
     }

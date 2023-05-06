@@ -3,6 +3,20 @@ import { Request , Response } from 'express';
 import {  Wallets , Gateway} from 'fabric-network';
 import * as path from 'path';
 import * as fs from 'fs';
+const { google } = require("googleapis");
+const Multer = require("multer");
+const stream = require("stream");
+
+
+// google雲端資料夾的id
+const GOOGLE_DRIVE_FOLDER_ID = "1tgY8xfGcZZ6iXiOpwotEvCC05suuLfYv";
+
+const multer = Multer({
+  storage: Multer.memoryStorage(),
+  limits: {
+    fileSize: 5 * 1024 * 1024, //在此更改檔案大小限制
+  },
+});
 
 //  調用petcontract 的 queryallpets 方法 得到目前所有寵物的資料
 router.get("/getallpets" , async(req:Request , res:Response ) => {
@@ -87,12 +101,21 @@ router.post("/createpet" , async(req:Request , res:Response ) => {
         const contract = network.getContract('petcontract');
 
         // Evaluate the specified transaction.
-        await contract.submitTransaction('createPet', req.body.chipID, req.body.name, req.body.species, req.body.breed, req.body.owner, req.body.ownerID, req.body.phone, req.body.birthday, req.body.gender, req.body.bloodType, req.body.ligation, req.body.allergy, req.body.majorDiseases, req.body.remark, req.body.hospital);
-        console.log('Transaction has been submitted');
-        res.status(200).send("evaluate transaction 新增寵物資料成功...");
+        console.log(req);
+        //https://drive.google.com/uc?export=view&id=
+        let imgID="2"
+        await uploadFile(req).then((data) => {
+          imgID=data;  
+
+          contract.submitTransaction('createPet', req.body.chipID, req.body.name, req.body.species, req.body.breed, req.body.owner, req.body.ownerID, req.body.phone, req.body.birthday, req.body.gender, req.body.bloodType, req.body.ligation, req.body.allergy, req.body.majorDiseases, req.body.remark, req.body.hospital,imgID);
+          console.log('Transaction has been submitted');
+          res.status(200).send("evaluate transaction 新增寵物資料成功...");
+
+          
+        });
 
         // Disconnect from the gateway.
-        await gateway.disconnect();
+        gateway.disconnect();
         
     } catch (error) {
         console.error(`Failed to evaluate transaction: ${error}`);
@@ -181,11 +204,10 @@ const changepetinfo = async(req:Request , res:Response ) =>{
         const contract = network.getContract('petcontract');
 
         // Evaluate the specified transaction.
-        // queryCar transaction - requires 1 argument, ex: ('queryCar', 'CAR4')
-        // queryAllCars transaction - requires no arguments, ex: ('queryAllCars')
         await contract.submitTransaction('changePetInfo', chipID, req.body.name, req.body.species, req.body.breed, req.body.owner, req.body.ownerID, req.body.phone, req.body.birthday, req.body.gender, req.body.bloodType, req.body.ligation, req.body.allergy, req.body.majorDiseases, req.body.remark, req.body.hospital);
         console.log('Transaction has been submitted 更改寵物基本資料交易已送出...');
-        res.status(200).send("evaluate transaction 更新寵物資料成功...")
+        res.status(200).send("evaluate transaction 更新寵物資料成功...");
+        
 
         // Disconnect from the gateway.
         await gateway.disconnect();
@@ -195,6 +217,49 @@ const changepetinfo = async(req:Request , res:Response ) =>{
         res.status(400).send("evaluate transaction 更新寵物資料失敗...")  
     }
 }
+
+
+async function uploadFile(req) {
+    try {
+      //console.log(req);
+      if (req.file) {
+        const auth = new google.auth.GoogleAuth({
+          keyFile: "./googleKey.json",
+          scopes: ["https://www.googleapis.com/auth/drive"],
+        });
+  
+        const driveService = google.drive({
+          version: "v3",
+          auth,
+        });
+  
+        const fileMetaData = {
+          name: Math.floor(Math.random() * 10000),
+          parents: [GOOGLE_DRIVE_FOLDER_ID],
+        };
+  
+        const bufferStream = new stream.PassThrough();
+        bufferStream.end(req.file.buffer);
+  
+        const media = {
+          mimeType: "image/jpg",
+          body: bufferStream,
+        };
+  
+        const response = await driveService.files.create({
+          resource: fileMetaData,
+          media: media,
+          field: "id",
+        });
+        return response.data.id;
+      } else {
+        console.log("NO FILE");
+      }
+    } catch (err) {
+      console.log("ERROR!", err);
+    }
+  }
+
 
 router.route("/:id").get(getpet).patch(changepetinfo);
 

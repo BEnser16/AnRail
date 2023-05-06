@@ -129,7 +129,7 @@ router.post("/getallinsurance" , async(req:Request , res:Response ) => {
 //  投保
 router.post("/erollInsurance" , async(req:Request , res:Response ) => {
     try {
-        
+        console.log("開始查詢進行投保...");
         // 載入網路配置
         const ccpPath = path.resolve(__dirname,'../../../network', 'organizations', 'peerOrganizations', 'breeder.anrail.com', 'connection-breeder.json');
         const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
@@ -140,8 +140,8 @@ router.post("/erollInsurance" , async(req:Request , res:Response ) => {
         console.log(`Wallet path: ${walletPath}`);
         
         
-        // Check to see if we've already enrolled the user.
-        const identity = await wallet.get(req.body.userID);
+        // 這裡要用PropserID 代表 userID.
+        const identity = await wallet.get(req.body.ProposerID);
         if (!identity) {
             console.log('找不到用戶');
             return;

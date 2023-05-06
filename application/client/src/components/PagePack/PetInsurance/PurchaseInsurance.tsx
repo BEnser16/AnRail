@@ -7,12 +7,16 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import ProfileContent from '../MyPet/ProfileContent';
 import CheckPetContent from '../MyPet/CheckPetContent';
+import BreederService from '../../../service/breeder-service';
+import AuthService from '../../../service/auth-service';
+
 
 const steps = ['確認被保險人資料', '確認寵物資訊', '確認投保'];
 
 export default function PurchaseInsurance(props:any) {
-    const { single_pet_data , setSingle_pet_data} = props;
+  const { single_pet_data , setSingle_pet_data} = props;
   const [activeStep, setActiveStep] = React.useState(0);
+  const [userdata, setUserdata] = React.useState<any>();
   const [skipped, setSkipped] = React.useState(new Set<number>());
 
   const isStepOptional = (step: number) => {
@@ -32,6 +36,26 @@ export default function PurchaseInsurance(props:any) {
 
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
     setSkipped(newSkipped);
+
+    // finsh 的時候
+    if(activeStep == 2) {
+      let userobj = JSON.parse(AuthService.getCurrentUser().logindata);
+      AuthService.getUserData(userobj.userID).then((responseData) => {
+        console.log("response user Data is : " + JSON.stringify(responseData.data));
+        setUserdata(JSON.stringify(responseData.data));
+        console.log("userdata state is :");
+        console.log(userdata);
+        // pet age dognorcat 被寫死
+        BreederService.enrollInsurance("insurance1" , userobj.userID , responseData.data.username , responseData.data.phone , responseData.data.birthDate , responseData.data.email , responseData.data.address , single_pet_data.Record.name
+        ,single_pet_data.Record.gender , single_pet_data.Record.chipID ,single_pet_data.Record.birthday , 13 , true , 1 ).then((res) => {
+          
+          console.log("保單創建成功");
+          console.log(res);
+        }).catch((error) => {
+          console.log(error);
+        });
+      });
+    }
   };
 
   const handleBack = () => {

@@ -96,8 +96,20 @@ export default function SignIn() {
         console.log(error.response);
       });;
      
-    }
-
+    } else if(role === "保險業者") {
+      AuthService.logininsurancer( role ,userid , password).then((response) => {
+        
+        console.log("登入角色" + role + "insurancer login res data is : " + response.data);
+        if(response.data.token) {
+          localStorage.setItem("user" , JSON.stringify(response.data));
+        }
+        // setCurrentUser(AuthService.getCurrentUser());
+        navigate("/insurancehome");
+      }).catch(error => {
+        console.log("sending to Auth service catch error... API login insurancer");
+        console.log(error.response);
+      });;
+    }  
     
 
   };
