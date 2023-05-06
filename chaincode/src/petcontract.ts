@@ -3,7 +3,8 @@ import { PetModel } from './pet-model';
 import { Context, Contract } from 'fabric-contract-api';
 import { UserModel } from './user-model';
 import { InsuranceModel } from './insurance-model';
-
+import { InsuranceContractModel } from './InsuranceContractModel';
+import { InsurancePolicyModel } from './InsurancePolicyModel';
 
 
 //  智能合約 讓Server直接調用這裡的funtion
@@ -111,22 +112,19 @@ export class PetContract extends Contract {
             },
         ];
 
-        const Insurances:InsuranceModel[] = [
+        const InsurancePolicys:InsurancePolicyModel[] = [
             {
                 docType:'insurance',
-                ID:'insurance1',
+                PolicyID:'insurance1',
                 PolicyName:'米得寵',
+                Description:"養毛小孩所需費用比您想的更多，讓保險公司為您分散風險吧!",
                 State:'ISSUED',
-                Phrase:0,
+                Fee:1900,
+                Duration:"一年",
+                Compensation:1000,
                 StartDate:null,
                 EndDate:null,
-                ProposerName:"",
-                ProposerID:"",
-                ProposeAddress:"高雄市",
-                PetName:"小白",
-                PetChipID:"",
-                PetBornDate:null,
-                DogNorCat:false,
+                EnrolledProposerIDList:[]
                 
             },
         ];
@@ -145,8 +143,8 @@ export class PetContract extends Contract {
             console.info("create account > " , accounts[i]);
         }
 
-        for(const i of Insurances) {
-            await ctx.stub.putState(i.ID , Buffer.from(JSON.stringify(i)));
+        for(const i of InsurancePolicys) {
+            await ctx.stub.putState(i.PolicyID , Buffer.from(JSON.stringify(i)));
         }
 
         
@@ -258,7 +256,7 @@ export class PetContract extends Contract {
     public async signupbreeder(ctx:Context , userID:string , username:string , email:string , password:string , role:string) {
         console.info('============= START : signup for a new account ===========');
 
-        const user = {
+        const user:UserModel = {
             docType: 'account',
             userID: userID,
             username: username,
@@ -275,9 +273,29 @@ export class PetContract extends Contract {
 
     }
 
+    //  更改飼主帳戶的個人資料
+    public async changeAccountInfo(ctx:Context, userID:string , username:string , email:string  , address?:string , birthDate?:Date,phone?:number) {
+        console.info('============= START : changeAccountInfo ===========');
+
+        const accountAsBytes = await ctx.stub.getState(userID); // get the pet from chaincode state
+        if (!accountAsBytes || accountAsBytes.length === 0) {
+            throw new Error(`${userID} does not exist`);
+        }
+        const account:UserModel = JSON.parse(accountAsBytes.toString());
+        account.userID = userID
+        account.username = username
+        account.email = email
+        account.address = address
+        account.birthDate = birthDate
+        account.phone = phone
+
+        await ctx.stub.putState(userID, Buffer.from(JSON.stringify(account)));
+        console.info('============= END : changeAccountInfo ===========');
+    }
+
     //  依照 userID 查詢帳戶 返回帳戶資料
     public async queryAccount(ctx:Context, userID:string): Promise<string> {
-        const accountAsBytes = await ctx.stub.getState(userID); // get the car from chaincode state
+        const accountAsBytes = await ctx.stub.getState(userID); 
         if (!accountAsBytes || accountAsBytes.length === 0) {
             throw new Error(`${userID} does not exist`);
         }
@@ -297,28 +315,42 @@ export class PetContract extends Contract {
         return await this.GetQueryResultForQueryString(ctx, JSON.stringify(queryString));
     }
 
-    //  進行投保
-    public async purchaseInsurance(ctx:Context ,ID:string , ProposerName:string , ProposerID:string , ProposeAddress:string , PetName:string , PetChipID:string , PetBornDate:Date  , DogNorCat:boolean) {
-        let today = new Date();
-        const newinsurance = {
-            docType:"insurance",
-            ID:ID,
-            PolicyName:"米有保",
-            State:"ISSUED",
-            Phrase:1,
-            StartDate:today,
-            EndDate:new Date(today.getFullYear() + 1, today.getMonth(), today.getDate()),
-            ProposerName:ProposerName,
+    //  創建一個新保單 進行投保 將保險人ID Eroll List
+    public async createInsuranceContract(ctx:Context ,PolicyID:string ,ProposerID:string , ProposerName:string , ProposerPhone:string , ProposerBirthDate:string ,ProposerEmail:string 
+        ,ProposeAddress:string , PetName:string , PetGender:boolean , PetChipID:string , PetBornDate:string , PetAge:number, DogNorCat:boolean , Phrase:number ) {
+        
+        const newInsuranceContract:InsuranceContractModel = {
+            docType:"contract",
+            ContractID:"contract1",
             ProposerID:ProposerID,
+            ProposerName:ProposerName,
+            ProposerPhone:ProposerPhone,
+            ProposerBirthDate:ProposerBirthDate,
+            ProposerEmail:ProposerEmail,
             ProposeAddress:ProposeAddress,
             PetName:PetName,
+            PetGender:PetGender,
             PetChipID:PetChipID,
             PetBornDate:PetBornDate,
-            DogNorCat:DogNorCat
+            PetAge:PetAge,
+            DogNorCat:DogNorCat,
+            
+            Phrase:Phrase
 
         }
 
-        await ctx.stub.putState(ID , Buffer.from(JSON.stringify(newinsurance)));
+        await ctx.stub.putState(newInsuranceContract.ContractID , Buffer.from(JSON.stringify(newInsuranceContract)));
+
+        const policyAsBytes = await ctx.stub.getState(PolicyID); // get the pet from chaincode state
+        if (!policyAsBytes || policyAsBytes.length === 0) {
+            throw new Error(`${PolicyID} does not exist`);
+        }
+        const policy:InsurancePolicyModel = JSON.parse(policyAsBytes.toString());
+        policy.EnrolledProposerIDList.push(ProposerID);
+        
+
+        await ctx.stub.putState(PolicyID, Buffer.from(JSON.stringify(policy)));
+        console.info('============= END : createInsuranceContract ===========');
     }
 
     //  新增寵物病歷紀錄 使用chipID綁定寵物

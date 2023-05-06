@@ -5,7 +5,7 @@ import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
 import "mdb-react-ui-kit/dist/css/mdb.min.css";
 import { Provider } from "react-redux";
-import {store} from "./reduxpack/features/store";
+import {store} from "./Storage";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement

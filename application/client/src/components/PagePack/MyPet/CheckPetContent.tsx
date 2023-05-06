@@ -6,13 +6,22 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { IPet } from '../interface/IPet';
 import Avatar from '@mui/material/Avatar';
+import AuthService from '../../../service/auth-service';
+import { IUserData } from '../../../interface/IUserData';
 
 
 
-export default function BasicTable(props: IPet[] | any) {
-    let { single_pet_data, setSingle_pet_data } = props;
+export default function CheckPetContent(props:any) {
+    const { single_pet_data , setSingle_pet_data} = props;
+
+    
+    React.useEffect(() => {
+        
+        console.log("singlepet is " + JSON.stringify(single_pet_data));
+       
+        
+    }, []);
 
     return (
         <TableContainer component={Paper} sx={{ borderRadius: "12px" }}>

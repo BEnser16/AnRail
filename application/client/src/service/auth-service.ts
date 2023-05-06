@@ -24,6 +24,14 @@ class AuthService {
     getCurrentUser(){
         return JSON.parse(localStorage.getItem("user") || "null"); 
     };   
+
+    getUserData(userID:string){
+        return axios.post(API_URL + "/getBreederProfile" , {userID});
+    }; 
+
+    changeUserData( userID:any , username:string , email:string  , address?:string , birthDate?:string,phone?:number){
+        return axios.post(API_URL + "/changeBreederProfile" , {userID , username , email , address  , birthDate , phone});
+    }; 
 }
 
 export default new AuthService();

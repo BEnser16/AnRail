@@ -2,9 +2,11 @@ export declare class UserModel {
     docType?: string;
     userID: string;
     username: string;
-    birthDate: Date;
+    birthDate?: Date;
     email: string;
-    phone: number;
+    phone?: number;
     password: string;
     role?: string;
+    address?: string;
+    imgsrc?: string;
 }

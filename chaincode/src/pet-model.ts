@@ -21,4 +21,5 @@ export class PetModel {
     public remark:string;
     public hospital:string;
     public imgID:string;
+
 }
