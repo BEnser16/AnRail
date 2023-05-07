@@ -101,9 +101,8 @@ router.post("/createpet" , async(req:Request , res:Response ) => {
         const contract = network.getContract('petcontract');
 
         // Evaluate the specified transaction.
-        console.log(req);
+        let imgID="1DDxc4jYXhPQ5JiwKpnsAfkGujaHv53Fs" //預設全黑圖片
         //https://drive.google.com/uc?export=view&id=
-        let imgID="2"
         await uploadFile(req).then((data) => {
           imgID=data;  
 
