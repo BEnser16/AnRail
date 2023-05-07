@@ -31,4 +31,6 @@ export class InsuranceContractModel {
     public PetImage?:string;
 
     public Phrase:number;
+    // 待審核 unverify 審核中 verify 審核完成 complete 
+    public ContractState?:string;
 }

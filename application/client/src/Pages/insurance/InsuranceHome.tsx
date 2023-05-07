@@ -27,8 +27,18 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import AuthService from '../../service/auth-service';
-import BreederService from '../../service/breeder-service';
+import authService from '../../service/auth-service';
+import breederService from '../../service/breeder-service';
+import insurancerService from '../../service/insurancer-service';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import { IInsuranceContract } from '../../interface/IInsuranceContract';
+
 
 
 const theme = createTheme({
@@ -54,48 +64,26 @@ const drawerWidth = 240;
 export default function InsurancerHome(props: any) {
 
   const navigate = useNavigate();
-  let [sidebarmode, setSidebarmode] = React.useState('');
-  let [midtitle, setMidtitle] = React.useState('Overview');
-  
-  let [allinsurData, setallinsurData] = React.useState({});
+  let [sidebarmode, setSidebarmode] = React.useState('verify');
+  let [midtitle, setMidtitle] = React.useState('投保審核');
+  let [contractList, setContractList] = React.useState<any>([]);
+  let [open, setOpen] = React.useState(false);
   let { currentUser, setCurrentUser } = props;
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
 
   const handleLogout = () => {
-    AuthService.logout();
+    authService.logout();
     window.alert("Logout successfully! now redirect to the home page. ");
     navigate('/');
     setCurrentUser(null);
   };
 
-  
 
-  // function handleInsurance() {
-  //   const usertoken = AuthService.getCurrentUser();
-  //   console.log("user token: " + usertoken);
-  //   const userobj = JSON.parse(usertoken.logindata);
-
-  //   BreederSerivce.getAllInsurance(userobj.userID).then((response) => {
-  //     console.log('保險返回值:');
-  //     console.log(response.data.resultObject);
-  //     //  要先有mypetdata state
-  //     setallinsurData({
-  //       insurData: response.data.resultObject,
-  //       petdata: mypetdata,
-  //       userID: userobj.userID
-  //     });
-  //     setSidebarmode('re');
-  //     setSidebarmode('checkinsurance');
-  //     setMidtitle("寵物保險");
-
-  //   });
-  // }
-
-  function handleInsurancePass() {
+  function handleInsuranceVerify() {
     setSidebarmode('re');
-    setSidebarmode('check_insurance_pass');
-    setMidtitle("保險存摺");
+    setSidebarmode('verify');
+    setMidtitle("投保審核");
   }
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -106,10 +94,28 @@ export default function InsurancerHome(props: any) {
     setAnchorElUser(null);
   };
 
+  function handleVerifyPass() {
+    let newContract:IInsuranceContract = contractList[0].Record;
+    newContract.ContractState = 'complete';
+    insurancerService.changeInsuranceContractState(newContract.ContractID , newContract.ContractState).then((res) => {
+      console.log(res);
+      console.log("change contract state complete!");
+    }).catch((error) => {
+      console.log(error);
+    }) 
+  }
 
-  // React.useEffect(() => {
-    
-  // }, []);
+
+  React.useEffect(() => {
+    console.log(contractList.length);
+    let userobj = JSON.parse(authService.getCurrentUser().logindata);
+    insurancerService.getAllInsuranceContract().then((res) => {
+
+      console.log(res.data);
+      setContractList(res.data);
+      setOpen(true);
+    });
+  }, []);
 
   // if (mypetdata.length == 0) {
   //   return <div>Loading...</div>
@@ -134,7 +140,7 @@ export default function InsurancerHome(props: any) {
               >
                 <NotificationsIcon />
               </IconButton>
-              
+
             </MenuItem>
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
@@ -168,12 +174,12 @@ export default function InsurancerHome(props: any) {
               >
                 {settings.map((setting) => (
                   <MenuItem key={setting} onClick={() => {
-                    
-                    if(setting == '個人資料') {
+
+                    if (setting == '個人資料') {
                       setSidebarmode('re');
                       setSidebarmode('check_profile');
                       setMidtitle("個人資料");
-                      
+
                     }
                   }}>
                     <Typography textAlign="center">{setting}</Typography>
@@ -209,7 +215,7 @@ export default function InsurancerHome(props: any) {
               {['發行保險', '投保審核', '寵物投保', '醫療查詢'].map((text, index) => (
 
                 <ListItem key={text} disablePadding sx={{ mt: 4 }} >
-                  {index === 0 &&
+                  {/* {index === 0 &&
                     <ListItemButton >
 
                       <ListItemIcon sx={{ color: 'primary.main' }}>
@@ -217,9 +223,9 @@ export default function InsurancerHome(props: any) {
                       </ListItemIcon>
                       <ListItemText primary={<Typography variant="body1" style={{ color: 'inherit', fontWeight: "bold" }}>{text}</Typography>} />
                     </ListItemButton>
-                  }
+                  } */}
                   {index === 1 &&
-                    <ListItemButton onClick={handleInsurancePass}>
+                    <ListItemButton onClick={handleInsuranceVerify}>
                       <ListItemIcon sx={{ color: 'primary.main' }}>
                         <ReceiptLongIcon></ReceiptLongIcon>
                       </ListItemIcon>
@@ -227,7 +233,7 @@ export default function InsurancerHome(props: any) {
                     </ListItemButton>
 
                   }
-                  {index === 2 &&
+                  {/* {index === 2 &&
                     <ListItemButton >
                       <ListItemIcon sx={{ color: 'primary.main' }}>
                         <MedicationIcon></MedicationIcon>
@@ -244,7 +250,7 @@ export default function InsurancerHome(props: any) {
                       <ListItemText primary={<Typography variant="body1" style={{ color: 'inherit', fontWeight: "bold" }}>{text}</Typography>} />
                     </ListItemButton>
 
-                  }
+                  } */}
 
                 </ListItem>
               ))}
@@ -268,6 +274,56 @@ export default function InsurancerHome(props: any) {
             {sidebarmode === "checkinsurance" ? <InsurCard allinsurData={allinsurData} setallinsurData={setallinsurData} /> : null}
             {sidebarmode === "check_insurance_pass" ? <InsurancePassTab /> : null}
             {sidebarmode === "check_profile" ? <EditProfile /> : null} */}
+            {sidebarmode === "verify" && open ?
+              <div>
+                <TableContainer component={Paper} sx={{ borderRadius: "12px" }}>
+                  <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>方案名稱: 米得寵 </TableCell>
+                        <TableCell>被保險人資料</TableCell>
+
+
+                      </TableRow>
+
+                    </TableHead>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell>寵物名稱:{ contractList[0].Record.PetName} </TableCell>
+                        <TableCell>姓名:{ contractList[0].Record.ProposerName} </TableCell>
+
+
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>寵物晶片號:{ contractList[0].Record.PetChipID} </TableCell>
+                        <TableCell>身份證字號:{ contractList[0].Record.ProposerID} </TableCell>
+
+
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>寵物生日:{ contractList[0].Record.PetBornDate} </TableCell>
+                        <TableCell>電子郵件:{ contractList[0].Record.ProposerEmail} </TableCell>
+
+
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>寵物晶片號:{ contractList[0].Record.PetChipID} </TableCell>
+                        <TableCell>地址:{ contractList[0].Record.ProposeAddress} </TableCell>
+
+
+                      </TableRow>
+
+
+
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                <Box sx={{display:'flex' ,ml:'auto' ,  my:2}}>
+                  <Button variant="contained" onClick={handleVerifyPass}>通過</Button>
+                </Box>
+
+              </div>
+              : null}
           </Container>
 
 

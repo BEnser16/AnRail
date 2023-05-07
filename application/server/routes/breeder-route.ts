@@ -4,6 +4,7 @@ import {  Wallets , Gateway} from 'fabric-network';
 import * as path from 'path';
 import * as fs from 'fs';
 import {IPet} from '../interface/IPet';
+import { IInsuranceContract } from '../interface/IInsuranceContract';
 
 //  調用petcontract 的 queryallpets 方法 得到目前所有寵物的資料
 router.post("/getmypets" , async(req:Request , res:Response ) => {
@@ -13,7 +14,7 @@ router.post("/getmypets" , async(req:Request , res:Response ) => {
         const ccpPath = path.resolve(__dirname,'../../../network', 'organizations', 'peerOrganizations', 'breeder.anrail.com', 'connection-breeder.json');
         const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
 
-        // 
+        
         const walletPath = path.join(process.cwd(), 'wallet');
         const wallet = await Wallets.newFileSystemWallet(walletPath);
         console.log(`Wallet path: ${walletPath}`);
@@ -173,6 +174,69 @@ router.post("/erollInsurance" , async(req:Request , res:Response ) => {
     } catch (error) {
         console.error(`Failed to evaluate transaction: ${error}`);
         res.status(400).send("創建保單失敗..")
+        process.exit(1);
+    }
+});
+
+//  調用petcontract 的 queryDocType 方法 得到目前我的保單的資料
+router.post("/getMyInsuranceContract" , async(req:Request , res:Response ) => {
+    try {
+        console.log("開始查詢doctype:contract...");
+        // 載入網路配置
+        const ccpPath = path.resolve(__dirname,'../../../network', 'organizations', 'peerOrganizations', 'breeder.anrail.com', 'connection-breeder.json');
+        const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
+
+        const walletPath = path.join(process.cwd(), 'wallet');
+        const wallet = await Wallets.newFileSystemWallet(walletPath);
+        console.log(`Wallet path: ${walletPath}`);
+
+        // Check to see if we've already enrolled the user.
+        const identity = await wallet.get(req.body.userID);
+        if (!identity) {
+            console.log('找不到用戶');
+            return;
+        }
+
+        // Create a new gateway for connecting to our peer node.
+        const gateway = new Gateway();
+        await gateway.connect(ccp, { wallet, identity: 'inadmin', discovery: { enabled: true, asLocalhost: true } });
+
+        // Get the network (channel) our contract is deployed to.
+        const network = await gateway.getNetwork('railchannel');
+
+        // Get the contract from the network.
+        const contract = network.getContract('petcontract');
+
+        // Evaluate the specified transaction.
+        const result = await contract.evaluateTransaction('queryDocType' , 'contract');
+        console.log("這是queryDocType contract 返回值: " + result);
+        const resultstr = result.toString('utf-8');
+        const resltObject = JSON.parse(resultstr);
+        console.log(resltObject);
+
+        let myContractlist:{ Key: string, Record: IInsuranceContract }[] = [];
+        // const dataArray:[] = resltObject.data;
+        resltObject.forEach( function(element:{
+            Key:string,
+            Record:IInsuranceContract
+        }) {
+            
+            if(element.Record.ProposerID == req.body.userID){
+                myContractlist.push(element);
+            }
+        });
+        
+        
+        
+        res.status(200).json(myContractlist);
+        console.log(`query contract resultobject : ${myContractlist}`);
+
+        // 關閉 gateway.
+        await gateway.disconnect();
+        
+    } catch (error) {
+        console.error(`Failed to evaluate transaction: ${error}`);
+        res.status(400).send("查閱我的保單失敗...")
         process.exit(1);
     }
 });

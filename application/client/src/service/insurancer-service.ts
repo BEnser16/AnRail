@@ -1,12 +1,13 @@
 import axios from "axios";
-const API_URL = "http://localhost:8000/api/v1/breeder";
+const API_URL = "http://localhost:8000/api/v1/insurancer";
+import { IInsuranceContract } from "../interface/IInsuranceContract";
 
-class BreederService {
+class InsurancerService {
     
     
-    getMypets(userID:any) {
+    changeInsuranceContractState(contractID:string , contractState:string) {
         
-        return axios.post(API_URL + "/getmypets" , {userID});
+        return axios.post(API_URL + "/changeInsuranceContractState" , {contractID , contractState});
     }
 
     getAllInsurance(userID:any) {
@@ -14,8 +15,8 @@ class BreederService {
 
     }
 
-    getMyInsuranceContract(userID:any) {
-        return axios.post(API_URL + "/getMyInsuranceContract" , {userID});
+    getAllInsuranceContract() {
+        return axios.post(API_URL + "/getInsuranceContracts" );
 
     }
 
@@ -28,4 +29,4 @@ class BreederService {
     }
 }
 
-export default new BreederService();
+export default new InsurancerService();

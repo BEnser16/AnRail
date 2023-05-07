@@ -2,7 +2,6 @@
 import { PetModel } from './pet-model';
 import { Context, Contract } from 'fabric-contract-api';
 import { UserModel } from './user-model';
-import { InsuranceModel } from './insurance-model';
 import { InsuranceContractModel } from './InsuranceContractModel';
 import { InsurancePolicyModel } from './InsurancePolicyModel';
 
@@ -342,7 +341,7 @@ export class PetContract extends Contract {
             PetBornDate:PetBornDate,
             PetAge:PetAge,
             DogNorCat:DogNorCat,
-            
+            ContractState:'unverify',
             Phrase:Phrase
 
         }
@@ -359,6 +358,23 @@ export class PetContract extends Contract {
 
         await ctx.stub.putState(PolicyID, Buffer.from(JSON.stringify(policy)));
         console.info('============= END : createInsuranceContract ===========');
+    }
+
+    //  更改保單資料
+    public async changeInsuranceContractState(ctx:Context, ContractID:string ,  ContractState:string) {
+        console.info('============= START : changeContractInfo ===========');
+
+        const contractAsBytes = await ctx.stub.getState(ContractID); // get the pet from chaincode state
+        if (!contractAsBytes || contractAsBytes.length === 0) {
+            throw new Error(`${ContractID} does not exist`);
+        }
+        let newContract:any = JSON.parse(contractAsBytes.toString());
+        
+        newContract.ContractState = ContractState;
+
+
+        await ctx.stub.putState(ContractID, Buffer.from(JSON.stringify(newContract)));
+        console.info('============= END : changeContractInfo ===========');
     }
 
     //  新增寵物病歷紀錄 使用chipID綁定寵物

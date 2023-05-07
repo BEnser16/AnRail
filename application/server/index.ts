@@ -7,6 +7,7 @@ const authRoute = require("./routes/auth-route");
 const infoRoute = require("./routes/info-route");
 const recordRoute = require("./routes/record-route.ts")
 const breederRoute = require("./routes/breeder-route");
+const insurancerRoute = require('./routes/insurancer-route');
 
 
 require('dotenv').config()
@@ -46,5 +47,6 @@ app.use("/api/v1/auth" , authRoute);
 app.use("/api/v1/info" , infoRoute);
 app.use("/api/v1/breeder" , breederRoute);
 app.use("/api/v1/record" , recordRoute);
+app.use("/api/v1/insurancer" , insurancerRoute);
 
 

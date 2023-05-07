@@ -15,4 +15,5 @@ export declare class InsuranceContractModel {
     DogNorCat: boolean;
     PetImage?: string;
     Phrase: number;
+    ContractState?: string;
 }

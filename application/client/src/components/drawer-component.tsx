@@ -38,6 +38,8 @@ import Menu from '@mui/material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import ProfileContent from './PagePack/MyPet/ProfileContent';
 import EditProfile from './PagePack/MyPet/EditProfile';
+import AplyContractProgress from './PagePack/ProgressSearch/AplyContractProgress';
+import MyContractList from './PagePack/InsurancePass/MyContractList';
 
 const theme = createTheme({
   palette: {
@@ -55,7 +57,7 @@ const theme = createTheme({
   },
 });
 
-const settings = ['個人資料', '設定', '幫助', '登出'];
+const settings = ['個人資料', '設定', '幫助'];
 
 const drawerWidth = 240;
 
@@ -122,6 +124,12 @@ export default function ClippedDrawer(props: any) {
     setSidebarmode('re');
     setSidebarmode('check_insurance_pass');
     setMidtitle("保險存摺");
+  }
+
+  function handleSearchProgress(){
+    setSidebarmode('re');
+    setSidebarmode('search');
+    setMidtitle("醫療查詢");
   }
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -263,7 +271,7 @@ export default function ClippedDrawer(props: any) {
 
                   }
                   {index === 3 &&
-                    <ListItemButton >
+                    <ListItemButton onClick={handleSearchProgress}>
                       <ListItemIcon sx={{ color: 'primary.main' }}>
                         <SearchIcon></SearchIcon>
                       </ListItemIcon>
@@ -292,8 +300,12 @@ export default function ClippedDrawer(props: any) {
 
             {sidebarmode === "checkmypets" ? <PetCard mypetdata={mypetdata} setMypetdata={setMypetdata} /> : null}
             {sidebarmode === "checkinsurance" ? <InsurCard allinsurData={allinsurData} setallinsurData={setallinsurData} /> : null}
-            {sidebarmode === "check_insurance_pass" ? <InsurancePassTab /> : null}
+            {sidebarmode === "check_insurance_pass" ? <MyContractList /> : null}
             {sidebarmode === "check_profile" ? <EditProfile /> : null}
+            
+            {sidebarmode === "search" ? <AplyContractProgress /> : null}
+            
+            
           </Container>
 
 

@@ -11,6 +11,7 @@ export declare class PetContract extends Contract {
     queryAccount(ctx: Context, userID: string): Promise<string>;
     queryDocType(ctx: Context, docType: string): Promise<string>;
     createInsuranceContract(ctx: Context, PolicyID: string, ProposerID: string, ProposerName: string, ProposerPhone: string, ProposerBirthDate: string, ProposerEmail: string, ProposeAddress: string, PetName: string, PetGender: boolean, PetChipID: string, PetBornDate: string, PetAge: number, DogNorCat: boolean, Phrase: number): Promise<void>;
+    changeInsuranceContractState(ctx: Context, ContractID: string, ContractState: string): Promise<void>;
     createPetRecord(ctx: Context, recordType: string, recordID: string, chipID: string, date: string, type: string, doctor: string, describe: string, complete: boolean): Promise<void>;
     changePetRecord(ctx: Context, recordID: string, NewchipID: string, Newdate: string, Newtype: string, Newdoctor: string, Newdescribe: string, Newcomplete: boolean): Promise<void>;
     queryRecord(ctx: Context, recordType: string, chipID: string): Promise<string>;

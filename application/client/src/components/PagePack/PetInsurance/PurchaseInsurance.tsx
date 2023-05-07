@@ -9,6 +9,8 @@ import ProfileContent from '../MyPet/ProfileContent';
 import CheckPetContent from '../MyPet/CheckPetContent';
 import BreederService from '../../../service/breeder-service';
 import AuthService from '../../../service/auth-service';
+import InsuranceAgreeMent from './InsuranceAgreeMent';
+import BackdropAnime from '../MyPet/BackDrop';
 
 
 const steps = ['確認被保險人資料', '確認寵物資訊', '確認投保'];
@@ -18,6 +20,7 @@ export default function PurchaseInsurance(props:any) {
   const [activeStep, setActiveStep] = React.useState(0);
   const [userdata, setUserdata] = React.useState<any>();
   const [skipped, setSkipped] = React.useState(new Set<number>());
+  const [open, setOpen] = React.useState(false);
 
   const isStepOptional = (step: number) => {
     return step === 1;
@@ -39,6 +42,7 @@ export default function PurchaseInsurance(props:any) {
 
     // finsh 的時候
     if(activeStep == 2) {
+      setOpen(true);
       let userobj = JSON.parse(AuthService.getCurrentUser().logindata);
       AuthService.getUserData(userobj.userID).then((responseData) => {
         console.log("response user Data is : " + JSON.stringify(responseData.data));
@@ -50,6 +54,7 @@ export default function PurchaseInsurance(props:any) {
         ,single_pet_data.Record.gender , single_pet_data.Record.chipID ,single_pet_data.Record.birthday , 13 , true , 1 ).then((res) => {
           
           console.log("保單創建成功");
+          setOpen(false);
           console.log(res);
         }).catch((error) => {
           console.log(error);
@@ -83,6 +88,7 @@ export default function PurchaseInsurance(props:any) {
 
   return (
     <Box sx={{ width: '100%' }}>
+      {open && <BackdropAnime/>}
       <Stepper activeStep={activeStep}>
         {steps.map((label, index) => {
           const stepProps: { completed?: boolean } = {};
@@ -109,7 +115,7 @@ export default function PurchaseInsurance(props:any) {
       {activeStep === steps.length ? (
         <React.Fragment>
           <Typography sx={{ mt: 2, mb: 1 }}>
-            All steps completed - you&apos;re finished
+            資料確認完成! 投保請求已送出!
           </Typography>
           <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
             <Box sx={{ flex: '1 1 auto' }} />
@@ -129,6 +135,12 @@ export default function PurchaseInsurance(props:any) {
           {activeStep === 1 &&
             <Box sx={{m:3 , mt:5}}>
                 <CheckPetContent single_pet_data={single_pet_data} setSingle_pet_data={setSingle_pet_data} />
+            </Box>
+            
+          }
+          {activeStep === 2 &&
+            <Box sx={{m:3 , mt:5}}>
+                <InsuranceAgreeMent/>
             </Box>
             
           }
