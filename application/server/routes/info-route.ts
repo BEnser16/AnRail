@@ -70,7 +70,7 @@ router.get("/getallpets" , async(req:Request , res:Response ) => {
 
 
 //  調用petcontract 的 createpet 方法 新增寵物的資料
-router.post("/createpet" , async(req:Request , res:Response ) => {
+router.post("/createpet" , multer.single("imgFile") ,async(req:Request , res:Response ) => {
     try {
         console.log("開始執行創建新的寵物資料");
         // 載入網路配置
@@ -101,17 +101,10 @@ router.post("/createpet" , async(req:Request , res:Response ) => {
         const contract = network.getContract('petcontract');
 
         // Evaluate the specified transaction.
-        let imgID="1DDxc4jYXhPQ5JiwKpnsAfkGujaHv53Fs" //預設全黑圖片
-        //https://drive.google.com/uc?export=view&id=
-        await uploadFile(req).then((data) => {
-          imgID=data;  
-
-          contract.submitTransaction('createPet', req.body.chipID, req.body.name, req.body.species, req.body.breed, req.body.owner, req.body.ownerID, req.body.phone, req.body.birthday, req.body.gender, req.body.bloodType, req.body.ligation, req.body.allergy, req.body.majorDiseases, req.body.remark, req.body.hospital,imgID);
+        let imgID="1DDxc4jYXhPQ5JiwKpnsAfkGujaHv53Fs" //預設圖片
+        contract.submitTransaction('createPet', req.body.chipID, req.body.name, req.body.species, req.body.breed, req.body.owner, req.body.ownerID, req.body.phone, req.body.birthday, req.body.gender, req.body.bloodType, req.body.ligation, req.body.allergy, req.body.majorDiseases, req.body.remark, req.body.hospital,imgID);
           console.log('Transaction has been submitted');
           res.status(200).send("evaluate transaction 新增寵物資料成功...");
-
-          
-        });
 
         // Disconnect from the gateway.
         gateway.disconnect();
@@ -217,6 +210,59 @@ const changepetinfo = async(req:Request , res:Response ) =>{
     }
 }
 
+const changepetimg = async (req:Request , res:Response ) =>{
+  try {
+      console.log("開始執行更改寵物圖片");
+      const { id: chipID } = req.params;
+      // 載入網路配置
+      const ccpPath = path.resolve(__dirname,'../../../network', 'organizations', 'peerOrganizations', 'hospital.anrail.com', 'connection-hospital.json');
+      const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
+
+      // Create a new file system based wallet for managing identities.
+      const walletPath = path.join(process.cwd(), 'wallet');
+      const wallet = await Wallets.newFileSystemWallet(walletPath);
+      console.log(`Wallet path: ${walletPath}`);
+
+      // Check to see if we've already enrolled the user.
+      const identity = await wallet.get('hoadmin');
+      if (!identity) {
+          console.log('An identity for the user "appUser" does not exist in the wallet');
+          console.log('Run the registerUser.js application before retrying');
+          return;
+      }
+
+      // Create a new gateway for connecting to our peer node.
+      const gateway = new Gateway();
+      await gateway.connect(ccp, { wallet, identity: 'hoadmin', discovery: { enabled: true, asLocalhost: true } });
+
+      // Get the network (channel) our contract is deployed to.
+      const network = await gateway.getNetwork('railchannel');
+
+      // Get the contract from the network.
+      const contract = network.getContract('petcontract');
+
+      
+      //https://drive.google.com/uc?export=view&id=
+      let imgID = ""
+      multer.single("imgFile")(req,res,function (err){
+        uploadFile(req).then((data) => {
+          imgID=data;  
+
+          // Evaluate the specified transaction.
+          contract.submitTransaction('changePetImg', chipID, imgID);
+          console.log('Transaction has been submitted 更改寵物圖片交易已送出...');
+          res.status(200).send("evaluate transaction 更新寵物圖片成功..."); 
+          
+          // Disconnect from the gateway.
+          gateway.disconnect();
+        });
+      })
+      
+  } catch (error) {
+      console.error(`Failed to evaluate transaction: ${error}`);
+      res.status(400).send("evaluate transaction 更新寵物圖片失敗...")  
+  }
+}
 
 async function uploadFile(req) {
     try {
@@ -233,7 +279,7 @@ async function uploadFile(req) {
         });
   
         const fileMetaData = {
-          name: Math.floor(Math.random() * 10000),
+          name: Math.floor(Math.random() * 100000000),
           parents: [GOOGLE_DRIVE_FOLDER_ID],
         };
   
@@ -260,9 +306,9 @@ async function uploadFile(req) {
   }
 
 
-router.route("/:id").get(getpet).patch(changepetinfo);
+router.route("/:id").get(getpet).patch(changepetinfo).patch(changepetimg);
 
-
+router.route("/img/:id").patch(changepetimg)
 
 module.exports = router;
 

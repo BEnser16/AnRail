@@ -80,22 +80,28 @@ export default function AddInfoComponent() {
     }
     const inputimgFile = (e:any) => {
         let inputElem = e.target;
-        let file = inputElem.files[0];
-        
-        formData.set("imgFile", file);
+        let imgFile = inputElem.files[0];
+
+
+        formData.set("imgFile", imgFile);     
         
         console.log(formData);
-        
 
-        let test = formData.getAll("imgFile");
-        console.log(test);
+        
         
     }
 
+    const postimg = () =>{
+        fetch("http://localhost:8000/api/v1/info/img/A012",{
+            method:"PATCH",
+            body: formData,
+        }).then((res)=>console.log(formData))
+    }
+
     const postInfo = () => {
-        console.log("ready pose..");
-        console.log(name, species, breed , owner ,ownerID, phone , chipID , birthday , gender , bloodType , ligation , allergy , majorDiseases , remark , hospital,formData);
-        InfoService.create(name, species, breed , owner ,ownerID, phone , chipID , birthday , gender , bloodType , ligation , allergy , majorDiseases , remark , hospital,formData)
+        console.log("ready pose..");      
+        console.log(name, species, breed , owner ,ownerID, phone , chipID , birthday , gender , bloodType , ligation , allergy , majorDiseases , remark , hospital);
+        InfoService.create(name, species, breed , owner ,ownerID, phone , chipID , birthday , gender , bloodType , ligation , allergy , majorDiseases , remark , hospital)
           .then(() => {
             window.alert("New Pet-Info has been created.");
           })
@@ -104,6 +110,7 @@ export default function AddInfoComponent() {
             console.log(error.response);
             
           });
+          
     };
     
   return (
@@ -163,6 +170,9 @@ export default function AddInfoComponent() {
             <MDBFile label='上傳寵物照片' id='imgFile' onChange={inputimgFile} />
             <MDBBtn className='mb-4 mt-3' onClick={postInfo} type='button' block>
                 送出
+            </MDBBtn>
+            <MDBBtn className='mb-4 mt-3' onClick={postimg} type='button' block>
+                圖片
             </MDBBtn>
         </form>
     </div>

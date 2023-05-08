@@ -247,6 +247,18 @@ class PetContract extends fabric_contract_api_1.Contract {
         await ctx.stub.putState(chipID, Buffer.from(JSON.stringify(pet)));
         console.info('============= END : changePetInfo ===========');
     }
+    //  更改寵物圖片
+    async changePetImg(ctx, chipID, NewimgID) {
+        console.info('============= START : changePetImg ===========');
+        const petAsBytes = await ctx.stub.getState(chipID); // get the pet from chaincode state
+        if (!petAsBytes || petAsBytes.length === 0) {
+            throw new Error(`${chipID} does not exist`);
+        }
+        const pet = JSON.parse(petAsBytes.toString());
+        pet.imgID = NewimgID;
+        await ctx.stub.putState(chipID, Buffer.from(JSON.stringify(pet)));
+        console.info('============= END : changePetImg ===========');
+    }
     //  註冊一個 飼主身份的帳戶
     async signupbreeder(ctx, userID, username, email, password, role) {
         console.info('============= START : signup for a new account ===========');
