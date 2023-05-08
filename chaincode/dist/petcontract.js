@@ -31,7 +31,8 @@ class PetContract extends fabric_contract_api_1.Contract {
                 allergy: '無',
                 majorDiseases: '腫瘤',
                 remark: '體型癰腫 個性溫馴',
-                hospital: '高雄動物醫院'
+                hospital: '高雄動物醫院',
+                imgID: "1DDxc4jYXhPQ5JiwKpnsAfkGujaHv53Fs"
             },
             {
                 name: '小花',
@@ -48,7 +49,8 @@ class PetContract extends fabric_contract_api_1.Contract {
                 allergy: '無',
                 majorDiseases: '腫瘤',
                 remark: '體型癰腫 個性溫馴',
-                hospital: '台中動物醫院'
+                hospital: '台中動物醫院',
+                imgID: "1DDxc4jYXhPQ5JiwKpnsAfkGujaHv53Fs"
             },
             {
                 name: '阿白',
@@ -65,7 +67,8 @@ class PetContract extends fabric_contract_api_1.Contract {
                 allergy: '無',
                 majorDiseases: '腫瘤',
                 remark: '個性兇猛',
-                hospital: '高雄動物醫院'
+                hospital: '高雄動物醫院',
+                imgID: "1DDxc4jYXhPQ5JiwKpnsAfkGujaHv53Fs"
             },
             {
                 name: '阿黑',
@@ -82,7 +85,8 @@ class PetContract extends fabric_contract_api_1.Contract {
                 allergy: '無',
                 majorDiseases: '皮膚病',
                 remark: '後腿受傷',
-                hospital: '高雄動物醫院'
+                hospital: '高雄動物醫院',
+                imgID: "1DDxc4jYXhPQ5JiwKpnsAfkGujaHv53Fs"
             },
         ];
         //  預先設定兩組管理員帳號 飼主身份 醫院身份

@@ -35,7 +35,7 @@ export default function PetCard(props: IPet[] | any) {
                 component="img"
                 height="180"
                 
-                src="https://i.epochtimes.com/assets/uploads/2018/05/dog-3313578-450x300.jpg"
+                src={`https://drive.google.com/uc?export=view&id=${value.Record.imgID}`}
                 alt="green iguana"
               />
               <CardContent>

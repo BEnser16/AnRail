@@ -18,6 +18,7 @@ export interface IPet {
         majorDiseases:string;
         remark:string;
         hospital:string;
+        imgID:string;
 
     }
    

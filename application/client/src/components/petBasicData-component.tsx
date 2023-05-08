@@ -22,7 +22,7 @@ export default function BasicTable(props: IPet[] | any) {
                 </TableHead>
                 <TableBody>
                     <TableRow>
-                        <Avatar alt="Remy Sharp" src="https://i.epochtimes.com/assets/uploads/2018/05/dog-3313578-450x300.jpg" sx={{ width: 170, height: 160, m: 4 }} />
+                        <Avatar alt="Remy Sharp" src={`https://drive.google.com/uc?export=view&id=${single_pet_data.Record.imgID}`} sx={{ width: 170, height: 160, m: 4 }} />
 
                         <TableCell>名稱: {single_pet_data.Record.name}</TableCell>
 

@@ -52,7 +52,7 @@ router.get("/getallpets" , async(req:Request , res:Response ) => {
         // Evaluate the specified transaction.
         // queryCar transaction - requires 1 argument, ex: ('queryCar', 'CAR4')
         // queryAllCars transaction - requires no arguments, ex: ('queryAllCars')
-        const result = await contract.evaluateTransaction('queryAllPets');
+        const result = await contract.evaluateTransaction('queryDocType' , 'pet');
         const resultjson = result.toString('utf-8');
         //const result = await contract.evaluateTransaction('queryPet', 'PET1');
         res.status(200).json({resultjson});
