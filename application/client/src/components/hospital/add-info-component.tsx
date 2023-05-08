@@ -10,6 +10,7 @@ import InfoService from '../../service/info-service';
 import NavComponent from './nav-component';
 import AuthService from '../../service/auth-service';
 import { MDBFile } from 'mdb-react-ui-kit';
+import { Button } from '@mui/material';
 
 export default function AddInfoComponent() {
 
@@ -85,24 +86,22 @@ export default function AddInfoComponent() {
 
         formData.set("imgFile", imgFile);     
         
-        console.log(formData);
-
-        
-        
+        console.log(formData);     
     }
 
-    const postimg = () =>{
-        fetch("http://localhost:8000/api/v1/info/img/A012",{
+    const postimg = (chipID:any) =>{
+        fetch(`http://localhost:8000/api/v1/info/img/${chipID}`,{
             method:"PATCH",
             body: formData,
         }).then((res)=>console.log(formData))
     }
 
     const postInfo = () => {
-        console.log("ready pose..");      
+        console.log("ready pose..");   
         console.log(name, species, breed , owner ,ownerID, phone , chipID , birthday , gender , bloodType , ligation , allergy , majorDiseases , remark , hospital);
         InfoService.create(name, species, breed , owner ,ownerID, phone , chipID , birthday , gender , bloodType , ligation , allergy , majorDiseases , remark , hospital)
           .then(() => {
+            postimg(chipID)
             window.alert("New Pet-Info has been created.");
           })
           .catch((error) => {
@@ -170,9 +169,6 @@ export default function AddInfoComponent() {
             <MDBFile label='上傳寵物照片' id='imgFile' onChange={inputimgFile} />
             <MDBBtn className='mb-4 mt-3' onClick={postInfo} type='button' block>
                 送出
-            </MDBBtn>
-            <MDBBtn className='mb-4 mt-3' onClick={postimg} type='button' block>
-                圖片
             </MDBBtn>
         </form>
     </div>
