@@ -10,6 +10,7 @@ import InfoService from '../../service/info-service';
 import NavComponent from './nav-component';
 import AuthService from '../../service/auth-service';
 import { MDBFile } from 'mdb-react-ui-kit';
+import { Button } from '@mui/material';
 
 export default function AddInfoComponent() {
 
@@ -80,23 +81,27 @@ export default function AddInfoComponent() {
     }
     const inputimgFile = (e:any) => {
         let inputElem = e.target;
-        let file = inputElem.files[0];
-        
-        formData.set("imgFile", file);
-        
-        console.log(formData);
-        
+        let imgFile = inputElem.files[0];
 
-        let test = formData.getAll("imgFile");
-        console.log(test);
+
+        formData.set("imgFile", imgFile);     
         
+        console.log(formData);     
+    }
+
+    const postimg = (chipID:any) =>{
+        fetch(`http://localhost:8000/api/v1/info/img/${chipID}`,{
+            method:"PATCH",
+            body: formData,
+        }).then((res)=>console.log(formData))
     }
 
     const postInfo = () => {
-        console.log("ready pose..");
-        console.log(name, species, breed , owner ,ownerID, phone , chipID , birthday , gender , bloodType , ligation , allergy , majorDiseases , remark , hospital,formData);
-        InfoService.create(name, species, breed , owner ,ownerID, phone , chipID , birthday , gender , bloodType , ligation , allergy , majorDiseases , remark , hospital,formData)
+        console.log("ready pose..");   
+        console.log(name, species, breed , owner ,ownerID, phone , chipID , birthday , gender , bloodType , ligation , allergy , majorDiseases , remark , hospital);
+        InfoService.create(name, species, breed , owner ,ownerID, phone , chipID , birthday , gender , bloodType , ligation , allergy , majorDiseases , remark , hospital)
           .then(() => {
+            postimg(chipID)
             window.alert("New Pet-Info has been created.");
           })
           .catch((error) => {
@@ -104,6 +109,7 @@ export default function AddInfoComponent() {
             console.log(error.response);
             
           });
+          
     };
     
   return (

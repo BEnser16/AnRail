@@ -259,6 +259,20 @@ export class PetContract extends Contract {
         console.info('============= END : changePetInfo ===========');
     }
 
+    //  更改寵物圖片
+    public async changePetImg(ctx:Context, chipID:string, NewimgID) {
+        console.info('============= START : changePetImg ===========');
+
+        const petAsBytes = await ctx.stub.getState(chipID); // get the pet from chaincode state
+        if (!petAsBytes || petAsBytes.length === 0) {
+            throw new Error(`${chipID} does not exist`);
+        }
+        const pet = JSON.parse(petAsBytes.toString());
+        pet.imgID = NewimgID
+        await ctx.stub.putState(chipID, Buffer.from(JSON.stringify(pet)));
+        console.info('============= END : changePetImg ===========');
+    }
+
     //  註冊一個 飼主身份的帳戶
     public async signupbreeder(ctx:Context , userID:string , username:string , email:string , password:string , role:string) {
         console.info('============= START : signup for a new account ===========');
