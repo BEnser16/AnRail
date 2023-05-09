@@ -100,6 +100,9 @@ export default function InsurancerHome(props: any) {
     insurancerService.changeInsuranceContractState(newContract.ContractID , newContract.ContractState).then((res) => {
       console.log(res);
       console.log("change contract state complete!");
+      window.alert(
+        "審核通過!"
+      );
     }).catch((error) => {
       console.log(error);
     }) 

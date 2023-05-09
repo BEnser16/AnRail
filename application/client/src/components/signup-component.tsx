@@ -14,6 +14,7 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import AuthService from '../service/auth-service';
 import {useNavigate} from "react-router-dom";
+import BackdropAnime from './PagePack/MyPet/BackDrop';
 
 
 const theme = createTheme({
@@ -31,9 +32,11 @@ const theme = createTheme({
 });
 
 export default function SignUp() {
+  const [open, setOpen] = React.useState(false);
 
   const navigate = useNavigate();
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    setOpen(true);
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
@@ -52,6 +55,7 @@ export default function SignUp() {
         window.alert(
             "Registration success! redirect to the login page!"
         );
+        setOpen(false);
         navigate("/");
       }).catch(error => {
           console.log("發送登入請求遭遇錯誤");
@@ -62,12 +66,14 @@ export default function SignUp() {
       window.alert(
         "確認密碼錯誤!"
       );
+      setOpen(false);
     }
 
   };
 
   return (
     <ThemeProvider theme={theme}>
+      {open && <BackdropAnime/>}
       <Box sx={{
         display:"flex" , flexDirection: 'column', minHeight:1100 , zIndex:"tooltip" , height:'100%' , bgcolor: 'primary.dark' }} >
         <Container component="main" maxWidth="sm" sx={{bgcolor: 'primary.light' , mt:12 , borderRadius: '16px' }}>
