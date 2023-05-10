@@ -38,6 +38,8 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { IInsuranceContract } from '../../interface/IInsuranceContract';
+import BackdropAnime from '../../components/PagePack/MyPet/BackDrop';
+import { colors } from '@mui/material';
 
 
 
@@ -68,6 +70,7 @@ export default function InsurancerHome(props: any) {
   let [midtitle, setMidtitle] = React.useState('投保審核');
   let [contractList, setContractList] = React.useState<any>([]);
   let [open, setOpen] = React.useState(false);
+  let [backopen, setBackopen] = React.useState(false);
   let { currentUser, setCurrentUser } = props;
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
@@ -95,6 +98,7 @@ export default function InsurancerHome(props: any) {
   };
 
   function handleVerifyPass() {
+    setBackopen(true);
     let newContract:IInsuranceContract = contractList[0].Record;
     newContract.ContractState = 'complete';
     insurancerService.changeInsuranceContractState(newContract.ContractID , newContract.ContractState).then((res) => {
@@ -103,6 +107,7 @@ export default function InsurancerHome(props: any) {
       window.alert(
         "審核通過!"
       );
+      setBackopen(false);
     }).catch((error) => {
       console.log(error);
     }) 
@@ -116,7 +121,12 @@ export default function InsurancerHome(props: any) {
 
       console.log(res.data);
       setContractList(res.data);
-      setOpen(true);
+      if(res.data.length != 0) {
+        setOpen(true);
+      } else {
+        setMidtitle("目前無審核請求")
+      }
+      
     });
   }, []);
 
@@ -126,6 +136,7 @@ export default function InsurancerHome(props: any) {
 
   return (
     <ThemeProvider theme={theme}>
+      {backopen && <BackdropAnime />}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', bgcolor: 'primary.light', minHeight: "100vh" }}>
         <CssBaseline />
 
@@ -322,8 +333,10 @@ export default function InsurancerHome(props: any) {
                   </Table>
                 </TableContainer>
                 <Box sx={{display:'flex' ,ml:'auto' ,  my:2}}>
-                  <Button variant="contained" onClick={handleVerifyPass}>通過</Button>
+                  <Button variant="contained" sx={{mr:3}} onClick={handleVerifyPass}>通過</Button>
+                  <Button variant="contained" color="error" onClick={handleVerifyPass}>不通過</Button>
                 </Box>
+                
 
               </div>
               : null}

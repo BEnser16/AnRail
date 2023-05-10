@@ -32,7 +32,7 @@ class PetContract extends fabric_contract_api_1.Contract {
                 majorDiseases: '腫瘤',
                 remark: '體型癰腫 個性溫馴',
                 hospital: '高雄動物醫院',
-                imgID: "1DDxc4jYXhPQ5JiwKpnsAfkGujaHv53Fs"
+                imgID: "1j5ZTBeHbWDZVynNvpEDE5-UqIYhPDz_e"
             },
             {
                 name: '小花',
@@ -50,7 +50,7 @@ class PetContract extends fabric_contract_api_1.Contract {
                 majorDiseases: '腫瘤',
                 remark: '體型癰腫 個性溫馴',
                 hospital: '台中動物醫院',
-                imgID: "1DDxc4jYXhPQ5JiwKpnsAfkGujaHv53Fs"
+                imgID: "1rbjMoo8g-SFfvt06z4qqkuu8Yj5II3dE"
             },
             {
                 name: '阿白',
@@ -68,25 +68,7 @@ class PetContract extends fabric_contract_api_1.Contract {
                 majorDiseases: '腫瘤',
                 remark: '個性兇猛',
                 hospital: '高雄動物醫院',
-                imgID: "1DDxc4jYXhPQ5JiwKpnsAfkGujaHv53Fs"
-            },
-            {
-                name: '阿黑',
-                species: '狗',
-                breed: 'MIX',
-                owner: '許傑',
-                ownerID: 'F300700100',
-                phone: '0900-277-277',
-                chipID: 'A004',
-                birthday: '2020-10-10',
-                gender: '公',
-                bloodType: '1.1',
-                ligation: false,
-                allergy: '無',
-                majorDiseases: '皮膚病',
-                remark: '後腿受傷',
-                hospital: '高雄動物醫院',
-                imgID: "1DDxc4jYXhPQ5JiwKpnsAfkGujaHv53Fs"
+                imgID: "1bERAl_vaY5WfwN6dEOg_8KW0yu8LZF5D"
             },
         ];
         //  預先設定兩組管理員帳號 飼主身份 醫院身份

@@ -31,7 +31,7 @@ export class PetContract extends Contract {
                 majorDiseases:'腫瘤',
                 remark:'體型癰腫 個性溫馴',
                 hospital:'高雄動物醫院',
-                imgID:"1DDxc4jYXhPQ5JiwKpnsAfkGujaHv53Fs"
+                imgID:"1j5ZTBeHbWDZVynNvpEDE5-UqIYhPDz_e"
             },
             {
                 
@@ -50,8 +50,9 @@ export class PetContract extends Contract {
                 majorDiseases:'腫瘤',
                 remark:'體型癰腫 個性溫馴',
                 hospital:'台中動物醫院',
-                imgID:"1DDxc4jYXhPQ5JiwKpnsAfkGujaHv53Fs"
+                imgID:"1rbjMoo8g-SFfvt06z4qqkuu8Yj5II3dE"
             },
+            
             {
                 
                 name:'阿白',
@@ -69,8 +70,9 @@ export class PetContract extends Contract {
                 majorDiseases:'腫瘤',
                 remark:'個性兇猛',
                 hospital:'高雄動物醫院',
-                imgID:"1DDxc4jYXhPQ5JiwKpnsAfkGujaHv53Fs"
+                imgID:"1bERAl_vaY5WfwN6dEOg_8KW0yu8LZF5D"
             },
+            /*
             {
                 
                 name:'阿黑',
@@ -88,8 +90,9 @@ export class PetContract extends Contract {
                 majorDiseases:'皮膚病',
                 remark:'後腿受傷',
                 hospital:'高雄動物醫院',
-                imgID:"1DDxc4jYXhPQ5JiwKpnsAfkGujaHv53Fs"
+                imgID:"1bd2JOuaDr2NMegK4IH64KrXMjNQBAZti"
             },
+            */
         ];
 
         //  預先設定兩組管理員帳號 飼主身份 醫院身份

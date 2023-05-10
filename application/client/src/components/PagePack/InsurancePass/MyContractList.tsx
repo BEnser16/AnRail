@@ -15,6 +15,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 export default function MyContractList() {
     let [contractList, setContractList] = React.useState<IInsuranceContract[] | any>([]);
     let [show, setShow] = React.useState(false);
+    let [midtitle, setMidtitle] = React.useState("");
     const handleCheckContract = () => {
 
         setShow(!show);
@@ -27,7 +28,12 @@ export default function MyContractList() {
         breederService.getMyInsuranceContract(userobj.userID).then((res) => {
 
             console.log(res.data);
-            setContractList(res.data);
+            if(res.data.length == 0) {
+                setMidtitle("目前無保單");
+            } else {
+                setContractList(res.data);
+            }
+            
         });
 
     }, []);
@@ -36,6 +42,7 @@ export default function MyContractList() {
     return (
         <Box>
             <Typography variant="h5" style={{ color: 'inherit' }} sx={{ my: 5, fontWeight: "bold" }}>您的保單</Typography>
+            <Typography variant="h5" style={{ color: 'inherit' }} sx={{ my: 5, fontWeight: "bold" }}>{midtitle}</Typography>
 
 
             {!show && contractList.map((element: any, index: any) => (

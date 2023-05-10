@@ -114,11 +114,11 @@ export default function InsurCalculate(props: {} | any) {
           {mypetlist.map((petdata: IPet, index: number) => (
 
 
-            <Card sx={{ maxWidth: 350, maxHeight: 380, borderRadius: "12px", mx: 2 }} key={index} raised={true} >
+            <Card sx={{ maxWidth: 350, maxHeight: 380, borderRadius: "12px", mx: 2 }} style={{minWidth:350}} key={index} raised={true} >
               <CardMedia
                 component="img"
                 height="200"
-                src="https://i.epochtimes.com/assets/uploads/2018/05/dog-3313578-450x300.jpg"
+                src={`https://drive.google.com/uc?export=view&id=${petdata.Record.imgID}`}
                 alt="green iguana"
               />
               <CardContent>

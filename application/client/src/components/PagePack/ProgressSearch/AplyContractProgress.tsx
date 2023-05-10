@@ -23,10 +23,10 @@ export default function AplyContractProgress() {
 
       console.log(res.data);
       setContractList(res.data);
-      if(contractList[0].Record.ContractState == 'verify'){
+      if(res.data[0].Record.ContractState == 'verify'){
         setStep(1);
       }
-      if(contractList[0].Record.ContractState == 'complete'){
+      if(res.data[0].Record.ContractState == 'complete'){
         setStep(2);
       }
     });

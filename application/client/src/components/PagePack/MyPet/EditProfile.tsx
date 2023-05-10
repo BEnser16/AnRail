@@ -13,6 +13,7 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import ProfileContent from './ProfileContent';
+import BackdropAnime from './BackDrop';
 
 
 
@@ -41,6 +42,7 @@ export default function EditProfile() {
 
     });
     let [editmode, setEditmode] = React.useState<boolean>(false);
+    let [backdrop, setBackdrop] = React.useState<boolean>(false);
 
     async function getUserData(userID: string) {
         const userdata: any = AuthService.getUserData(userID);
@@ -50,10 +52,12 @@ export default function EditProfile() {
 
 
     const handleSubmit = () => {
+        setBackdrop(true);
         console.log(newUserdata);
 
         AuthService.changeUserData(newUserdata.userID, newUserdata.username, newUserdata.email, newUserdata.address, newUserdata.birthDate, newUserdata.phone).then((res) => {
             console.log(res);
+            setBackdrop(false);
             window.location.reload();
         });
     };
@@ -70,6 +74,7 @@ export default function EditProfile() {
 
     return (
         <Box>
+            {backdrop && <BackdropAnime />}
             {!editmode && <ProfileContent />}
             {editmode &&
                 <TableContainer component={Paper} sx={{ borderRadius: "12px" }}>
